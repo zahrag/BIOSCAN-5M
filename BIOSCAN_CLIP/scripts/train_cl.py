@@ -90,10 +90,6 @@ def main_process(rank: int, world_size: int, args):
     pre_train_dataloader, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_dataloader(
         args, world_size=world_size, rank=rank)
 
-    # Load small species for separate eval
-    if hasattr(args.bioscan_data, 'path_to_small_species_list_json'):
-        with open(args.bioscan_data.path_to_small_species_list_json, 'r') as json_file:
-            small_species_list = json.load(json_file)
     if rank == 0:
         print("Initialize model...")
     model = load_clip_model(args)
@@ -109,6 +105,7 @@ def main_process(rank: int, world_size: int, args):
 
     else:
         criterion = ContrastiveLoss(criterion=nn.CrossEntropyLoss(), logit_scale=1 / 0.07)
+
 
     if args.activate_wandb:
         wandb.init(project=args.model_config.wandb_project_name, name=args.model_config.model_output_name)

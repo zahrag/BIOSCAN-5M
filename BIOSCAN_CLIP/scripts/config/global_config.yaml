@@ -5,7 +5,7 @@ defaults:
   - model_config: mlp_ssl
 project_root_path: ${hydra:runtime.cwd}
 data_dir: ${project_root_path}/data
-activate_wandb: false
+activate_wandb: true
 save_inference : true
 load_inference: false
 bioscan_data:

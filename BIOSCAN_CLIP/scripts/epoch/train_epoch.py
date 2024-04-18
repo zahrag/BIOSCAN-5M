@@ -24,10 +24,13 @@ def train_epoch(activate_wandb, total_epochs, epoch, dataloader, model, optimize
         optimizer.zero_grad()
         image_input_batch = image_input_batch.to(device)
         dna_input_batch = dna_input_batch.to(device)
-
-
-        image_output, dna_output, language_output, logit_scale, logit_bias = model(image_input_batch, dna_input_batch,
+        logit_scale = None
+        logit_bias = None
+        if open_clip_ver:
+            image_output, dna_output, language_output, logit_scale, logit_bias = model(image_input_batch, dna_input_batch,
                                                           language_input)
+        else:
+            image_output, dna_output, language_output = model(image_input_batch, dna_input_batch, language_input)
 
         label_for_train_batch = label_for_train_batch.to(device)
         # label_for_train_batch = construct_label_metrix(label_for_train_batch).to(device)
@@ -37,8 +40,10 @@ def train_epoch(activate_wandb, total_epochs, epoch, dataloader, model, optimize
         else:
             loss = criterion(image_output, dna_output, language_output, label_for_train_batch)
 
-        epoch_loss = epoch_loss + loss.item()
         loss.backward()
+
+        epoch_loss = epoch_loss + loss.item()
+
 
         optimizer.step()
         memory_info = psutil.virtual_memory()

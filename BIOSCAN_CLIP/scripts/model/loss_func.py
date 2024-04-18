@@ -29,6 +29,7 @@ class ContrastiveLoss(nn.Module):
     def forward(self, image_features, dna_features, text_features, label, logit_scale=1/0.07):
         feature_list = [image_features, dna_features, text_features]
         feature_list = [item for item in feature_list if item is not None]
+        label = construct_label_metrix(label).to(label.device)
 
         if len(feature_list) < 2:
             raise ValueError("Too less element for calculating the contrastive loss.")
@@ -44,6 +45,8 @@ class ContrastiveLoss(nn.Module):
 
                 sim_a_b = self.logit_scale * feature_a @ feature_b.T
                 sim_b_a = self.logit_scale * feature_b @ feature_a.T
+
+
                 loss_a_b = self.criterion(sim_a_b, label)
                 loss_b_a = self.criterion(sim_b_a, label)
                 loss_list.append(loss_a_b)
@@ -149,6 +152,10 @@ class ClipLoss(nn.Module):
 
                 sim_a_b = logit_scale * feature_a @ feature_b.T
                 sim_b_a = logit_scale * feature_b @ feature_a.T
+
+                # sim_a_b = feature_a @ feature_b.T
+                # sim_b_a = feature_b @ feature_a.T
+
                 loss_a_b = self.criterion(sim_a_b, all_labels)
                 loss_b_a = self.criterion(sim_b_a, all_labels)
                 loss_list.append(loss_a_b)
