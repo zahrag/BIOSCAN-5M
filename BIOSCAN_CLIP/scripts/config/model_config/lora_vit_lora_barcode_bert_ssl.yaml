@@ -1,0 +1,21 @@
+batch_size: 400
+epochs: 15
+labels_for_driven_positive_and_negative_pairs:
+wandb_project_name: BioScan-CLIP
+using_train_seen_for_pre_train: true
+
+image:
+  input_type: image
+  model: lora_vit
+dna:
+  input_type: sequence
+  model: lora_barcode_bert
+
+bioscan_bert_checkpoint: ${project_root_path}/ckpt/BarcodeBERT/5_mer/model_41.pth
+model_output_dir: ${project_root_path}/ckpt/bioscan_clip
+model_output_name: lora_vit_lora_barcode_bert_ssl_batch_size_400
+evaluation_period: 1
+ckpt_path: ${project_root_path}/ckpt/bioscan_clip/version_0_1_0/lora_vit_lora_barcode_bert_ssl_batch_size_400/best.pth
+output_dim: 768
+num_workers: 8
+port: 12318
