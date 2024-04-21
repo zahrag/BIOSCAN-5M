@@ -266,7 +266,6 @@ def set_config():
     parser = config_run_module(parser)
     parser = config_crop_resize(parser)
     parser = config_split_1M_Insect(parser)
-    parser = config_split_bioscan_clip(parser)
     parser = config_exp_1m_insect(parser)
     parser = config_zero_shot_clustering(parser)
     parser = config_barcode_bert(parser)
