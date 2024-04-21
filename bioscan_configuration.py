@@ -29,7 +29,6 @@ def config_base(parser):
 
 
 def config_path(parser):
-
     parser.add_argument('--download_path', type=str, default=None,
                         help='Path to the download directory.')
     parser.add_argument('--image_path', type=str, default=None,
@@ -221,6 +220,9 @@ def config_zero_shot_clustering(parser):
     parser.add_argument('--experiment_names', type=str,
                         default=['', '', ''],
                         help='Name of all experiments conducted with zero-shot clustering approach.')
+    parser.add_argument('--exp_name', type=str, default='',
+                        choices=['', ''],
+                        help='Name of the experiment to perform.')
 
     return parser
 
@@ -233,6 +235,9 @@ def config_barcode_bert(parser):
     parser.add_argument('--experiment_names', type=str,
                         default=['', '', ''],
                         help='Name of all experiments conducted with Barcode-BERT approach.')
+    parser.add_argument('--exp_name', type=str, default='',
+                        choices=['', ''],
+                        help='Name of the experiment to perform.')
 
     return parser
 
@@ -245,6 +250,9 @@ def config_bioscan_clip(parser):
     parser.add_argument('--experiment_names', type=str,
                         default=['', '', ''],
                         help='Name of all experiments conducted with BIOSCAN-CLIP approach.')
+    parser.add_argument('--exp_name', type=str, default='',
+                        choices=['', ''],
+                        help='Name of the experiment to perform.')
 
     return parser
 
