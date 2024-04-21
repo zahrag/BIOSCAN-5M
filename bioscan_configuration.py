@@ -85,6 +85,12 @@ def config_run_module(parser):
                         help='IF plot split statistics?')
     parser.add_argument('--exp_1M_Insect', default=False, action='store_true',
                         help='IF run experiments performed and presented in BIOSCAN-1M Insect paper.')
+    parser.add_argument('--exp_zero_shot_clustering', default=False, action='store_true',
+                        help='IF run zero-shot clustering experiments.')
+    parser.add_argument('--exp_barcode_bert', default=False, action='store_true',
+                        help='IF run Barcode-BERT experiments.')
+    parser.add_argument('--exp_bioscan_clip', default=False, action='store_true',
+                        help='IF run BIOSCAN-CLIP experiments.')
 
     return parser
 
@@ -209,36 +215,36 @@ def config_split_bioscan_clip(parser):
 
 def config_zero_shot_clustering(parser):
 
-    if parser.parse_known_args()[0].exp_name != 'zero_shot_clustering':
+    if not parser.parse_known_args()[0].exp_zero_shot_clustering:
         return parser
 
-    parser.add_argument('--experiment_names', type=str, default=['bioscan_clip'],
-                        choices=['', '', ''],
-                        help='Name of experiments conducted with BIOSCAN-6M Insect Dataset.')
+    parser.add_argument('--experiment_names', type=str,
+                        default=['', '', ''],
+                        help='Name of all experiments conducted with zero-shot clustering approach.')
 
     return parser
 
 
 def config_barcode_bert(parser):
 
-    if parser.parse_known_args()[0].exp_name != 'barcode_bert':
+    if not parser.parse_known_args()[0].exp_barcode_bert:
         return parser
 
-    parser.add_argument('--experiment_names', type=str, default=['bioscan_clip'],
-                        choices=['', '', ''],
-                        help='Name of experiments conducted with BIOSCAN-6M Insect Dataset.')
+    parser.add_argument('--experiment_names', type=str,
+                        default=['', '', ''],
+                        help='Name of all experiments conducted with Barcode-BERT approach.')
 
     return parser
 
 
 def config_bioscan_clip(parser):
 
-    if parser.parse_known_args()[0].exp_name != 'bioscan_clip':
+    if not parser.parse_known_args()[0].exp_bioscan_clip:
         return parser
 
-    parser.add_argument('--experiment_names', type=str, default=['bioscan_clip'],
-                        choices=['', '', ''],
-                        help='Name of experiments conducted with BIOSCAN-6M Insect Dataset.')
+    parser.add_argument('--experiment_names', type=str,
+                        default=['', '', ''],
+                        help='Name of all experiments conducted with BIOSCAN-CLIP approach.')
 
     return parser
 
