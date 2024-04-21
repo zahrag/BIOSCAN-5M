@@ -129,7 +129,7 @@ def config_crop_resize(parser):
 
 def config_exp_1m_insect(parser):
 
-    if not parser.parse_known_args()[0].exp_1M_insect:
+    if not parser.parse_known_args()[0].exp_1M_Insect:
         return parser
 
     parser.add_argument('--experiment_names', type=str,
