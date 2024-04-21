@@ -132,6 +132,32 @@ def config_crop_resize(parser):
     return parser
 
 
+def config_split_1M_Insect(parser):
+
+    if not parser.parse_known_args()[0].split_1M_Insect:
+        return parser
+
+    parser.add_argument('--method', type=str, default='stratified_class_based', help='Split mechanism approach.')
+    parser.add_argument('--train_ratio', type=float, default=0.7, help='Train ratio for train set.')
+    parser.add_argument('--validation_ratio', type=float, default=0.1, help='Validation ratio for train set.')
+    parser.add_argument('--test_ratio', type=float, default=0.2, help='Test ratio for train set.')
+    parser.add_argument('--chunk_length', type=int, default=10000, help='Chunk length: number of images of each patch.')
+    parser.add_argument('--chunk_num', type=int, default=0, help='set the data chunk number.')
+    parser.add_argument('--max_num_sample', type=int, default=50000, choices=[50000, 200000],
+                        help='Number of samples of each subset.')
+    return parser
+
+
+def config_split_bioscan_clip(parser):
+
+    if not parser.parse_known_args()[0].split_bioscan_clip:
+        return parser
+
+    parser.add_argument('--method', type=str, default='', help='Split mechanism approach.')
+
+    return parser
+
+
 def config_exp_1m_insect(parser):
 
     if not parser.parse_known_args()[0].exp_1M_Insect:
@@ -183,32 +209,6 @@ def config_exp_1m_insect(parser):
                         help='choose the model you want to train on')
     parser.add_argument('--use_gpu', type=int, choices=[0, 1], default=torch.cuda.is_available(),
                         help='IF using GPU.')
-    return parser
-
-
-def config_split_1M_Insect(parser):
-
-    if not parser.parse_known_args()[0].split_1M_Insect:
-        return parser
-
-    parser.add_argument('--method', type=str, default='stratified_class_based', help='Split mechanism approach.')
-    parser.add_argument('--train_ratio', type=float, default=0.7, help='Train ratio for train set.')
-    parser.add_argument('--validation_ratio', type=float, default=0.1, help='Validation ratio for train set.')
-    parser.add_argument('--test_ratio', type=float, default=0.2, help='Test ratio for train set.')
-    parser.add_argument('--chunk_length', type=int, default=10000, help='Chunk length: number of images of each patch.')
-    parser.add_argument('--chunk_num', type=int, default=0, help='set the data chunk number.')
-    parser.add_argument('--max_num_sample', type=int, default=50000, choices=[50000, 200000],
-                        help='Number of samples of each subset.')
-    return parser
-
-
-def config_split_bioscan_clip(parser):
-
-    if not parser.parse_known_args()[0].split_bioscan_clip:
-        return parser
-
-    parser.add_argument('--method', type=str, default='', help='Split mechanism approach.')
-
     return parser
 
 
