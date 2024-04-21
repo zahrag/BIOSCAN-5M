@@ -1,6 +1,13 @@
 import torch
 import datetime
 import argparse
+import yaml
+
+
+def parse_config_file(config_file):
+    with open(config_file, 'r') as file:
+        config = yaml.safe_load(file)
+    return config
 
 
 def config_base(parser):
@@ -55,6 +62,9 @@ def config_path(parser):
                         help='Path to the HDF5 files of the resized cropped images.')
     parser.add_argument('--results_path', type=str, default=None,
                         help='Path to save results.')
+
+    parser.add_argument('--bioscan_clip_config_path', type=str, default=None,
+                        help='Path to the BIOSCAN-CLIP configuration.')
 
     return parser
 
@@ -253,6 +263,10 @@ def config_bioscan_clip(parser):
     parser.add_argument('--exp_name', type=str, default='',
                         choices=['', ''],
                         help='Name of the experiment to perform.')
+
+    config = parse_config_file(parser.parse_known_args()[0].bioscan_clip_config_path)
+    for key, value in config.items():
+        parser.add_argument(f'--{key}', type=type(value), default=value, help=f'{key} from config file')
 
     return parser
 
