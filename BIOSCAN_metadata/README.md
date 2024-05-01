@@ -1,1 +1,1 @@
-Metadata file is saved here.
+Metadata file in CSV format is saved here.
