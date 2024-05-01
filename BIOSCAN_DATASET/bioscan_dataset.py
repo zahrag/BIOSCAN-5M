@@ -16,7 +16,7 @@ class BioScan(Dataset):
         This includes biological taxonomy information, DNA barcode indexes and RGB image names and chunk numbers.
         :param metadata: Path to the Metadata file (.csv)
         :param level_name: Taxonomic level and corresponding name to extract subset.
-        :param split: Set split: All, Train, Validation, Test
+        :param split: Set split: All, Train, Validation, Test, Query and Keys
         :return:
         """
 
@@ -91,6 +91,7 @@ class BioScan(Dataset):
         return len(self.index)
 
     def read_metadata(self, metadata):
+        """ Read a .tsv type metadata file """
 
         if os.path.isfile(metadata) and os.path.splitext(metadata)[1] == '.tsv':
             df = dataset_helper.read_tsv(metadata)
@@ -100,6 +101,14 @@ class BioScan(Dataset):
             raise ValueError(f'ERROR: Metadata (.tsv) does NOT exist in: \n{metadata}!')
 
     def get_df(self, df, split=None, level_name=None):
+        """
+        Get the subset of metadata.
+
+        :param df: Parent metadata
+        :param split: If defined as a split set (bioscan_split_sets), return split subset,
+                      otherwise applies level and name.
+        :param level_name: 2D string object showing taxonomic group-level, and a name under the group-level.
+        """
 
         if not split:
             if level_name == ['phylum', 'Arthropods']:
