@@ -92,7 +92,7 @@ def config_run_module(parser):
                         action='store_true',
                         help='IF run bioscan_bert experiments, if None skip module.')
 
-    parser.add_argument('--bioscan_clustering',
+    parser.add_argument('--bioscan_zsc',
                         default=False,
                         action='store_true',
                         help='IF run zero-shot clustering experiments, if None skip module.')
@@ -177,9 +177,9 @@ def config_bioscan_bert(parser):
         return parser
 
 
-def config_bioscan_clustering(parser):
+def config_bioscan_zsc(parser):
 
-    if not parser.parse_known_args()[0].bioscan_clustering:
+    if not parser.parse_known_args()[0].bioscan_zsc:
         return parser
 
 
@@ -198,7 +198,7 @@ def set_config():
     parser = config_split(parser)
 
     parser = config_bioscan_bert(parser)
-    parser = config_bioscan_clustering(parser)
+    parser = config_bioscan_zsc(parser)
     parser = config_bioscan_clip(parser)
 
     args = parser.parse_args()
