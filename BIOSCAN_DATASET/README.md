@@ -1,6 +1,6 @@
 # BIOSCAN-6M
 
-Here are the functions handled by the codes:
+Here are the functions handling:
 
 - Download dataset packages 
 - Dataset Statistics 
