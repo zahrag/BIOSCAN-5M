@@ -3,7 +3,7 @@
 Here are the functions handling:
 
 - Download dataset packages 
-- Dataset Statistics 
+- Dataset statistics 
 - Data distributions 
 - Dataset split 
 
