@@ -153,11 +153,11 @@ def make_split(configs):
     test_unseen_queries_df['split'] = 'test_unseen_queries'
     test_unseen_keys_df['split'] = 'test_unseen_keys'
     metadata_df_single_species['split'] = 'single_species'
-    splitted_metadata_df = pd.concat([metadata_df_pre_train, seen_train_df, seen_val_queries_df, seen_test_queries_df, seen_keys_df,
+    split_metadata_df = pd.concat([metadata_df_pre_train, seen_train_df, seen_val_queries_df, seen_test_queries_df, seen_keys_df,
                                      val_unseen_queries_df, val_unseen_keys_df, test_unseen_queries_df, test_unseen_keys_df,
                                      metadata_df_single_species])
 
-    df_final = splitted_metadata_df.fillna('no_data', inplace=True)
+    df_final = split_metadata_df.fillna('no_data', inplace=True)
 
     split_metadata_path = os.path.dirname(args.metadata)
     split_metadata = os.path.split(os.path.basename(args.metadata))[0] + '_split'
