@@ -12,8 +12,7 @@ For now, tail_metadata are merged with test_unseen, and tail_query are merged wi
 
 single_species -> species with single sample in the dataset, for now are using for pre-train.
 """
-import os.path
-
+import os
 import pandas as pd
 from collections import Counter
 import numpy as np
