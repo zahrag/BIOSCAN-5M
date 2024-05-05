@@ -82,7 +82,7 @@ def make_split(configs):
         return
 
     args = CustomArg(configs)
-    metadata_df = pd.read_csv(args.metadata, sep='\t')
+    metadata_df = pd.read_csv(args.metadata, sep='\t', low_memory=False)
     metadata_df.replace('no_data', np.nan, inplace=True)
     metadata_df['split'] = None
     metadata_df.loc[metadata_df['species'].isnull(), 'split'] = 'pre_train'
