@@ -157,9 +157,9 @@ def make_split(configs):
                                      val_unseen_queries_df, val_unseen_keys_df, test_unseen_queries_df, test_unseen_keys_df,
                                      metadata_df_single_species])
 
-    df_final = split_metadata_df.fillna('no_data', inplace=True)
+    split_metadata_df.fillna('no_data', inplace=True)
 
     split_metadata_path = os.path.dirname(args.metadata)
-    split_metadata = os.path.splitext(os.path.basename(args.metadata))[0] + '_split'
-    df_final.to_csv(os.path.join(split_metadata_path, split_metadata), sep='\t', index=False)
+    split_metadata = os.path.splitext(os.path.basename(args.metadata))[0] + '_split.tsv'
+    split_metadata_df.to_csv(os.path.join(split_metadata_path, split_metadata), sep='\t', index=False)
 
