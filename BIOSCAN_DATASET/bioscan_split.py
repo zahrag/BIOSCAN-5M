@@ -78,6 +78,9 @@ def split_val_and_test_unseen(group):
 
 def make_split(configs):
 
+    if not configs['split']:
+        return
+
     args = CustomArg(configs)
     metadata_df = pd.read_csv(args.metadata, sep='\t')
     metadata_df.replace('no_data', np.nan, inplace=True)
