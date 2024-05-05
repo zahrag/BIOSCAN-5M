@@ -160,6 +160,6 @@ def make_split(configs):
     df_final = split_metadata_df.fillna('no_data', inplace=True)
 
     split_metadata_path = os.path.dirname(args.metadata)
-    split_metadata = os.path.split(os.path.basename(args.metadata))[0] + '_split'
+    split_metadata = os.path.splitext(os.path.basename(args.metadata))[0] + '_split'
     df_final.to_csv(os.path.join(split_metadata_path, split_metadata), sep='\t', index=False)
 
