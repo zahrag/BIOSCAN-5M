@@ -12,162 +12,152 @@ For now, tail_metadata are merged with test_unseen, and tail_query are merged wi
 
 single_species -> species with single sample in the dataset, for now are using for pre-train.
 """
+import os.path
 
-import argparse
-from decimal import Decimal
-import numpy as np
 import pandas as pd
+from collections import Counter
+import numpy as np
+from tqdm import tqdm
 from dataset_helper import CustomArg
 
-TAIL_THRESHOLD = 10
-def filter_no_species(metadata: pd.DataFrame):
-    return metadata[metadata["species"] != "no_data"]
+np.random.seed(42)
+
+def split_common_species_df(metadata_df_common_species):
+    unique_species = metadata_df_common_species['species'].unique()
+    np.random.shuffle(unique_species)
+
+    n_species = len(unique_species)
+    n_seen = int(0.8 * n_species)
+    n_val_unseen = int(0.1 * n_species)
+
+    seen_species = unique_species[:n_seen]
+    val_unseen_species = unique_species[n_seen:n_seen + n_val_unseen]
+    test_unseen_species = unique_species[n_seen + n_val_unseen:]
 
 
-def get_tail_species(species_metadata: pd.DataFrame, threshold: int = TAIL_THRESHOLD):
-    species = species_metadata.groupby("species")
-    species_count = species.size()
-    mask = species_count < threshold
-    return species_count.index[mask]
+    # Create the DataFrames based on these splits
+    seen_df = metadata_df_common_species[metadata_df_common_species['species'].isin(seen_species)]
+    val_unseen_df = metadata_df_common_species[metadata_df_common_species['species'].isin(val_unseen_species)]
+    test_unseen_df = metadata_df_common_species[metadata_df_common_species['species'].isin(test_unseen_species)]
+
+    return seen_df, val_unseen_df, test_unseen_df
+
+def split_less_common_species_df(metadata_df_less_species):
+    unique_species = metadata_df_less_species['species'].unique()
+    np.random.shuffle(unique_species)
+
+    n_species = len(unique_species)
+    n_val_unseen = int(0.5 * n_species)
+
+    val_unseen_species = unique_species[:n_val_unseen]
+    test_unseen_species = unique_species[n_val_unseen:]
+
+    val_unseen_df = metadata_df_less_species[metadata_df_less_species['species'].isin(val_unseen_species)]
+    test_unseen_df = metadata_df_less_species[metadata_df_less_species['species'].isin(test_unseen_species)]
+
+    return val_unseen_df, test_unseen_df
 
 
-def create_split_boundaries(size: int, split_ratios: list[float]) -> list[int]:
-    assert sum(split_ratios) == 1
-    split_sizes = list(map(lambda x: int(x * size), split_ratios))
-    boundaries = []
-    for ss in split_sizes[:-1]:
-        if len(boundaries) == 0:
-            boundaries.append(ss)
-        else:
-            boundaries.append(ss + boundaries[-1])
-    return boundaries
+def split_seen(group):
+    train = group.sample(frac=0.7, random_state=42)
+    group = group.drop(train.index)
+
+    seen_keys = group.sample(frac=1.0/3.0, random_state=42)
+    group = group.drop(seen_keys.index)
+
+    seen_val_queries = group.sample(frac=1.0/2.0, random_state=42)
+    seen_test_queries = group.drop(seen_val_queries.index)
+
+    return train, seen_val_queries, seen_test_queries, seen_keys
 
 
-def split_species(metadata: pd.DataFrame, split_ratios: float | list[float] = 0.8, seed=None):
-    if isinstance(split_ratios, float):
-        split_ratios = [split_ratios, 1 - split_ratios]
-    assert sum(split_ratios) == 1
-    all_species = pd.unique(metadata["species"])
-    rand_gen = np.random.default_rng(seed=seed)
-    split_sizes = create_split_boundaries(len(all_species), split_ratios)
-    species_splits = np.split(rand_gen.permutation(all_species), split_sizes)
-    return [metadata[metadata["species"].isin(species)] for species in species_splits]
+def split_val_and_test_unseen(group):
+    unseen_queries = group.sample(frac=0.5, random_state=42)
+    unseen_keys = group.drop(unseen_queries.index)
+    return unseen_queries, unseen_keys
 
 
-def split_samples_per_species(metadata, split_ratios: list[float] | float, seed=None):
-    if isinstance(split_ratios, float):
-        split_ratios = [split_ratios, 1 - split_ratios]
-    split_ratios = [Decimal(str(f)) for f in split_ratios]
-    assert sum(split_ratios) == 1
-    metadata = metadata.reset_index()
-    all_species = pd.unique(metadata["species"])
-    split_assignments = [[] for _ in range(len(split_ratios))]
-    rand_gen = np.random.default_rng(seed=seed)
-    for species in all_species:
-        # generate random splits
-        sample_indices = metadata[metadata["species"] == species].index.to_numpy()
-        split_sizes = create_split_boundaries(sample_indices.shape[0], split_ratios)
+def make_split(configs):
 
-        sample_splits = np.split(rand_gen.permutation(sample_indices), split_sizes)
+    args = CustomArg(configs)
+    metadata_df = pd.read_csv(args.metadata, sep='\t')
+    metadata_df.replace('no_data', np.nan, inplace=True)
+    metadata_df['split'] = None
+    metadata_df.loc[metadata_df['species'].isnull(), 'split'] = 'pre_train'
 
-        # collect split assignments in container
-        for split_idx, indices in enumerate(sample_splits):
-            split_assignments[split_idx].append(indices)
-    return [metadata.loc[np.concatenate(indices)].set_index("index") for indices in split_assignments]
+    metadata_df_pre_train = metadata_df[metadata_df['split'] == 'pre_train']
+    metadata_df_species_not_none = metadata_df[metadata_df['species'].notnull()]
 
 
-def assert_no_overlap(source: np.ndarray, targets: list[np.ndarray], assume_unique=True):
-    for target in targets:
-        intersection = np.intersect1d(source, target, assume_unique=assume_unique)
-        if len(intersection) > 0:
-            raise ValueError("Found overlap in splits.")
+    species_list = metadata_df_species_not_none['species'].tolist()
+    species_counter = Counter(species_list)
+    most_common_species = [item for item, count in species_counter.items() if count >= 10]
+    less_common_species = [item for item, count in species_counter.items() if count < 10 and count >= 2]
+    single_species = [item for item, count in species_counter.items() if count == 1]
 
+    metadata_df_common_species = metadata_df_species_not_none[metadata_df_species_not_none['species'].isin(most_common_species)]
+    metadata_df_less_common_species = metadata_df_species_not_none[metadata_df_species_not_none['species'].isin(less_common_species)]
+    metadata_df_single_species = metadata_df_species_not_none[metadata_df_species_not_none['species'].isin(single_species)]
 
-def create_final_metadata(metadata, **kwargs):
-    split_metadata = metadata[["sampleid", "uri", "image_file", "species"]].copy()
-    split_metadata["split"] = "no_split"
-    for split_name, split in kwargs.items():
-        split_metadata.loc[split_metadata["sampleid"].isin(split["sampleid"]), "split"] = split_name
-    return split_metadata
+    seen_df, val_unseen_df, test_unseen_df = split_common_species_df(metadata_df_common_species)
+    val_unseen_df_from_less_common, test_unseen_df_from_less_common = split_less_common_species_df(metadata_df_less_common_species)
 
+    val_unseen_df = pd.concat([val_unseen_df, val_unseen_df_from_less_common])
+    test_unseen_df = pd.concat([test_unseen_df, test_unseen_df_from_less_common])
 
-def make_split(args):
+    seen_train_df = pd.DataFrame()
+    seen_val_queries_df = pd.DataFrame()
+    seen_test_queries_df = pd.DataFrame()
+    seen_keys_df = pd.DataFrame()
 
-    if isinstance(args, dict):
-        args = CustomArg(args)
+    pbar = tqdm(seen_df.groupby('species'),
+                total=len(seen_df['species'].unique()))
+    for _, group in pbar:
+        pbar.set_description("Processing seen species: ")
+        seen_train, seen_val_queries, seen_test_queries, seen_keys = split_seen(group)
+        seen_train_df = pd.concat([seen_train_df, seen_train])
+        seen_val_queries_df = pd.concat([seen_val_queries_df, seen_val_queries])
+        seen_test_queries_df = pd.concat([seen_test_queries_df, seen_test_queries])
+        seen_keys_df = pd.concat([seen_keys_df, seen_keys])
 
-    metadata = pd.read_csv(args.metadata, sep="\t")
-    print("Creating splits...")
-    # columns:
-    #   ids: sampleid, processid, uri, name (same as order), image_file, chunk_number
-    #   taxonomy: phylum, class, order, family, subfamily, tribe, genus, species, subspecies
-    #   barcode: nucraw
-    #   splits: {large,medium,small}_diptera_family, {large,medium,small}_insect_order
+    val_unseen_queries_df = pd.DataFrame()
+    val_unseen_keys_df = pd.DataFrame()
 
-    # remove samples which do not have any species
-    species_metadata = filter_no_species(metadata)
+    pbar = tqdm(val_unseen_df.groupby('species'),
+                total=len(val_unseen_df['species'].unique()))
+    for _, group in pbar:
+        pbar.set_description("Processing val unseen species: ")
+        val_unseen_queries, val_unseen_keys = split_val_and_test_unseen(group)
+        val_unseen_queries_df = pd.concat([val_unseen_queries_df, val_unseen_queries])
+        val_unseen_keys_df = pd.concat([val_unseen_keys_df, val_unseen_keys])
 
-    # get series of species which have few samples
-    tail_species = get_tail_species(species_metadata, threshold=args.min_species_size)
-    tail_metadata = species_metadata[species_metadata["species"].isin(tail_species)]
-    common_metadata = species_metadata[~species_metadata["species"].isin(tail_species)]
+    test_unseen_queries_df = pd.DataFrame()
+    test_unseen_keys_df = pd.DataFrame()
 
-    # split seen species for train, val, and test
-    seen_species, unseen_species = split_species(common_metadata, args.split_ratios_species, seed=args.seed)
-    train_seen, val_seen, test_seen, seen_query = split_samples_per_species(seen_species, args.split_ratios_seen, seed=args.seed)
+    pbar = tqdm(test_unseen_df.groupby('species'),
+                total=len(test_unseen_df['species'].unique()))
+    for _, group in pbar:
+        pbar.set_description("Processing test unseen species: ")
+        test_unseen_queries, test_unseen_keys = split_val_and_test_unseen(group)
+        test_unseen_queries_df = pd.concat([test_unseen_queries_df, test_unseen_queries])
+        test_unseen_keys_df = pd.concat([test_unseen_keys_df, test_unseen_keys])
 
-    # split unseen species between val and test
-    val_unseen, test_unseen = split_species(unseen_species, args.percent_unseen_val, seed=args.seed)
+    seen_train_df['split'] = 'seen_train'
+    seen_val_queries_df['split'] = 'seen_val_queries'
+    seen_test_queries_df['split'] = 'seen_test_queries'
+    seen_keys_df['split'] = 'seen_keys'
+    val_unseen_queries_df['split'] = 'val_unseen_queries'
+    val_unseen_keys_df['split'] = 'val_unseen_keys'
+    test_unseen_queries_df['split'] = 'test_unseen_queries'
+    test_unseen_keys_df['split'] = 'test_unseen_keys'
+    metadata_df_single_species['split'] = 'single_species'
+    splitted_metadata_df = pd.concat([metadata_df_pre_train, seen_train_df, seen_val_queries_df, seen_test_queries_df, seen_keys_df,
+                                     val_unseen_queries_df, val_unseen_keys_df, test_unseen_queries_df, test_unseen_keys_df,
+                                     metadata_df_single_species])
 
-    # Further split val_unseen and test_unseen so we get the query dataset.
-    val_unseen, val_unseen_query = split_samples_per_species(val_unseen, args.percent_unseen_val, seed=args.seed)
-    test_unseen, test_unseen_query = split_samples_per_species(test_unseen, args.percent_unseen_val, seed=args.seed)
+    df_final = splitted_metadata_df.fillna('no_data', inplace=True)
 
-    # Filter out the species with less than 2 samples. Then split tail_metadata in to tail_metadata and
-    # tail_query_metadata, add them to test_unseen and test_unseen_query
-
-    species_with_one_sample = get_tail_species(tail_metadata, threshold=2)
-    single_species = tail_metadata[tail_metadata["species"].isin(species_with_one_sample)]
-    tail_metadata = tail_metadata[~tail_metadata["species"].isin(species_with_one_sample)]
-    tail_metadata_to_val_unseen, tail_metadata_to_test_unseen = split_species(tail_metadata, 0.5, seed=args.seed)
-
-    tail_metadata_to_val_unseen, tail_metadata_to_val_unseen_query = split_samples_per_species(tail_metadata_to_val_unseen, 0.5, seed=args.seed)
-    val_unseen = pd.concat([val_unseen, tail_metadata_to_val_unseen])
-    val_unseen_query = pd.concat([val_unseen_query, tail_metadata_to_val_unseen_query])
-    tail_metadata_to_test_unseen, tail_metadata_to_test_unseen_query = split_samples_per_species(
-        tail_metadata_to_test_unseen, 0.5, seed=args.seed)
-    test_unseen = pd.concat([test_unseen, tail_metadata_to_test_unseen])
-    test_unseen_query = pd.concat([test_unseen_query, tail_metadata_to_test_unseen_query])
-
-    # validate results
-    print("Validating splits...")
-    train_seen_species = pd.unique(train_seen["species"])
-    val_seen_species = pd.unique(val_seen["species"])
-    test_seen_species = pd.unique(test_seen["species"])
-    val_unseen_species = pd.unique(val_unseen["species"])
-    test_unseen_species = pd.unique(test_unseen["species"])
-    assert_no_overlap(
-        val_unseen_species, [train_seen_species, val_seen_species, test_seen_species, test_unseen_species]
-    )
-    assert_no_overlap(test_unseen_species, [train_seen_species, val_seen_species, test_seen_species])
-    assert_no_overlap(train_seen["sampleid"], [val_seen["sampleid"], test_seen["sampleid"]])
-    assert_no_overlap(val_seen["sampleid"], [test_seen["sampleid"]])
-
-    # final splits
-    split_metadata = create_final_metadata(
-        metadata,
-        train_seen=train_seen,
-        val_seen=val_seen,
-        val_unseen=val_unseen,
-        test_seen=test_seen,
-        test_unseen=test_unseen,
-        query_seen=seen_query,
-        val_query_unseen=val_unseen_query,
-        test_query_unseen=test_unseen_query,
-        single_species=single_species
-    )
-    split_metadata.to_csv(args.output, sep="\t")
-    print(split_metadata['split'].value_counts())
-
-    return split_metadata
+    split_metadata_path = os.path.dirname(args.metadata)
+    split_metadata = os.path.split(os.path.basename(args.metadata))[0] + '_split'
+    df_final.to_csv(os.path.join(split_metadata_path, split_metadata), sep='\t', index=False)
 
