@@ -29,6 +29,8 @@ cd ckpt/BarcodeBERT/5_mer
 wget https://aspis.cmpt.sfu.ca/projects/bioscan/clip_project/ckpt/BarcodeBERT/model_41.pth
 ```
 
+TODO: Refactor following parts.
+
 ## Train
 ```shell
 # From project folder
