@@ -14,13 +14,11 @@ conda install -c conda-forge faiss
 
 ```
 in the terminal. However, based on your GPU version, you may have to modify the torch version and install other packages manually in difference version.
-## Download data
+## Link metadata to BIOSCAN_CLIP data folder
 ```shell
 # From project folder
-mkdir -p data/BioScan_1M/split_data
-cd data/BioScan_1M/split_data
-wget https://aspis.cmpt.sfu.ca/projects/bioscan/clip_project/data/version_0.2.1/BioScan_data_in_splits.hdf5
-unzip clip_data.zip
+mkdir -p data/BioScan_6M/
+ln -s ../BIOSCAN_metadata/{name of the metadata tsv file} data/BioScan_6M/BIOSCAN_6M_metadata.tsv
 ```
 
 ## Download checkpoint for BarcodeBERT
