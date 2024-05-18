@@ -1,1 +1,3 @@
-Metadata file is saved here.
+# BIOSCAN-6M
+
+Metadata file in CSV format is saved here.
