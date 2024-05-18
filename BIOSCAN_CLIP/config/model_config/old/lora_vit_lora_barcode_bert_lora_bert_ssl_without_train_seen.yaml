@@ -1,0 +1,27 @@
+batch_size: 400
+epochs: 15
+labels_for_driven_positive_and_negative_pairs:
+wandb_project_name: BioScan-CLIP_without_train_seen
+using_train_seen_for_pre_train: false
+
+image:
+  input_type: image
+  model: lora_vit
+dna:
+  input_type: sequence
+  model: lora_barcode_bert
+language:
+  input_type: sequence
+  model: lora_bert
+
+
+model_output_name: lora_vit_lora_barcode_bert_lora_bert_ssl_batch_size_400_without_train_seen
+evaluation_period: 1
+ckpt_path: ${project_root_path}/ckpt/bioscan_clip/pre_train_without_seen_train/lora_vit_lora_barcode_bert_lora_bert_ssl_batch_size_400_without_train_seen/best.pth
+output_dim: 768
+port: 12316
+
+fine_tuning_set:
+  batch_size: 72
+  epochs: 15
+  fine_tune_model_output_dir: ${model_output_dir}/${model_config.model_output_name}/supervise_fine_tune_ckpt

@@ -13,4 +13,3 @@ if __name__ == '__main__':
     df = pd.read_csv(args.splitted_metadata_path, sep='\t')
 
     print(df['split'].value_counts())
-    exit()

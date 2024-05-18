@@ -13,6 +13,11 @@ bioscan_data:
   path_to_hdf5_data: ${bioscan_data.dir}/split_data/BioScan_data_in_splits.hdf5
   path_to_tsv_data: ${bioscan_data.dir}/BioScan_Insect_Dataset_metadata_2.tsv
   path_to_small_species_list_json: ${bioscan_data.dir}/small_species_list.json
+bioscan_6m_data:
+  dir: ${data_dir}/BIOSCAN_6M
+  path_to_hdf5_data: ${bioscan_6m_data.dir}/BIOSCAN_6M.hdf5
+  path_to_tsv_data: ${bioscan_6m_data.dir}/BIOSCAN_6M_metadata.tsv
+  path_to_small_species_list_json: ${bioscan_6m_data.dir}/
 insect_data:
   dir: ${data_dir}/INSECT
   path_to_att_splits_mat: ${insect_data.dir}/att_splits.mat

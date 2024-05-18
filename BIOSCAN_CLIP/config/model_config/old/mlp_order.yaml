@@ -1,0 +1,10 @@
+batch_size: 16384
+epochs: 150
+labels_for_driven_positive_and_negative_pairs: order
+wandb_project_name: BioScan-CLIP
+image_input_type: feature
+dna_input_type: feature
+model_output_dir: ${project_root_path}/ckpt/bioscan_clip/
+model_output_name: mlp_order_sl_batch_size_16384
+evaluation_period: 10
+ckpt_path: ${model_config.model_output_dir}/${model_config.model_output_name}/last.pth

@@ -1,11 +1,9 @@
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
-
 try:
     import torch.distributed.nn
     from torch import distributed as dist
-
     has_distributed = True
 except ImportError:
     has_distributed = False
