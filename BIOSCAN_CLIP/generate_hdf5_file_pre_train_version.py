@@ -16,12 +16,21 @@ import h5py
 from model.language_encoder import load_pre_trained_bert
 
 # Manually calculated max length of the image size
-MAX_LEN = 29523
+MAX_LEN = 29598
 
 def replace_non_with_not_classified(input):
     if input is None or (isinstance(input, float) and math.isnan(input)):
         return "not_classified"
     return input
+
+def replace_non_with_not_classified(inputs):
+    result = []
+    for input in inputs:
+        if input is None or (isinstance(input, float) and math.isnan(input)):
+            result.append("not_classified")
+        else:
+            result.append(input)
+    return result
 
 def pil_image_to_byte(img):
     binary_data_io = io.BytesIO()
@@ -90,7 +99,7 @@ def image_process_for_unit_size(group, image_file_names, chunk_numbers, special_
 
     return count_for_missing_images
 
-def image_process(group, image_file_names, chunk_numbers, special_arg_image_dir, count_for_missing_images, max_len_for_each_loop = 500000):
+def image_process(group, image_file_names, chunk_numbers, special_arg_image_dir, count_for_missing_images, max_len_for_each_loop = 1000000):
     num_of_images = len(image_file_names)
 
     if num_of_images > max_len_for_each_loop:
@@ -116,8 +125,10 @@ def convert_to_numpy_if_list(input_data):
 def main(args: DictConfig) -> None:
     args.project_root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.getcwd())))
 
+    print(args.bioscan_6m_data.path_to_tsv_data)
     # load metadata
-    metadata = pd.read_csv(args.bioscan_6m_data.path_to_tsv_data, sep="\t")
+    metadata = pd.read_csv(args.bioscan_6m_data.path_to_tsv_data, sep="\,")
+
     target_splits = ['all_keys', 'no_split', 'no_split_and_seen_train', 'seen_keys', 'single_species', 'test_seen', 'test_unseen', 'test_unseen_keys', 'train_seen', 'val_seen', 'val_unseen', 'val_unseen_keys']
 
     datasets_to_create_for_each_split = ['barcode', 'family', 'genus', 'image',
@@ -127,10 +138,12 @@ def main(args: DictConfig) -> None:
 
     special_datasets = ['language_tokens_attention_mask', 'language_tokens_input_ids', 'language_tokens_token_type_ids', 'image', 'image_mask', 'barcode']
 
-    map_dict = {'all_keys': ['test_unseen_keys', 'val_unseen_keys', 'seen_keys'], 'no_split': ['pre_train'], 'no_split_and_seen_train': ['pre_train', 'train_seen'],
-                'seen_keys': ['seen_keys'], 'single_species': ['single_species'], 'test_seen': ['seen_test_queries'], 'test_unseen': ['test_unseen_queries'],
-                'test_unseen_keys': ['test_unseen_keys'], 'train_seen': ['seen_train'], 'val_seen': ['seen_val_queries'], 'val_unseen': ['val_unseen_queries'],
-                'val_unseen_keys': ['val_unseen_keys']}
+    # map_dict = {'all_keys': ['test_unseen_keys', 'val_unseen_keys', 'seen_keys'], 'no_split': ['pre_train'], 'no_split_and_seen_train': ['pre_train', 'train_seen'],
+    #             'seen_keys': ['seen_keys'], 'single_species': ['single_species'], 'test_seen': ['seen_test_queries'], 'test_unseen': ['test_unseen_queries'],
+    #             'test_unseen_keys': ['test_unseen_keys'], 'train_seen': ['seen_train'], 'val_seen': ['seen_val_queries'], 'val_unseen': ['val_unseen_queries'],
+    #             'val_unseen_keys': ['val_unseen_keys']}
+
+    map_dict = {'no_split': ['pretrain']}
 
     special_arg_image_dir = '/localhome/zmgong/second_ssd/data/BIOSCAN_6M_cropped/organized/cropped_resized'
 
@@ -187,14 +200,14 @@ def main(args: DictConfig) -> None:
             datasets['language_tokens_token_type_ids'] = datasets['language_tokens_token_type_ids'] + language_tokens_token_type_ids
             datasets['language_tokens_attention_mask'] = datasets['language_tokens_attention_mask'] + language_tokens_attention_mask
             # For barcode
-            datasets['barcode'] = datasets['barcode'] + curr_sub_split_df['nucraw'].tolist()
+            datasets['barcode'] = datasets['barcode'] + curr_sub_split_df['barcode'].tolist()
             # For other datasets
             for dataset_name in datasets_to_create_for_each_split:
                 if dataset_name in special_datasets:
                     continue
                 datasets[dataset_name] = datasets[dataset_name] + curr_sub_split_df[dataset_name].tolist()
 
-    #     # Writing to hdf5
+        # Writing to hdf5
         pbar = tqdm(datasets_to_create_for_each_split)
         for dataset_name in pbar:
             pbar.set_description(f"Writing {dataset_name} for {meta_split}")
@@ -202,11 +215,14 @@ def main(args: DictConfig) -> None:
                 continue
             datasets[dataset_name] = convert_to_numpy_if_list(datasets[dataset_name])
             try:
+                if dataset_name in ['order', 'family', 'genus', 'species']:
+                    datasets[dataset_name] = replace_non_with_not_classified(datasets[dataset_name])
                 group.create_dataset(dataset_name, data=datasets[dataset_name])
             except:
                 check_element(datasets[dataset_name])
                 exit()
         break
+
 
     new_file.close()
 
@@ -215,7 +231,6 @@ def main(args: DictConfig) -> None:
 
     print(f"In： {(elapsed_time/60/60):.2f} seconds")
     print(f"Missing images {count_for_missing_images}")
-
 
 if __name__ == '__main__':
     main()
