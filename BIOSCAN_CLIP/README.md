@@ -1,4 +1,6 @@
-# BIOSCAN-6M
+# BIOSCAN-5M
+
+![Alt Text](bioscan_clip.png)
 
 Here is the code that supports experiments with BIOSCAN-CLIP.
 
