@@ -3,7 +3,7 @@
 ![Alt Text](bioscan_zsc.png)
 
 ###### <h3> Overview
-The zero-shot clustering tasks in our benchmark experiments unfold in two steps
+The zero-shot clustering tasks ([Paper]()) in our benchmark experiments unfold in two steps:
 
 - (1) The pretrained encoders, trained with either self-supervised learning (SSL) methods like DINO and MAE, or a 
 supervised learning method such as cross-entropy, are utilized. 
