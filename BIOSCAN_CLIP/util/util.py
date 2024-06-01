@@ -6,6 +6,11 @@ import torch.nn.functional as F
 import json
 import faiss
 
+def check_if_using_6m_data(args):
+    if hasattr(args.model_config, 'dataset') and args.model_config.dataset == 'BIOSCAN_6M':
+        return True
+    else:
+        return False
 
 class Table:
     def __init__(self, headers, data):

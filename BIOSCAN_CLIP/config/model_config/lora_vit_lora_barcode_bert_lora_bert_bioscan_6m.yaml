@@ -1,8 +1,10 @@
-batch_size: 10
-epochs: 15
+batch_size: 400
+epochs: 4
 labels_for_driven_positive_and_negative_pairs:
 wandb_project_name: BioScan-CLIP-6M
 using_train_seen_for_pre_train: true
+
+dataset: BIOSCAN_6M
 
 image:
   input_type: image

@@ -15,6 +15,7 @@ from model.language_encoder import load_pre_trained_bert
 from torch.utils.data.distributed import DistributedSampler
 import json
 import time
+from util.util import check_if_using_6m_data
 
 
 class BioscanDataset(Dataset):
@@ -196,7 +197,11 @@ class Dataset_for_CL(Dataset):
         labels=None,
         for_training=False,
     ):
-        self.hdf5_inputs_path = args.bioscan_data.path_to_hdf5_data
+        if check_if_using_6m_data(args):
+            self.hdf5_inputs_path = args.bioscan_6m_data.path_to_hdf5_data
+        else:
+            self.hdf5_inputs_path = args.bioscan_data.path_to_hdf5_data
+
         self.split = split
         self.image_input_type = image_type
         self.dna_inout_type = dna_type
@@ -321,9 +326,14 @@ class Dataset_for_CL(Dataset):
 
 def get_len_dict(args):
     length_dict = {}
-    with h5py.File(args.bioscan_data.path_to_hdf5_data, "r") as h5file:
-        for split in list(h5file.keys()):
-            length_dict[split] = len(h5file[split]["image"])
+    if hasattr(args.model_config, 'dataset') and args.model_config.dataset == 'BIOSCAN_6M':
+        with h5py.File(args.bioscan_6m_data.path_to_hdf5_data, "r") as h5file:
+            for split in list(h5file.keys()):
+                length_dict[split] = len(h5file[split]["image"])
+    else:
+        with h5py.File(args.bioscan_data.path_to_hdf5_data, "r") as h5file:
+            for split in list(h5file.keys()):
+                length_dict[split] = len(h5file[split]["image"])
     return length_dict
 
 
@@ -350,7 +360,10 @@ def construct_dataloader(
         dna_type = args.model_config.dna.input_type
 
     if dna_type == "sequence":
-        hdf5_file = h5py.File(args.bioscan_data.path_to_hdf5_data, "r", libver="latest")
+        if check_if_using_6m_data(args):
+            hdf5_file = h5py.File(args.bioscan_6m_data.path_to_hdf5_data, "r", libver="latest")
+        else:
+            hdf5_file = h5py.File(args.bioscan_data.path_to_hdf5_data, "r", libver="latest")
         unprocessed_dna_barcode = np.array([item.decode("utf-8") for item in hdf5_file[split]["barcode"][:]])
         barcode_bert_dna_tokens = tokenize_dna_sequence(sequence_pipeline, unprocessed_dna_barcode)
 
@@ -484,6 +497,96 @@ def load_bioscan_dataloader_with_train_seen_and_separate_keys(args, world_size=N
         test_unseen_keys_dataloader,
     )
 
+
+def load_bioscan_6M_dataloader(args, world_size=None, rank=None, for_pretrain=True):
+    length_dict = get_len_dict(args)
+
+    # TODO add label for supervised learning
+
+    return_language = True
+
+    sequence_pipeline = get_sequence_pipeline()
+
+    seen_val_dataloader = construct_dataloader(
+        args,
+        "val_seen",
+        length_dict["val_seen"],
+        sequence_pipeline,
+        return_language=return_language,
+        labels=None,
+        for_pre_train=False,
+        world_size=world_size,
+        rank=rank,
+    )
+
+    unseen_val_dataloader = construct_dataloader(
+        args,
+        "val_unseen",
+        length_dict["val_unseen"],
+        sequence_pipeline,
+        return_language=return_language,
+        labels=None,
+        for_pre_train=False,
+        world_size=world_size,
+        rank=rank,
+    )
+
+    all_keys_dataloader = construct_dataloader(
+        args,
+        "all_keys",
+        length_dict["all_keys"],
+        sequence_pipeline,
+        return_language=return_language,
+        labels=None,
+        for_pre_train=False,
+        world_size=world_size,
+        rank=rank,
+    )
+    if for_pretrain:
+        if (
+                hasattr(args.model_config, "using_train_seen_for_pre_train")
+                and args.model_config.using_train_seen_for_pre_train
+        ):
+            pre_train_dataloader = construct_dataloader(
+                args,
+                "no_split_and_seen_train",
+                length_dict["no_split_and_seen_train"],
+                sequence_pipeline,
+                return_language=return_language,
+                labels=None,
+                for_pre_train=True,
+                world_size=world_size,
+                rank=rank,
+                shuffle=True,
+            )
+        else:
+            pre_train_dataloader = construct_dataloader(
+                args,
+                "no_split",
+                length_dict["no_split"],
+                sequence_pipeline,
+                return_language=return_language,
+                labels=None,
+                for_pre_train=True,
+                world_size=world_size,
+                rank=rank,
+                shuffle=True,
+            )
+        return pre_train_dataloader, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader
+    else:
+        train_seen_dataloader = construct_dataloader(
+            args,
+            "train_seen",
+            length_dict["train_seen"],
+            sequence_pipeline,
+            return_language=return_language,
+            labels=None,
+            for_pre_train=False,
+            world_size=world_size,
+            rank=rank,
+            shuffle=True,
+        )
+        return train_seen_dataloader, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader
 
 def load_bioscan_dataloader(args, world_size=None, rank=None, for_pretrain=True):
     length_dict = get_len_dict(args)

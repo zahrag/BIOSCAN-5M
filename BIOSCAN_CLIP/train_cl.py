@@ -16,7 +16,7 @@ from epoch.train_epoch import train_epoch
 from inference_and_eval import get_features_and_label, inference_and_print_result
 from model.loss_func import ContrastiveLoss, ClipLoss
 from model.simple_clip import load_clip_model
-from util.dataset import load_bioscan_dataloader
+from util.dataset import load_bioscan_dataloader, load_bioscan_6M_dataloader
 
 
 def save_prediction(pred_list, gt_list, json_path):
@@ -52,7 +52,7 @@ def eval_phase(model, device, all_keys_dataloader, seen_val_dataloader, unseen_v
 
 def convert_acc_dict_to_wandb_dict(acc_dict):
     dict_for_wandb = {}
-    acc_dict = acc_dict['encoded_image_feature']['encoded_image_feature']
+    acc_dict = acc_dict['encoded_image_feature']['encoded_dna_feature']
 
     # For now, we just put query: image and key:image acc to wandb
 
@@ -87,8 +87,12 @@ def main_process(rank: int, world_size: int, args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if rank == 0:
         print("Construct dataloader...")
-    pre_train_dataloader, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_dataloader(
-        args, world_size=world_size, rank=rank)
+    if hasattr(args.model_config, 'dataset') and args.model_config.dataset == 'BIOSCAN_6M':
+        pre_train_dataloader, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_6M_dataloader(
+            args, world_size=world_size, rank=rank)
+    else:
+        pre_train_dataloader, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_dataloader(
+            args, world_size=world_size, rank=rank)
 
     if rank == 0:
         print("Initialize model...")
@@ -128,6 +132,7 @@ def main_process(rank: int, world_size: int, args):
                     criterion, device, open_clip_ver=open_clip_ver, rank=rank)
         if epoch % args.model_config.evaluation_period == 0 or epoch == args.model_config.epochs - 1 and rank == 0:
             acc_dict, pred_dict = eval_phase(model, device, all_keys_dataloader, seen_val_dataloader, unseen_val_dataloader, k_list, rank=rank)
+            # TODO: Simplify the result that will forward to wandb.
             dict_for_wandb = convert_acc_dict_to_wandb_dict(acc_dict)
             dict_for_wandb['epoch'] = epoch
             # Find a way to calculate overall acc.

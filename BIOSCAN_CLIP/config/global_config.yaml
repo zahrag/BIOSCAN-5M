@@ -16,7 +16,7 @@ bioscan_data:
 bioscan_6m_data:
   dir: ${data_dir}/BIOSCAN_6M
   path_to_hdf5_data: ${bioscan_6m_data.dir}/BIOSCAN_6M.hdf5
-  path_to_tsv_data: ${bioscan_6m_data.dir}/BIOSCAN-5M_Dataset_v3.0b4_pretrain_taxonomy.csv
+  path_to_tsv_data: ${bioscan_6m_data.dir}/BIOSCAN-5M_Dataset_v3.4.csv
   path_to_small_species_list_json: ${bioscan_6m_data.dir}/
 insect_data:
   dir: ${data_dir}/INSECT
