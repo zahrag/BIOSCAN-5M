@@ -424,11 +424,8 @@ def make_prediction(query_feature, keys_feature, keys_label, with_similarity=Fal
             if level not in k_pred_in_diff_level.keys():
                 k_pred_in_diff_level[level] = []
             for i in key_indices:
-                try:
-                    k_pred_in_diff_level[level].append(keys_label[i][level])
-                except:
-                    import pdb;
-                    pdb.set_trace()
+                k_pred_in_diff_level[level].append(keys_label[i][level])
+
 
         pred_list.append(k_pred_in_diff_level)
 
@@ -757,9 +754,6 @@ def main(args: DictConfig) -> None:
         _, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_dataloader(args)
 
         keys_dict = get_features_and_label(all_keys_dataloader, model, device, for_key_set=True)
-        print(keys_dict['label_list'])
-
-        import pdb; pdb.set_trace()
 
         seen_val_dict = get_features_and_label(seen_val_dataloader, model, device)
 
