@@ -424,7 +424,12 @@ def make_prediction(query_feature, keys_feature, keys_label, with_similarity=Fal
             if level not in k_pred_in_diff_level.keys():
                 k_pred_in_diff_level[level] = []
             for i in key_indices:
-                k_pred_in_diff_level[level].append(keys_label[i][level])
+                try:
+                    k_pred_in_diff_level[level].append(keys_label[i][level])
+                except:
+                    import pdb;
+                    pdb.set_trace()
+
         pred_list.append(k_pred_in_diff_level)
 
     out = [pred_list]
@@ -577,8 +582,10 @@ def inference_and_print_result(keys_dict, seen_val_dict, unseen_val_dict, small_
 
             curr_keys_feature = keys_dict[key_feature_type]
             if key_feature_type == "all_key_features":
-
-                keys_label = keys_dict["all_key_features_label"]
+                if keys_dict["all_key_features_label"] is None:
+                    continue
+                else:
+                    keys_label = keys_dict["all_key_features_label"]
 
             if (
                 curr_keys_feature is None
@@ -646,11 +653,11 @@ def check_for_acc_about_correct_predict_seen_or_unseen(final_pred_list, species_
 
 
 def get_features_and_label(dataloader, model, device, for_key_set=False):
-    _, encoded_language_feature, _ = get_feature_and_label(
+    _, encoded_language_feature, label_list = get_feature_and_label(
         dataloader, model, device, type_of_feature="text", multi_gpu=False
     )
 
-    _, encoded_dna_feature, _ = get_feature_and_label(
+    _, encoded_dna_feature, label_list = get_feature_and_label(
         dataloader, model, device, type_of_feature="dna", multi_gpu=False
     )
 
@@ -750,6 +757,9 @@ def main(args: DictConfig) -> None:
         _, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_dataloader(args)
 
         keys_dict = get_features_and_label(all_keys_dataloader, model, device, for_key_set=True)
+        print(keys_dict['label_list'])
+
+        import pdb; pdb.set_trace()
 
         seen_val_dict = get_features_and_label(seen_val_dataloader, model, device)
 
