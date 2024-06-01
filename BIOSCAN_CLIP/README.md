@@ -1,6 +1,13 @@
-# BIOSCAN-6M
+# BIOSCAN-5M
 
-Here is the code that supports experiments with BIOSCAN-CLIP.
+![Alt Text](bioscan_clip.png)
+
+###### <h3> Overview
+Our experiments using the BIOSCA-CLIP baseline [Paper](https://arxiv.org/abs/2405.17537) are conducted in two steps. 
+- (1) Training Stage: Multiple modalities, including RGB images, textual taxonomic labels, and DNA nucleotide sequences, are encoded separately. 
+The feature representation vectors from the encoders are trained using a contrastive loss function to align the image, DNA, and text embeddings. 
+- (2) Inference Stage: An image query is embedded, and its feature representation is compared to those obtained 
+from a database of existing image and DNA embeddings (keys). The cosine similarity is used to find the closest key embedding, and the corresponding taxonomic label is used to classify the query image.
 
 ## Set environment
 For now, you can set the environment by typing
