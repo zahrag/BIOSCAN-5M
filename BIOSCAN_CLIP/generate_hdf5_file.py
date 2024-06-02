@@ -2,7 +2,7 @@ import io
 import math
 import os
 import time
-from multiprocessing import Pool, Manager
+from multiprocessing import Pool, Manager, cpu_count
 
 import hydra
 import numpy as np
@@ -19,6 +19,8 @@ import sys
 
 # Manually calculated max length of the image size
 MAX_LEN = 29598
+SPECIAL_ARG_IMAGE_DIR = '/localhome/zmgong/second_ssd/data/BIOSCAN_6M_cropped/organized/cropped_resized/new_org'
+
 
 class Tee:
     def __init__(self, name, mode):
@@ -40,10 +42,12 @@ class Tee:
         if self.file:
             self.file.close()
 
+
 def replace_non_with_not_classified(input):
     if input is None or (isinstance(input, float) and math.isnan(input)):
         return "not_classified"
     return input
+
 
 def replace_non_with_not_classified_for_list(inputs):
     result = []
@@ -54,6 +58,7 @@ def replace_non_with_not_classified_for_list(inputs):
             result.append(input)
     return result
 
+
 def pil_image_to_byte(img):
     binary_data_io = io.BytesIO()
     img.save(binary_data_io, format='JPEG')
@@ -61,16 +66,16 @@ def pil_image_to_byte(img):
     curr_image_np = np.frombuffer(binary_data, dtype=np.uint8)
     return curr_image_np
 
+
 def check_element(arr):
     for element in arr:
         if not isinstance(element, str):  # Check if the element is not a string
             print(f'Element "{element}" is of type {type(element).__name__}')  # Print the data type of the element
 
 
-
 def process_batch_of_images_to_bytes(args):
     idx, curr_image_name, chunk_number, special_arg_image_dir = args
-    curr_image_path = os.path.join(special_arg_image_dir, f'part{str(chunk_number)}', curr_image_name)
+    curr_image_path = os.path.join(special_arg_image_dir, curr_image_name[:2], curr_image_name)
     try:
         curr_image = Image.open(curr_image_path)
         curr_image_byte_np = pil_image_to_byte(curr_image)
@@ -78,8 +83,10 @@ def process_batch_of_images_to_bytes(args):
     except:
         return idx, None, None
 
+
 def split_list_into_sub_lists(input_list, sub_list_size):
     return [input_list[i:i + sub_list_size] for i in range(0, len(input_list), sub_list_size)]
+
 
 def add_new_info_to_the_dataset(dataset, new_data):
     original_shape = dataset.shape[0]
@@ -91,7 +98,8 @@ def add_new_info_to_the_dataset(dataset, new_data):
         dataset[original_shape:new_size] = new_data
 
 
-def image_process_for_unit_size(group, image_file_names, chunk_numbers, special_arg_image_dir, count_for_missing_images):
+def image_process_for_unit_size(group, image_file_names, chunk_numbers, special_arg_image_dir,
+                                count_for_missing_images):
     num_of_images = len(image_file_names)
     image_enc_padded = np.zeros((num_of_images, MAX_LEN), dtype=np.uint8)
     enc_lengths = np.zeros((num_of_images,), dtype=int)
@@ -119,9 +127,11 @@ def image_process_for_unit_size(group, image_file_names, chunk_numbers, special_
 
                 used_memory = mem.used / (1024 ** 3)  # Convert bytes to GB
                 pbar.update(1)
-                pbar.set_description(f"Count of missing images: {count_for_missing_images}|| Memory usage: {used_memory}/{total_memory} GB")
-                if used_memory/total_memory >= 0.9:
-                    print(f"Count of missing images: {count_for_missing_images}|| Memory usage: {used_memory}/{total_memory} GB")
+                pbar.set_description(
+                    f"Count of missing images: {count_for_missing_images}|| Memory usage: {used_memory}/{total_memory} GB")
+                if used_memory / total_memory >= 0.9:
+                    print(
+                        f"Count of missing images: {count_for_missing_images}|| Memory usage: {used_memory}/{total_memory} GB")
                     print('Memory overflow.')
                     exit()
         pbar.close()
@@ -131,7 +141,9 @@ def image_process_for_unit_size(group, image_file_names, chunk_numbers, special_
 
     return count_for_missing_images
 
-def image_process(group, image_file_names, chunk_numbers, special_arg_image_dir, count_for_missing_images, max_len_for_each_loop = 100000):
+
+def image_process(group, image_file_names, chunk_numbers, special_arg_image_dir, count_for_missing_images,
+                  max_len_for_each_loop=100000):
     num_of_images = len(image_file_names)
 
     if num_of_images > max_len_for_each_loop:
@@ -140,18 +152,48 @@ def image_process(group, image_file_names, chunk_numbers, special_arg_image_dir,
         for idx in range(len(list_of_list_of_image_file_names)):
             curr_list_of_image_file_names = list_of_list_of_image_file_names[idx]
             curr_list_of_chunk_numbers = list_of_list_of_chunk_numbers[idx]
-            count_for_missing_images = image_process_for_unit_size(group, curr_list_of_image_file_names, curr_list_of_chunk_numbers, special_arg_image_dir,
-                                        count_for_missing_images)
+            count_for_missing_images = image_process_for_unit_size(group, curr_list_of_image_file_names,
+                                                                   curr_list_of_chunk_numbers, special_arg_image_dir,
+                                                                   count_for_missing_images)
     else:
-        count_for_missing_images = image_process_for_unit_size(group, image_file_names, chunk_numbers, special_arg_image_dir,
-                                    count_for_missing_images)
+        count_for_missing_images = image_process_for_unit_size(group, image_file_names, chunk_numbers,
+                                                               special_arg_image_dir,
+                                                               count_for_missing_images)
     return count_for_missing_images
+
 
 def convert_to_numpy_if_list(input_data):
     if isinstance(input_data, list) and isinstance(input_data[0], str):
         return np.array(input_data, dtype='S')
     else:
         return input_data
+
+def check_image_exists(args):
+    processid, chunk_number, image_dir = args
+    curr_image_name = f'{processid}.1024px.jpg'
+    curr_image_path = os.path.join(image_dir, curr_image_name[:2], curr_image_name)
+    return os.path.exists(curr_image_path), processid
+
+def remove_rows_with_missing_images(metadata):
+    process_id_list = metadata['processid'].tolist()
+    chunk_number_list = [process_id[:2] for process_id in process_id_list]
+
+    args_list = [(row['processid'], chunk_number_list[index], SPECIAL_ARG_IMAGE_DIR) for index, row in metadata.iterrows()]
+
+    pool = Pool(processes=cpu_count())
+
+    results = list(tqdm(pool.imap(check_image_exists, args_list), total=len(args_list)))
+
+    pool.close()
+    pool.join()
+
+    existing_images = {processid for exists, processid in results if exists}
+    missing_images = [processid for exists, processid in results if not exists]
+    print(f'Missing {len(missing_images)} images')
+
+    metadata = metadata[metadata['processid'].isin(existing_images)]
+
+    return metadata
 
 @hydra.main(config_path="config", config_name="global_config", version_base="1.1")
 def main(args: DictConfig) -> None:
@@ -161,15 +203,22 @@ def main(args: DictConfig) -> None:
     # load metadata
     metadata = pd.read_csv(args.bioscan_6m_data.path_to_tsv_data, sep="\,")
 
-    curr_sub_split_df = metadata[metadata['split'].isin(['test_seen'])]
+    print("Before cleaning")
+    print(len(metadata))
+    metadata = remove_rows_with_missing_images(metadata)
+    print("After cleaning")
+    print(len(metadata))
+
     datasets_to_create_for_each_split = ['barcode', 'family', 'genus', 'image',
                                          'image_file', 'image_mask', 'language_tokens_attention_mask',
                                          'language_tokens_input_ids', 'language_tokens_token_type_ids', 'order',
-                                         'sampleid', 'species']
+                                         'sampleid', 'species', 'processid']
 
-    special_datasets = ['language_tokens_attention_mask', 'language_tokens_input_ids', 'language_tokens_token_type_ids', 'image', 'image_mask', 'barcode']
+    special_datasets = ['language_tokens_attention_mask', 'language_tokens_input_ids', 'language_tokens_token_type_ids',
+                        'image', 'image_mask', 'barcode']
 
     map_dict = {'all_keys': {'split': ['key_unseen', 'train']},
+                'train_keys': {'split': ['train']},
                 'val_seen': {'split': ['val']},
                 'test_seen': {'split': ['test']},
                 'seen_keys': {'split': ['train']},
@@ -180,10 +229,6 @@ def main(args: DictConfig) -> None:
                 'other_heldout': {'split': ['other_heldout']},
                 }
 
-
-
-    special_arg_image_dir = '/localhome/zmgong/second_ssd/data/BIOSCAN_6M_cropped/organized/cropped_resized'
-
     # Load language tokenizer for pre-processing
 
     os.environ['TOKENIZERS_PARALLELISM'] = 'true'
@@ -192,7 +237,6 @@ def main(args: DictConfig) -> None:
     start_time = time.time()
 
     count_for_missing_images = 0
-    data_dict = {}
 
     print(f"All meta-splits {list(map_dict.keys())}")
     new_file = h5py.File(args.bioscan_6m_data.path_to_hdf5_data, "w")
@@ -237,8 +281,10 @@ def main(args: DictConfig) -> None:
         language_tokens_token_type_ids = language_tokens['token_type_ids']
         language_tokens_attention_mask = language_tokens['attention_mask']
         datasets['language_tokens_input_ids'] = datasets['language_tokens_input_ids'] + language_tokens_input_ids
-        datasets['language_tokens_token_type_ids'] = datasets['language_tokens_token_type_ids'] + language_tokens_token_type_ids
-        datasets['language_tokens_attention_mask'] = datasets['language_tokens_attention_mask'] + language_tokens_attention_mask
+        datasets['language_tokens_token_type_ids'] = datasets[
+                                                         'language_tokens_token_type_ids'] + language_tokens_token_type_ids
+        datasets['language_tokens_attention_mask'] = datasets[
+                                                         'language_tokens_attention_mask'] + language_tokens_attention_mask
         # For barcode
         datasets['barcode'] = datasets['barcode'] + curr_sub_split_df['dna_barcode'].tolist()
         # For other datasets
@@ -248,9 +294,9 @@ def main(args: DictConfig) -> None:
             datasets[dataset_name] = datasets[dataset_name] + curr_sub_split_df[dataset_name].tolist()
         # Process image and image_mask
         print(f"~~~~~~Processing images")
-        image_file_names = curr_sub_split_df['image_file'].tolist()
+        image_file_names = [f'{processid}.1024px.jpg' for processid in curr_sub_split_df['processid'].tolist()]
         chunk_numbers = curr_sub_split_df['chunk_number'].tolist()
-        image_process(group, image_file_names, chunk_numbers, special_arg_image_dir, count_for_missing_images)
+        image_process(group, image_file_names, chunk_numbers, SPECIAL_ARG_IMAGE_DIR, count_for_missing_images)
         print(f"~~~~~~Done with images")
 
         # Writing to hdf5
@@ -259,10 +305,14 @@ def main(args: DictConfig) -> None:
             pbar.set_description(f"Writing {dataset_name} for {meta_split}")
             if dataset_name == "image" or dataset_name == "image_mask":
                 continue
-            datasets[dataset_name] = convert_to_numpy_if_list(datasets[dataset_name])
+            if dataset_name == "image_file":
+                correct_image_file_name_list = [f'{processid}.1024px.jpg' for processid in datasets['processid']]
+                datasets[dataset_name] = convert_to_numpy_if_list(correct_image_file_name_list)
+            elif dataset_name in ['order', 'family', 'genus', 'species']:
+                datasets[dataset_name] = replace_non_with_not_classified_for_list(datasets[dataset_name])
+            else:
+                datasets[dataset_name] = convert_to_numpy_if_list(datasets[dataset_name])
             try:
-                if dataset_name in ['order', 'family', 'genus', 'species']:
-                    datasets[dataset_name] = replace_non_with_not_classified_for_list(datasets[dataset_name])
                 group.create_dataset(dataset_name, data=datasets[dataset_name])
             except:
                 check_element(datasets[dataset_name])
@@ -274,8 +324,9 @@ def main(args: DictConfig) -> None:
     end_time = time.time()
     elapsed_time = end_time - start_time
 
-    print(f"In： {(elapsed_time/60/60):.2f} hours")
+    print(f"In： {(elapsed_time / 60 / 60):.2f} hours")
     print(f"Missing images {count_for_missing_images}")
+
 
 if __name__ == '__main__':
     log = Tee('output_for_save_hdf5.log', 'w')
