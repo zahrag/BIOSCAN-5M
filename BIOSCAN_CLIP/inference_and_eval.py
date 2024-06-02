@@ -20,8 +20,9 @@ from PIL import Image
 
 from epoch.inference_epoch import get_feature_and_label
 from model.simple_clip import load_clip_model
-from util.dataset import load_bioscan_dataloader, load_bioscan_dataloader_with_train_seen_and_separate_keys
+from util.dataset import load_bioscan_dataloader, load_bioscan_dataloader_with_train_seen_and_separate_keys, load_bioscan_6M_dataloader, load_bioscan_6M_dataloader_with_train_seen_and_separate_keys
 from util.util import Table, categorical_cmap
+from util.util import check_if_using_6m_data
 
 PLOT_FOLDER = "html_plots"
 RETRIEVAL_FOLDER = "image_retrieval"
@@ -739,19 +740,33 @@ def main(args: DictConfig) -> None:
         unseen_val_dict["label_list"] = total_dict["unseen_gt_dict"]
 
     else:
-        # initialize model
-        print("Initialize model...")
-
+        print("Init model...")
         model = load_clip_model(args, device)
         checkpoint = torch.load(args.model_config.ckpt_path, map_location="cuda:0")
         model.load_state_dict(checkpoint)
 
+        print("Construct dataloader...")
         # Load data
-        args.model_config.batch_size = 24
-        _, _, _, seen_keys_dataloader, val_unseen_keys_dataloader, test_unseen_keys_dataloader = (
-            load_bioscan_dataloader_with_train_seen_and_separate_keys(args, for_pretrain=False)
-        )
-        _, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_dataloader(args)
+        args.model_config.batch_size = 96
+        if check_if_using_6m_data(args):
+            _, _, seen_keys_dataloader, unseen_keys_dataloader = (
+                load_bioscan_6M_dataloader_with_train_seen_and_separate_keys(args, for_pretrain=False)
+            )
+            seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_6M_dataloader(
+                args, for_pretrain=False)
+            all_unique_seen_species = get_all_unique_species_from_dataloader(seen_keys_dataloader)
+            all_unseen_species = get_all_unique_species_from_dataloader(unseen_keys_dataloader)
+
+        else:
+            _, _, _, seen_keys_dataloader, val_unseen_keys_dataloader, test_unseen_keys_dataloader = (
+                load_bioscan_dataloader_with_train_seen_and_separate_keys(args, for_pretrain=False)
+            )
+            _, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_dataloader(args)
+
+            all_unique_seen_species = get_all_unique_species_from_dataloader(seen_keys_dataloader)
+            all_unique_val_unseen_species = get_all_unique_species_from_dataloader(val_unseen_keys_dataloader)
+            all_unique_test_unseen_species = get_all_unique_species_from_dataloader(test_unseen_keys_dataloader)
+            all_unseen_species = all_unique_val_unseen_species + all_unique_test_unseen_species
 
         keys_dict = get_features_and_label(all_keys_dataloader, model, device, for_key_set=True)
 
@@ -772,15 +787,13 @@ def main(args: DictConfig) -> None:
         seen_val_final_pred = pred_dict["encoded_image_feature"]["encoded_dna_feature"]["curr_seen_val_pred_list"]
         unseen_val_final_pred = pred_dict["encoded_image_feature"]["encoded_dna_feature"]["curr_unseen_val_pred_list"]
 
-        all_unique_seen_species = get_all_unique_species_from_dataloader(seen_keys_dataloader)
-        all_unique_val_seen_species = get_all_unique_species_from_dataloader(val_unseen_keys_dataloader)
-        all_unique_test_seen_species = get_all_unique_species_from_dataloader(test_unseen_keys_dataloader)
+
 
         print("For seen")
         check_for_acc_about_correct_predict_seen_or_unseen(seen_val_final_pred, all_unique_seen_species)
         print("For unseen")
         check_for_acc_about_correct_predict_seen_or_unseen(
-            unseen_val_final_pred, all_unique_val_seen_species + all_unique_test_seen_species
+            unseen_val_final_pred, all_unseen_species
         )
 
         with open("per_class_acc.json", "w") as json_file:
@@ -816,37 +829,37 @@ def main(args: DictConfig) -> None:
             with open(labels_path, "w") as json_file:
                 json.dump(total_dict, json_file, indent=4)
 
-    if args.inference_and_eval_setting.plot_embeddings:
-        generate_embedding_plot(
-            args,
-            seen_val_dict["encoded_image_feature"],
-            seen_val_dict["encoded_dna_feature"],
-            seen_val_dict["encoded_language_feature"],
-            seen_val_dict["label_list"],
-        )
+    # if args.inference_and_eval_setting.plot_embeddings:
+    #     generate_embedding_plot(
+    #         args,
+    #         seen_val_dict["encoded_image_feature"],
+    #         seen_val_dict["encoded_dna_feature"],
+    #         seen_val_dict["encoded_language_feature"],
+    #         seen_val_dict["label_list"],
+    #     )
 
-    if args.inference_and_eval_setting.retrieve_images:
-        image_data = h5py.File(args.bioscan_data.path_to_hdf5_data, "r")
-        retrieve_images(
-            args,
-            "val_seen",
-            seen_val_dict,
-            keys_dict,
-            queries=["encoded_image_feature", "encoded_dna_feature"],
-            keys=["encoded_image_feature", "encoded_dna_feature"],
-            query_data=image_data["val_seen"],
-            key_data=image_data["all_keys"],
-        )
-        retrieve_images(
-            args,
-            "val_unseen",
-            unseen_val_dict,
-            keys_dict,
-            queries=["encoded_image_feature", "encoded_dna_feature"],
-            keys=["encoded_image_feature", "encoded_dna_feature"],
-            query_data=image_data["val_unseen"],
-            key_data=image_data["all_keys"],
-        )
+    # if args.inference_and_eval_setting.retrieve_images:
+    #     image_data = h5py.File(args.bioscan_data.path_to_hdf5_data, "r")
+    #     retrieve_images(
+    #         args,
+    #         "val_seen",
+    #         seen_val_dict,
+    #         keys_dict,
+    #         queries=["encoded_image_feature", "encoded_dna_feature"],
+    #         keys=["encoded_image_feature", "encoded_dna_feature"],
+    #         query_data=image_data["val_seen"],
+    #         key_data=image_data["all_keys"],
+    #     )
+    #     retrieve_images(
+    #         args,
+    #         "val_unseen",
+    #         unseen_val_dict,
+    #         keys_dict,
+    #         queries=["encoded_image_feature", "encoded_dna_feature"],
+    #         keys=["encoded_image_feature", "encoded_dna_feature"],
+    #         query_data=image_data["val_unseen"],
+    #         key_data=image_data["all_keys"],
+    #     )
 
 
 if __name__ == "__main__":

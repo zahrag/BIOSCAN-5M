@@ -409,25 +409,82 @@ def construct_dataloader(
     return dataloader
 
 
-def load_bioscan_dataloader_with_train_seen_and_separate_keys(args, world_size=None, rank=None, for_pretrain=True):
+def load_bioscan_6M_dataloader_with_train_seen_and_separate_keys(args, world_size=None, rank=None, for_pretrain=True):
     length_dict = get_len_dict(args)
 
     return_language = True
 
     sequence_pipeline = get_sequence_pipeline()
 
-    train_seen_dataloader = construct_dataloader(
+    seen_val_dataloader = construct_dataloader(
         args,
-        "train_seen",
-        length_dict["train_seen"],
+        "val_seen",
+        length_dict["val_seen"],
         sequence_pipeline,
         return_language=return_language,
         labels=None,
         for_pre_train=False,
         world_size=world_size,
         rank=rank,
-        shuffle=True,
     )
+
+    unseen_val_dataloader = construct_dataloader(
+        args,
+        "val_unseen",
+        length_dict["val_unseen"],
+        sequence_pipeline,
+        return_language=return_language,
+        labels=None,
+        for_pre_train=False,
+        world_size=world_size,
+        rank=rank,
+    )
+
+    seen_keys_dataloader = construct_dataloader(
+        args,
+        "seen_keys",
+        length_dict["seen_keys"],
+        sequence_pipeline,
+        return_language=return_language,
+        labels=None,
+        for_pre_train=False,
+        world_size=world_size,
+        rank=rank,
+    )
+
+    unseen_keys_dataloader = construct_dataloader(
+        args,
+        "unseen_keys",
+        length_dict["unseen_keys"],
+        sequence_pipeline,
+        return_language=return_language,
+        labels=None,
+        for_pre_train=False,
+        world_size=world_size,
+        rank=rank,
+    )
+
+    return (
+        seen_val_dataloader,
+        unseen_val_dataloader,
+        seen_keys_dataloader,
+        unseen_keys_dataloader,
+    )
+
+def load_bioscan_dataloader_with_train_seen_and_separate_keys(args, world_size=None, rank=None, for_pretrain=True):
+    if check_if_using_6m_data(args):
+        seen_val_dataloader, unseen_val_dataloader, seen_keys_dataloader, unseen_keys_dataloader = load_bioscan_6M_dataloader_with_train_seen_and_separate_keys(args, world_size, rank, for_pretrain)
+        return (
+            seen_val_dataloader,
+            unseen_val_dataloader,
+            seen_keys_dataloader,
+            unseen_keys_dataloader,
+        )
+    length_dict = get_len_dict(args)
+
+    return_language = True
+
+    sequence_pipeline = get_sequence_pipeline()
 
     seen_val_dataloader = construct_dataloader(
         args,
@@ -489,7 +546,6 @@ def load_bioscan_dataloader_with_train_seen_and_separate_keys(args, world_size=N
     )
 
     return (
-        train_seen_dataloader,
         seen_val_dataloader,
         unseen_val_dataloader,
         seen_keys_dataloader,
@@ -500,8 +556,6 @@ def load_bioscan_dataloader_with_train_seen_and_separate_keys(args, world_size=N
 
 def load_bioscan_6M_dataloader(args, world_size=None, rank=None, for_pretrain=True):
     length_dict = get_len_dict(args)
-
-    # TODO add label for supervised learning
 
     return_language = True
 
@@ -574,21 +628,15 @@ def load_bioscan_6M_dataloader(args, world_size=None, rank=None, for_pretrain=Tr
             )
         return pre_train_dataloader, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader
     else:
-        train_seen_dataloader = construct_dataloader(
-            args,
-            "train_seen",
-            length_dict["train_seen"],
-            sequence_pipeline,
-            return_language=return_language,
-            labels=None,
-            for_pre_train=False,
-            world_size=world_size,
-            rank=rank,
-            shuffle=True,
-        )
-        return train_seen_dataloader, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader
+        return seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader
 
 def load_bioscan_dataloader(args, world_size=None, rank=None, for_pretrain=True):
+
+    if check_if_using_6m_data(args):
+        train_seen_dataloader, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_6M_dataloader(args, world_size, rank, for_pretrain)
+        return train_seen_dataloader, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader
+
+
     length_dict = get_len_dict(args)
 
     # TODO add label for supervised learning

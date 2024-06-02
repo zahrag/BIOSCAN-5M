@@ -19,7 +19,7 @@ language:
 
 model_output_name: lora_vit_lora_barcode_bert_lora_bert_ssl_batch_size_400_6m
 evaluation_period: 1
-ckpt_path: ${project_root_path}/ckpt/bioscan_clip/best.pth
+ckpt_path: ${project_root_path}/ckpt/bioscan_clip/lora_vit_lora_barcode_bert_lora_bert_ssl_batch_size_400_6m/best.pth
 insect_ckpt_path: ${project_root_path}/ckpt/bioscan_clip/lora_vit_lora_barcode_bert_lora_bert_ssl_batch_size_400_INSECT/best.pth
 output_dim: 768
 port: 12316
