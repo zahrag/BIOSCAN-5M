@@ -20,7 +20,7 @@ from PIL import Image
 
 from epoch.inference_epoch import get_feature_and_label
 from model.simple_clip import load_clip_model
-from util.dataset import load_bioscan_dataloader, load_bioscan_dataloader_with_train_seen_and_separate_keys, load_bioscan_6M_dataloader, load_bioscan_6M_dataloader_with_train_seen_and_separate_keys
+from util.dataset import load_bioscan_dataloader, load_bioscan_dataloader_with_train_seen_and_separate_keys, load_bioscan_6M_dataloader, load_bioscan_6M_dataloader_with_train_seen_and_separate_keys, load_bioscan_dataloader_for_test
 from util.util import Table, categorical_cmap
 from util.util import check_if_using_6m_data
 
@@ -322,7 +322,7 @@ def retrieve_images(
             )
             query_image_file_map = {filename.decode("utf-8"): j for j, filename in enumerate(query_data["image_file"])}
             key_image_file_map = {filename.decode("utf-8"): j for j, filename in enumerate(key_data["image_file"])}
-            for i, pred_dict in enumerate(retrieval_results):
+            for i, pred_dict in enumerate(retrietest_results):
                 # save query
                 query_file_name = pred_dict["query"]["file_name"]
                 image_idx = query_image_file_map[query_file_name]
@@ -534,7 +534,7 @@ def print_micro_and_macro_acc(acc_dict, k_list):
                         f"Query_feature: {query_feature_type}||Key_feature: {key_feature_type}||{type_of_acc} top-{k}"
                     ]
                     row_for_copy_to_google_doc = ""
-                    for spit in ["seen_val", "unseen_val"]:
+                    for spit in ["seen_test", "unseen_test"]:
                         for level in LEVELS:
                             curr_row.append(
                                 f"\t{round(acc_dict[query_feature_type][key_feature_type][spit][type_of_acc][k][level], 4)}"
@@ -553,7 +553,7 @@ def print_micro_and_macro_acc(acc_dict, k_list):
         print(row)
 
 
-def inference_and_print_result(keys_dict, seen_val_dict, unseen_val_dict, small_species_list=None, k_list=None):
+def inference_and_print_result(keys_dict, seen_test_dict, unseen_test_dict, small_species_list=None, k_list=None):
     acc_dict = {}
     per_class_acc = {}
     if k_list is None:
@@ -561,8 +561,8 @@ def inference_and_print_result(keys_dict, seen_val_dict, unseen_val_dict, small_
 
     max_k = k_list[-1]
 
-    seen_val_gt_label = seen_val_dict["label_list"]
-    unseen_val_gt_label = unseen_val_dict["label_list"]
+    seen_test_gt_label = seen_test_dict["label_list"]
+    unseen_test_gt_label = unseen_test_dict["label_list"]
     keys_label = keys_dict["label_list"]
     pred_dict = {}
 
@@ -575,8 +575,8 @@ def inference_and_print_result(keys_dict, seen_val_dict, unseen_val_dict, small_
             per_class_acc[query_feature_type][key_feature_type] = {}
             pred_dict[query_feature_type][key_feature_type] = {}
 
-            curr_seen_val_feature = seen_val_dict[query_feature_type]
-            curr_unseen_val_feature = unseen_val_dict[query_feature_type]
+            curr_seen_test_feature = seen_test_dict[query_feature_type]
+            curr_unseen_test_feature = unseen_test_dict[query_feature_type]
 
             curr_keys_feature = keys_dict[key_feature_type]
             if key_feature_type == "all_key_features":
@@ -587,47 +587,47 @@ def inference_and_print_result(keys_dict, seen_val_dict, unseen_val_dict, small_
 
             if (
                 curr_keys_feature is None
-                or curr_seen_val_feature is None
-                or curr_unseen_val_feature is None
-                or curr_keys_feature.shape[-1] != curr_seen_val_feature.shape[-1]
-                or curr_keys_feature.shape[-1] != curr_unseen_val_feature.shape[-1]
+                or curr_seen_test_feature is None
+                or curr_unseen_test_feature is None
+                or curr_keys_feature.shape[-1] != curr_seen_test_feature.shape[-1]
+                or curr_keys_feature.shape[-1] != curr_unseen_test_feature.shape[-1]
             ):
                 continue
 
-            curr_seen_val_pred_list = make_prediction(
-                curr_seen_val_feature, curr_keys_feature, keys_label, with_similarity=False, max_k=max_k
+            curr_seen_test_pred_list = make_prediction(
+                curr_seen_test_feature, curr_keys_feature, keys_label, with_similarity=False, max_k=max_k
             )
-            curr_unseen_val_pred_list = make_prediction(
-                curr_unseen_val_feature, curr_keys_feature, keys_label, max_k=max_k
+            curr_unseen_test_pred_list = make_prediction(
+                curr_unseen_test_feature, curr_keys_feature, keys_label, max_k=max_k
             )
 
             pred_dict[query_feature_type][key_feature_type] = {
-                "curr_seen_val_pred_list": curr_seen_val_pred_list,
-                "curr_unseen_val_pred_list": curr_unseen_val_pred_list,
+                "curr_seen_test_pred_list": curr_seen_test_pred_list,
+                "curr_unseen_test_pred_list": curr_unseen_test_pred_list,
             }
 
-            acc_dict[query_feature_type][key_feature_type]["seen_val"] = {}
-            acc_dict[query_feature_type][key_feature_type]["unseen_val"] = {}
-            acc_dict[query_feature_type][key_feature_type]["seen_val"]["micro_acc"] = top_k_micro_accuracy(
-                curr_seen_val_pred_list, seen_val_gt_label, k_list=k_list
+            acc_dict[query_feature_type][key_feature_type]["seen_test"] = {}
+            acc_dict[query_feature_type][key_feature_type]["unseen_test"] = {}
+            acc_dict[query_feature_type][key_feature_type]["seen_test"]["micro_acc"] = top_k_micro_accuracy(
+                curr_seen_test_pred_list, seen_test_gt_label, k_list=k_list
             )
-            acc_dict[query_feature_type][key_feature_type]["unseen_val"]["micro_acc"] = top_k_micro_accuracy(
-                curr_unseen_val_pred_list, unseen_val_gt_label, k_list=k_list
+            acc_dict[query_feature_type][key_feature_type]["unseen_test"]["micro_acc"] = top_k_micro_accuracy(
+                curr_unseen_test_pred_list, unseen_test_gt_label, k_list=k_list
             )
 
             seen_macro_acc, seen_per_class_acc = top_k_macro_accuracy(
-                curr_seen_val_pred_list, seen_val_gt_label, k_list=k_list
+                curr_seen_test_pred_list, seen_test_gt_label, k_list=k_list
             )
 
             unseen_macro_acc, unseen_per_class_acc = top_k_macro_accuracy(
-                curr_unseen_val_pred_list, unseen_val_gt_label, k_list=k_list
+                curr_unseen_test_pred_list, unseen_test_gt_label, k_list=k_list
             )
 
-            per_class_acc[query_feature_type][key_feature_type]["seen_val"] = seen_per_class_acc
-            per_class_acc[query_feature_type][key_feature_type]["unseen_val"] = unseen_per_class_acc
+            per_class_acc[query_feature_type][key_feature_type]["seen_test"] = seen_per_class_acc
+            per_class_acc[query_feature_type][key_feature_type]["unseen_test"] = unseen_per_class_acc
 
-            acc_dict[query_feature_type][key_feature_type]["seen_val"]["macro_acc"] = seen_macro_acc
-            acc_dict[query_feature_type][key_feature_type]["unseen_val"]["macro_acc"] = unseen_macro_acc
+            acc_dict[query_feature_type][key_feature_type]["seen_test"]["macro_acc"] = seen_macro_acc
+            acc_dict[query_feature_type][key_feature_type]["unseen_test"]["macro_acc"] = unseen_macro_acc
 
     print_micro_and_macro_acc(acc_dict, k_list)
 
@@ -713,7 +713,7 @@ def main(args: DictConfig) -> None:
         args.visualization.output_dir, args.model_config.model_output_name, "features_and_prediction"
     )
     os.makedirs(folder_for_saving, exist_ok=True)
-    extracted_features_path = os.path.join(folder_for_saving, "extracted_feature.npz")
+    extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding_trained_with_5m.npz")
     labels_path = os.path.join(folder_for_saving, "labels.json")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -721,11 +721,11 @@ def main(args: DictConfig) -> None:
     if os.path.exists(extracted_features_path) and os.path.exists(labels_path) and args.load_inference:
         print("Loading predictions from file...")
         npzfile = np.load(extracted_features_path)
-        seen_val_dict = {
+        seen_test_dict = {
             "encoded_image_feature": npzfile["seen_np_all_image_feature"],
             "encoded_dna_feature": npzfile["seen_np_all_dna_feature"],
         }
-        unseen_val_dict = {
+        unseen_test_dict = {
             "encoded_image_feature": npzfile["unseen_np_all_image_feature"],
             "encoded_dna_feature": npzfile["unseen_np_all_dna_feature"],
         }
@@ -736,8 +736,8 @@ def main(args: DictConfig) -> None:
 
         with open(labels_path, "r") as json_file:
             total_dict = json.load(json_file)
-        seen_val_dict["label_list"] = total_dict["seen_gt_dict"]
-        unseen_val_dict["label_list"] = total_dict["unseen_gt_dict"]
+        seen_test_dict["label_list"] = total_dict["seen_gt_dict"]
+        unseen_test_dict["label_list"] = total_dict["unseen_gt_dict"]
 
     else:
         print("Init model...")
@@ -752,7 +752,7 @@ def main(args: DictConfig) -> None:
             _, _, seen_keys_dataloader, unseen_keys_dataloader = (
                 load_bioscan_6M_dataloader_with_train_seen_and_separate_keys(args, for_pretrain=False)
             )
-            seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_6M_dataloader(
+            _, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader = load_bioscan_dataloader_for_test(
                 args, for_pretrain=False)
             all_unique_seen_species = get_all_unique_species_from_dataloader(seen_keys_dataloader)
             all_unseen_species = get_all_unique_species_from_dataloader(unseen_keys_dataloader)
@@ -761,39 +761,40 @@ def main(args: DictConfig) -> None:
             _, _, _, seen_keys_dataloader, val_unseen_keys_dataloader, test_unseen_keys_dataloader = (
                 load_bioscan_dataloader_with_train_seen_and_separate_keys(args, for_pretrain=False)
             )
-            _, seen_val_dataloader, unseen_val_dataloader, all_keys_dataloader = load_bioscan_dataloader(args)
+            _, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader = load_bioscan_dataloader_for_test(
+                args, for_pretrain=False)
 
             all_unique_seen_species = get_all_unique_species_from_dataloader(seen_keys_dataloader)
-            all_unique_val_unseen_species = get_all_unique_species_from_dataloader(val_unseen_keys_dataloader)
+            all_unique_test_unseen_species = get_all_unique_species_from_dataloader(val_unseen_keys_dataloader)
             all_unique_test_unseen_species = get_all_unique_species_from_dataloader(test_unseen_keys_dataloader)
-            all_unseen_species = all_unique_val_unseen_species + all_unique_test_unseen_species
+            all_unseen_species = all_unique_test_unseen_species + all_unique_test_unseen_species
 
         keys_dict = get_features_and_label(all_keys_dataloader, model, device, for_key_set=True)
 
-        seen_val_dict = get_features_and_label(seen_val_dataloader, model, device)
+        seen_test_dict = get_features_and_label(seen_test_dataloader, model, device)
 
-        unseen_val_dict = get_features_and_label(unseen_val_dataloader, model, device)
+        unseen_test_dict = get_features_and_label(unseen_test_dataloader, model, device)
 
         # small_species_list = load_small_species(args)
 
         acc_dict, per_class_acc, pred_dict = inference_and_print_result(
             keys_dict,
-            seen_val_dict,
-            unseen_val_dict,
+            seen_test_dict,
+            unseen_test_dict,
             small_species_list=None,
             k_list=args.inference_and_eval_setting.k_list,
         )
 
-        seen_val_final_pred = pred_dict["encoded_image_feature"]["encoded_dna_feature"]["curr_seen_val_pred_list"]
-        unseen_val_final_pred = pred_dict["encoded_image_feature"]["encoded_dna_feature"]["curr_unseen_val_pred_list"]
+        seen_test_final_pred = pred_dict["encoded_image_feature"]["encoded_dna_feature"]["curr_seen_test_pred_list"]
+        unseen_test_final_pred = pred_dict["encoded_image_feature"]["encoded_dna_feature"]["curr_unseen_test_pred_list"]
 
 
 
         print("For seen")
-        check_for_acc_about_correct_predict_seen_or_unseen(seen_val_final_pred, all_unique_seen_species)
+        check_for_acc_about_correct_predict_seen_or_unseen(seen_test_final_pred, all_unique_seen_species)
         print("For unseen")
         check_for_acc_about_correct_predict_seen_or_unseen(
-            unseen_val_final_pred, all_unseen_species
+            unseen_test_final_pred, all_unseen_species
         )
 
         with open("per_class_acc.json", "w") as json_file:
@@ -802,27 +803,27 @@ def main(args: DictConfig) -> None:
         if args.save_inference:
             np.savez(
                 extracted_features_path,
-                seen_np_all_image_feature=seen_val_dict["encoded_image_feature"],
-                seen_np_all_dna_feature=seen_val_dict["encoded_dna_feature"],
-                unseen_np_all_image_feature=unseen_val_dict["encoded_image_feature"],
-                unseen_np_all_dna_feature=unseen_val_dict["encoded_dna_feature"],
+                seen_np_all_image_feature=seen_test_dict["encoded_image_feature"],
+                seen_np_all_dna_feature=seen_test_dict["encoded_dna_feature"],
+                unseen_np_all_image_feature=unseen_test_dict["encoded_image_feature"],
+                unseen_np_all_dna_feature=unseen_test_dict["encoded_dna_feature"],
                 keys_encoded_image_feature=keys_dict["encoded_image_feature"],
                 keys_encoded_dna_feature=keys_dict["encoded_dna_feature"],
             )
             total_dict = {
-                "seen_gt_dict": seen_val_dict["label_list"],
-                "unseen_gt_dict": unseen_val_dict["label_list"],
+                "seen_gt_dict": seen_test_dict["label_list"],
+                "unseen_gt_dict": unseen_test_dict["label_list"],
                 "seen_pred_dict_with_dna_key": pred_dict["encoded_image_feature"]["encoded_dna_feature"][
-                    "curr_seen_val_pred_list"
+                    "curr_seen_test_pred_list"
                 ],
                 "unseen_pred_dict_with_dna_key": pred_dict["encoded_image_feature"]["encoded_dna_feature"][
-                    "curr_unseen_val_pred_list"
+                    "curr_unseen_test_pred_list"
                 ],
                 "seen_pred_dict_with_image_key": pred_dict["encoded_image_feature"]["encoded_image_feature"][
-                    "curr_seen_val_pred_list"
+                    "curr_seen_test_pred_list"
                 ],
                 "unseen_pred_dict_with_image_key": pred_dict["encoded_image_feature"]["encoded_image_feature"][
-                    "curr_unseen_val_pred_list"
+                    "curr_unseen_test_pred_list"
                 ],
             }
 
@@ -832,10 +833,10 @@ def main(args: DictConfig) -> None:
     # if args.inference_and_eval_setting.plot_embeddings:
     #     generate_embedding_plot(
     #         args,
-    #         seen_val_dict["encoded_image_feature"],
-    #         seen_val_dict["encoded_dna_feature"],
-    #         seen_val_dict["encoded_language_feature"],
-    #         seen_val_dict["label_list"],
+    #         seen_test_dict["encoded_image_feature"],
+    #         seen_test_dict["encoded_dna_feature"],
+    #         seen_test_dict["encoded_language_feature"],
+    #         seen_test_dict["label_list"],
     #     )
 
     # if args.inference_and_eval_setting.retrieve_images:
@@ -843,7 +844,7 @@ def main(args: DictConfig) -> None:
     #     retrieve_images(
     #         args,
     #         "val_seen",
-    #         seen_val_dict,
+    #         seen_test_dict,
     #         keys_dict,
     #         queries=["encoded_image_feature", "encoded_dna_feature"],
     #         keys=["encoded_image_feature", "encoded_dna_feature"],
@@ -853,7 +854,7 @@ def main(args: DictConfig) -> None:
     #     retrieve_images(
     #         args,
     #         "val_unseen",
-    #         unseen_val_dict,
+    #         unseen_test_dict,
     #         keys_dict,
     #         queries=["encoded_image_feature", "encoded_dna_feature"],
     #         keys=["encoded_image_feature", "encoded_dna_feature"],

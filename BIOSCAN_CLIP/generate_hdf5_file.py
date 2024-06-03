@@ -218,7 +218,6 @@ def main(args: DictConfig) -> None:
                         'image', 'image_mask', 'barcode']
 
     map_dict = {'all_keys': {'split': ['key_unseen', 'train']},
-                'train_keys': {'split': ['train']},
                 'val_seen': {'split': ['val']},
                 'test_seen': {'split': ['test']},
                 'seen_keys': {'split': ['train']},
