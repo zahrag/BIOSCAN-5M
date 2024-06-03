@@ -20,7 +20,7 @@ from PIL import Image
 
 from epoch.inference_epoch import get_feature_and_label
 from model.simple_clip import load_clip_model
-from util.dataset import load_bioscan_dataloader, load_bioscan_dataloader_with_train_seen_and_separate_keys, load_bioscan_6M_dataloader, load_bioscan_6M_dataloader_with_train_seen_and_separate_keys, load_bioscan_dataloader_for_test
+from util.dataset import load_bioscan_dataloader, load_bioscan_dataloader_with_train_seen_and_separate_keys, load_bioscan_6M_dataloader, load_bioscan_6M_dataloader_with_train_seen_and_separate_keys, load_bioscan_dataloader_for_test, load_bioscan_dataloader_for_test_6m
 from util.util import Table, categorical_cmap
 from util.util import check_if_using_6m_data
 
@@ -752,7 +752,7 @@ def main(args: DictConfig) -> None:
             _, _, seen_keys_dataloader, unseen_keys_dataloader = (
                 load_bioscan_6M_dataloader_with_train_seen_and_separate_keys(args, for_pretrain=False)
             )
-            _, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader = load_bioscan_dataloader_for_test(
+            _, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader = load_bioscan_dataloader_for_test_6m(
                 args, for_pretrain=False)
             all_unique_seen_species = get_all_unique_species_from_dataloader(seen_keys_dataloader)
             all_unseen_species = get_all_unique_species_from_dataloader(unseen_keys_dataloader)
@@ -761,7 +761,7 @@ def main(args: DictConfig) -> None:
             _, _, _, seen_keys_dataloader, val_unseen_keys_dataloader, test_unseen_keys_dataloader = (
                 load_bioscan_dataloader_with_train_seen_and_separate_keys(args, for_pretrain=False)
             )
-            _, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader = load_bioscan_dataloader_for_test(
+            _, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader = load_bioscan_dataloader_for_test_6m(
                 args, for_pretrain=False)
 
             all_unique_seen_species = get_all_unique_species_from_dataloader(seen_keys_dataloader)

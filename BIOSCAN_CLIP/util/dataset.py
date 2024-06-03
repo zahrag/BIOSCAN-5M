@@ -805,6 +805,97 @@ def load_bioscan_dataloader_for_test(args, world_size=None, rank=None, for_pretr
     else:
         train_seen_dataloader = construct_dataloader(
             args,
+            "train_seen",
+            length_dict["train_seen"],
+            sequence_pipeline,
+            return_language=return_language,
+            labels=None,
+            for_pre_train=False,
+            world_size=world_size,
+            rank=rank,
+            shuffle=True,
+        )
+        return train_seen_dataloader, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader
+
+
+def load_bioscan_dataloader_for_test_6m(args, world_size=None, rank=None, for_pretrain=True):
+    length_dict = get_len_dict(args)
+
+    # TODO add label for supervised learning
+
+    return_language = True
+
+    sequence_pipeline = get_sequence_pipeline()
+
+    seen_test_dataloader = construct_dataloader(
+        args,
+        "test_seen",
+        length_dict["test_seen"],
+        sequence_pipeline,
+        return_language=return_language,
+        labels=None,
+        for_pre_train=False,
+        world_size=world_size,
+        rank=rank,
+    )
+
+    unseen_test_dataloader = construct_dataloader(
+        args,
+        "test_unseen",
+        length_dict["test_unseen"],
+        sequence_pipeline,
+        return_language=return_language,
+        labels=None,
+        for_pre_train=False,
+        world_size=world_size,
+        rank=rank,
+    )
+
+    all_keys_dataloader = construct_dataloader(
+        args,
+        "all_keys",
+        length_dict["all_keys"],
+        sequence_pipeline,
+        return_language=return_language,
+        labels=None,
+        for_pre_train=False,
+        world_size=world_size,
+        rank=rank,
+    )
+    if for_pretrain:
+        if (
+            hasattr(args.model_config, "using_train_seen_for_pre_train")
+            and args.model_config.using_train_seen_for_pre_train
+        ):
+            pre_train_dataloader = construct_dataloader(
+                args,
+                "no_split_and_seen_train",
+                length_dict["no_split_and_seen_train"],
+                sequence_pipeline,
+                return_language=return_language,
+                labels=None,
+                for_pre_train=True,
+                world_size=world_size,
+                rank=rank,
+                shuffle=True,
+            )
+        else:
+            pre_train_dataloader = construct_dataloader(
+                args,
+                "no_split",
+                length_dict["no_split"],
+                sequence_pipeline,
+                return_language=return_language,
+                labels=None,
+                for_pre_train=True,
+                world_size=world_size,
+                rank=rank,
+                shuffle=True,
+            )
+        return pre_train_dataloader, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader
+    else:
+        train_seen_dataloader = construct_dataloader(
+            args,
             "seen_keys",
             length_dict["seen_keys"],
             sequence_pipeline,
@@ -816,7 +907,6 @@ def load_bioscan_dataloader_for_test(args, world_size=None, rank=None, for_pretr
             shuffle=True,
         )
         return train_seen_dataloader, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader
-
 
 def load_bioscan_dataloader_all_small_splits(args, world_size=None, rank=None):
     length_dict = get_len_dict(args)
