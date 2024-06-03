@@ -805,8 +805,8 @@ def load_bioscan_dataloader_for_test(args, world_size=None, rank=None, for_pretr
     else:
         train_seen_dataloader = construct_dataloader(
             args,
-            "train_seen",
-            length_dict["train_seen"],
+            "seen_keys",
+            length_dict["seen_keys"],
             sequence_pipeline,
             return_language=return_language,
             labels=None,
