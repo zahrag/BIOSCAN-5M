@@ -747,7 +747,7 @@ def main(args: DictConfig) -> None:
 
         print("Construct dataloader...")
         # Load data
-        args.model_config.batch_size = 96
+        args.model_config.batch_size = 800
         if check_if_using_6m_data(args):
             _, _, seen_keys_dataloader, unseen_keys_dataloader = (
                 load_bioscan_6M_dataloader_with_train_seen_and_separate_keys(args, for_pretrain=False)
