@@ -746,7 +746,10 @@ def main(args: DictConfig) -> None:
         print("Init model...")
         model = load_clip_model(args, device)
         checkpoint = torch.load(args.model_config.ckpt_path, map_location="cuda:0")
-        model.load_state_dict(checkpoint)
+        if hasattr(args.model_config, 'untrained') and args.model_config.untrained is True:
+            pass
+        else:
+            model.load_state_dict(checkpoint)
 
         print("Construct dataloader...")
         # Load data
