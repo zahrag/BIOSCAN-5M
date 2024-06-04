@@ -714,7 +714,12 @@ def main(args: DictConfig) -> None:
     )
     os.makedirs(folder_for_saving, exist_ok=True)
 
+
     extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding.npz")
+
+    if hasattr(args.model_config, 'suffix_for_saved_embedding'):
+        extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding_" +args.model_config.suffix_for_saved_embedding + ".npz")
+
     # if hasattr(args.model_config, 'untrained') and args.model_config.untrained is True:
     #     extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding_untrained.npz")
     # else:
@@ -783,6 +788,21 @@ def main(args: DictConfig) -> None:
 
         unseen_test_dict = get_features_and_label(unseen_test_dataloader, model, device)
 
+        if args.save_inference:
+            np.savez(
+                extracted_features_path,
+                seen_np_all_image_feature=seen_test_dict["encoded_image_feature"],
+                seen_np_all_dna_feature=seen_test_dict["encoded_dna_feature"],
+                seen_np_file_name=seen_test_dict["file_name_list"],
+                unseen_np_all_image_feature=unseen_test_dict["encoded_image_feature"],
+                unseen_np_all_dna_feature=unseen_test_dict["encoded_dna_feature"],
+                unseen_np_file_name=unseen_test_dict["file_name_list"],
+                keys_encoded_image_feature=keys_dict["encoded_image_feature"],
+                keys_encoded_dna_feature=keys_dict["encoded_dna_feature"],
+                keys_file_name=keys_dict["file_name_list"]
+            )
+        exit()
+
         # small_species_list = load_small_species(args)
 
         acc_dict, per_class_acc, pred_dict = inference_and_print_result(
@@ -809,18 +829,7 @@ def main(args: DictConfig) -> None:
             json.dump(per_class_acc, json_file, indent=4)
 
         if args.save_inference:
-            np.savez(
-                extracted_features_path,
-                seen_np_all_image_feature=seen_test_dict["encoded_image_feature"],
-                seen_np_all_dna_feature=seen_test_dict["encoded_dna_feature"],
-                seen_np_file_name=seen_test_dict["file_name_list"],
-                unseen_np_all_image_feature=unseen_test_dict["encoded_image_feature"],
-                unseen_np_all_dna_feature=unseen_test_dict["encoded_dna_feature"],
-                unseen_np_file_name=unseen_test_dict["file_name_list"],
-                keys_encoded_image_feature=keys_dict["encoded_image_feature"],
-                keys_encoded_dna_feature=keys_dict["encoded_dna_feature"],
-                keys_file_name=keys_dict["file_name_list"]
-            )
+
             total_dict = {
                 "seen_gt_dict": seen_test_dict["label_list"],
                 "unseen_gt_dict": unseen_test_dict["label_list"],

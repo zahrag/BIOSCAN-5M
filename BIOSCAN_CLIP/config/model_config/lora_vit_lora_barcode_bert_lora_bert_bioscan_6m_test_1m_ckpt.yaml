@@ -3,6 +3,7 @@ epochs: 4
 labels_for_driven_positive_and_negative_pairs:
 wandb_project_name: BioScan-CLIP-6M
 using_train_seen_for_pre_train: true
+suffix_for_saved_embedding: with_1m_ckpt
 
 dataset: BIOSCAN_6M
 
