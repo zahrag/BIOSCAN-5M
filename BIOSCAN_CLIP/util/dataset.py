@@ -196,6 +196,7 @@ class Dataset_for_CL(Dataset):
         return_language=False,
         labels=None,
         for_training=False,
+        process_id=False
     ):
         if check_if_using_6m_data(args):
             self.hdf5_inputs_path = args.bioscan_6m_data.path_to_hdf5_data
@@ -348,6 +349,7 @@ def construct_dataloader(
     world_size=None,
     rank=None,
     shuffle=False,
+    process_id=False
 ):
     barcode_bert_dna_tokens = None
     # For now, just use sequence, but not feature.
@@ -377,6 +379,7 @@ def construct_dataloader(
         return_language=return_language,
         labels=labels,
         for_training=for_pre_train,
+        process_id=process_id
     )
 
     num_workers = 8
@@ -818,7 +821,7 @@ def load_bioscan_dataloader_for_test(args, world_size=None, rank=None, for_pretr
         return train_seen_dataloader, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader
 
 
-def load_bioscan_dataloader_for_test_6m(args, world_size=None, rank=None, for_pretrain=True):
+def load_bioscan_dataloader_for_test_6m(args, world_size=None, rank=None, for_pretrain=True, process_id=True):
     length_dict = get_len_dict(args)
 
     # TODO add label for supervised learning
@@ -837,6 +840,7 @@ def load_bioscan_dataloader_for_test_6m(args, world_size=None, rank=None, for_pr
         for_pre_train=False,
         world_size=world_size,
         rank=rank,
+        process_id=process_id
     )
 
     unseen_test_dataloader = construct_dataloader(
@@ -849,6 +853,7 @@ def load_bioscan_dataloader_for_test_6m(args, world_size=None, rank=None, for_pr
         for_pre_train=False,
         world_size=world_size,
         rank=rank,
+        process_id=process_id
     )
 
     all_keys_dataloader = construct_dataloader(
@@ -861,6 +866,7 @@ def load_bioscan_dataloader_for_test_6m(args, world_size=None, rank=None, for_pr
         for_pre_train=False,
         world_size=world_size,
         rank=rank,
+        process_id=process_id
     )
     if for_pretrain:
         if (

@@ -713,10 +713,12 @@ def main(args: DictConfig) -> None:
         args.visualization.output_dir, args.model_config.model_output_name, "features_and_prediction"
     )
     os.makedirs(folder_for_saving, exist_ok=True)
-    if hasattr(args.model_config, 'untrained') and args.model_config.untrained is True:
-        extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding_untrained.npz")
-    else:
-        extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding_trained_with_1m.npz")
+
+    extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding.npz")
+    # if hasattr(args.model_config, 'untrained') and args.model_config.untrained is True:
+    #     extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding_untrained.npz")
+    # else:
+    #     extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding_trained_with_1m.npz")
     labels_path = os.path.join(folder_for_saving, "labels.json")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -759,7 +761,7 @@ def main(args: DictConfig) -> None:
                 load_bioscan_6M_dataloader_with_train_seen_and_separate_keys(args, for_pretrain=False)
             )
             _, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader = load_bioscan_dataloader_for_test_6m(
-                args, for_pretrain=False)
+                args, for_pretrain=False, process_id=True)
             all_unique_seen_species = get_all_unique_species_from_dataloader(seen_keys_dataloader)
             all_unseen_species = get_all_unique_species_from_dataloader(unseen_keys_dataloader)
 
@@ -768,12 +770,12 @@ def main(args: DictConfig) -> None:
                 load_bioscan_dataloader_with_train_seen_and_separate_keys(args, for_pretrain=False)
             )
             _, seen_test_dataloader, unseen_test_dataloader, all_keys_dataloader = load_bioscan_dataloader_for_test_6m(
-                args, for_pretrain=False)
+                args, for_pretrain=False, process_id=True)
 
             all_unique_seen_species = get_all_unique_species_from_dataloader(seen_keys_dataloader)
-            all_unique_test_unseen_species = get_all_unique_species_from_dataloader(val_unseen_keys_dataloader)
+            all_unique_val_unseen_species = get_all_unique_species_from_dataloader(val_unseen_keys_dataloader)
             all_unique_test_unseen_species = get_all_unique_species_from_dataloader(test_unseen_keys_dataloader)
-            all_unseen_species = all_unique_test_unseen_species + all_unique_test_unseen_species
+            all_unseen_species = all_unique_test_unseen_species + all_unique_val_unseen_species
 
         keys_dict = get_features_and_label(all_keys_dataloader, model, device, for_key_set=True)
 
@@ -811,10 +813,13 @@ def main(args: DictConfig) -> None:
                 extracted_features_path,
                 seen_np_all_image_feature=seen_test_dict["encoded_image_feature"],
                 seen_np_all_dna_feature=seen_test_dict["encoded_dna_feature"],
+                seen_np_file_name=seen_test_dict["file_name_list"],
                 unseen_np_all_image_feature=unseen_test_dict["encoded_image_feature"],
                 unseen_np_all_dna_feature=unseen_test_dict["encoded_dna_feature"],
+                unseen_np_file_name=unseen_test_dict["file_name_list"],
                 keys_encoded_image_feature=keys_dict["encoded_image_feature"],
                 keys_encoded_dna_feature=keys_dict["encoded_dna_feature"],
+                keys_file_name=keys_dict["file_name_list"]
             )
             total_dict = {
                 "seen_gt_dict": seen_test_dict["label_list"],
