@@ -713,7 +713,10 @@ def main(args: DictConfig) -> None:
         args.visualization.output_dir, args.model_config.model_output_name, "features_and_prediction"
     )
     os.makedirs(folder_for_saving, exist_ok=True)
-    extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding_trained_with_5m.npz")
+    if hasattr(args.model_config, 'untrained') and args.model_config.untrained is True:
+        extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding_untrained.npz")
+    else:
+        extracted_features_path = os.path.join(folder_for_saving, "5m_test_embedding_trained_with_1m.npz")
     labels_path = os.path.join(folder_for_saving, "labels.json")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
