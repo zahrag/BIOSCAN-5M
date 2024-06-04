@@ -322,7 +322,7 @@ def retrieve_images(
             )
             query_image_file_map = {filename.decode("utf-8"): j for j, filename in enumerate(query_data["image_file"])}
             key_image_file_map = {filename.decode("utf-8"): j for j, filename in enumerate(key_data["image_file"])}
-            for i, pred_dict in enumerate(retrietest_results):
+            for i, pred_dict in enumerate(retrieval_results):
                 # save query
                 query_file_name = pred_dict["query"]["file_name"]
                 image_idx = query_image_file_map[query_file_name]
