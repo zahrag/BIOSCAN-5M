@@ -9,6 +9,7 @@ import torch.distributed as dist
 
 
 def train_epoch(activate_wandb, total_epochs, epoch, dataloader, model, optimizer, criterion, device, open_clip_ver=False, rank=None):
+    model.train()
     if rank is not None and rank == 0:
         pbar = tqdm(enumerate(dataloader), total=len(dataloader))
     else:

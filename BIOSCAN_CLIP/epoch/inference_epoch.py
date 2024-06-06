@@ -7,6 +7,7 @@ import faiss
 
 
 def get_feature_and_label(dataloader, model, device, type_of_feature="dna", multi_gpu=False):
+    model.eval()
     if type_of_feature not in ['dna', 'image', 'text']:
         raise TypeError(f"{type_of_feature} is not a valid input type")
 

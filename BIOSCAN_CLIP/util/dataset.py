@@ -307,7 +307,7 @@ class Dataset_for_CL(Dataset):
                 )
 
         else:
-            curr_file_name = self.hdf5_split_group["image_file"][idx].decode("utf-8")
+            curr_file_name = self.hdf5_split_group["processid"][idx].decode("utf-8")
             if self.return_language is False:
                 return curr_file_name, curr_image_input, curr_dna_input, self.labels[idx]
             else:

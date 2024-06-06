@@ -801,6 +801,7 @@ def main(args: DictConfig) -> None:
                 keys_encoded_dna_feature=keys_dict["encoded_dna_feature"],
                 keys_file_name=keys_dict["file_name_list"]
             )
+        print(f"Feature saved in {extracted_features_path}")
         exit()
 
         # small_species_list = load_small_species(args)
