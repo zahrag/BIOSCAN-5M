@@ -12,12 +12,13 @@ from a database of existing image and DNA embeddings (keys). The cosine similari
 ## Set environment
 For now, you can set the environment by typing
 ```shell
-conda create -n bioscan-clip-6M python=3.10
-conda activate bioscan-clip-6M
+conda create -n bioscan-clip-5M python=3.10
+conda activate bioscan-clip-5M
 conda install pytorch=2.0.1 torchvision=0.15.2 torchtext=0.15.2 pytorch-cuda=11.7 -c pytorch -c nvidia
 pip install -r requirements.txt
 pip install git+https://github.com/openai/CLIP.git
 conda install -c conda-forge faiss
+pip install .
 
 ```
 in the terminal. However, based on your GPU version, you may have to modify the torch version and install other packages manually in difference version.
