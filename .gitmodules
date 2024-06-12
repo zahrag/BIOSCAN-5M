@@ -1,0 +1,3 @@
+[submodule "BarcodeBERT"]
+	path = BarcodeBERT
+	url = https://github.com/Kari-Genomics-Lab/BarcodeBERT.git
