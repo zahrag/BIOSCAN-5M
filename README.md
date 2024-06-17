@@ -71,6 +71,20 @@ The BIOSCAN-5M dataset provides information associated with the collection sites
 </figure>
 
 
+###### <h3> Size Information
+The BIOSCAN-5M dataset provides associated with the size the organisms:
+* Image measurement value: Total number of pixels occupied by the organism
 
+<figure style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/images_masks.png" alt="Alt Text" />
+  <figcaption><b>Figure 3:</b> Examples of original images (top) and their corresponding masks (bottom) depicting pixels occupied by the organism.</figcaption>
+</figure>
+
+Additionally utilizing our cropping tool, we calculated the following information about the size of the organism:
+* Area fraction
+* Scale factor
  
-
+<figure style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/area_frac.png" alt="Alt Text" />
+  <figcaption><b>Figure 4:</b> Examples of the original images with the bounding box detected by our cropping tool.</figcaption>
+</figure>
