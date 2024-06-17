@@ -24,7 +24,7 @@ the [GoogleDrive folder](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYr
 
 ###### <h3> Dataset
 We present BIOSCAN-5M dataset to the machine learning community with valuable information about insect's biodiversity. 
-Each record of the BIOSCAN-5M dataset contains four primary attributes:
+Each record of the BIOSCAN-5M dataset contains six primary attributes:
 * DNA Barcode Sequence
 * Barcode Index Number (BIN)
 * Biological Taxonomy Classification
