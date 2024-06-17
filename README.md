@@ -1,8 +1,7 @@
 # BIOSCAN-5M
+![Alt Text](BIOSCAN_images/repo_images/images.png)
 
-
-
-###### <h3> Overview
+##### <h3> Overview
 This repository contains the code and data related to the to the [BIOSCAN-5M ](https://biodiversitygenomics.net/5M-insects/)
 dataset.  
 BIOSCAN-5M is a comprehensive dataset comprising multi-modal information about over 5 million specimens, with 98% being insects. 
@@ -19,11 +18,11 @@ please cite the [Paper]():
     year={2024},
 }
 ```
-###### <h3> Dataset Access
+##### <h3> Dataset Access
 The dataset image packages and metadata file are accessible for download through 
 the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0).
 
-###### <h3> Dataset
+##### <h3> Dataset
 We present BIOSCAN-5M dataset to the machine learning community with valuable information about insect's biodiversity. 
 Each record of the BIOSCAN-5M dataset contains six primary attributes:
 * DNA Barcode Sequence
@@ -32,6 +31,8 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 * RGB image
 * Geographical information 
 * Size information
+
+![Alt Text](BIOSCAN_images/repo_images/Fig1_supp_new.png)
 
 
 ###### <h3> RGB Image 
@@ -52,6 +53,19 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
 ###### <h3> Metadata 
 The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biological information, geographic information as well as 
 size information of the organisms. We created both CSV and JSONLD types of the metadata file.
+
+###### <h3> Geographical Information
+The BIOSCAN-5M dataset provides information associated with the cite of collection of the organisms:
+* Country
+* 
+![Alt Text](BIOSCAN_images/repo_images/map_supplement3.png)
+
+
+* Province or State
+* Latitude and Longitude coordinates
+
+![Alt Text](BIOSCAN_images/repo_images/BIOSCAN_5M_Insect_Dataset_lat_lon_map.png)
+
 
 
  
