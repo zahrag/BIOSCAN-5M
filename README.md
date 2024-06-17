@@ -34,7 +34,7 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 * Size information
 
 
-###### <h3> Image Packages
+###### <h3> RGB Image 
 The BIOSCAN-5M dataset comprises resized and cropped images.
 We have provided various packages of the BIOSCAN-5M dataset, each tailored for specific purposes.
 
