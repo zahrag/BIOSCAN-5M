@@ -26,21 +26,6 @@ def make_directory(path):
 def remove_directory(path):
     shutil.rmtree(path, ignore_errors=False, onerror=None)
 
-
-def remove_file(file, path):
-    os.remove(os.path.join(path, file))
-
-
-def move_to_dir(source=None, destination=None):
-    make_directory(destination)
-    shutil.move(source, destination)
-
-
-def copy_to_dir(self, source=None, destination=None):
-    make_directory(destination)
-    shutil.copy(source, destination)
-
-
 def path_exist(path):
     directory_path = Path(path)
     if directory_path.exists():
@@ -58,15 +43,6 @@ def file_exist(file_path):
         print(f"File {file_path} does not exist")
     return file_path_obj.exists() and file_path_obj.is_file()
 
-
-def split_filename(filename, split_char=None):
-    """split character examples are '.', '-', '_', ..."""
-    parts = filename.split(split_char)
-    if not split_char:
-        parts = os.path.splitext(filename)
-    return parts
-
-
 def create_zip(source_folder=None, output_zip=None, package_type=None, part_name=None):
     with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for root, _, files in os.walk(source_folder):
@@ -80,18 +56,6 @@ def create_zip(source_folder=None, output_zip=None, package_type=None, part_name
 def extract_zip(zip_file=None, path=None):
     with zipfile.ZipFile(zip_file, 'r') as zip_ref:
         zip_ref.extractall(path)
-
-
-def create_tar(name=None, path=None):
-    with tarfile.open(name, "w:gz") as tar:
-        tar.add(path, arcname=os.path.basename(path))
-
-
-def extract_tar(tar_file=None, path=None):
-    tar_file = tarfile.open(tar_file)
-    tar_file.extractall(path)
-    tar_file.close()
-
 
 def create_hdf5(date_time, dataset_name='', path='', data_typ='Original Full Size', author='Zahra Gharaee'):
 
@@ -161,16 +125,6 @@ def resize_image(input_file, output_file, resize_dimension=256):
     os.system(command)
 
 
-def count_images(self, file_list):
-    return sum(1 for filename in file_list
-               if self.extract_format(filename) in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'tiff'])
-
-
-def filter_images(self, file_list):
-    return [filename for filename in file_list
-            if self.extract_format(filename) in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'tiff']]
-
-
 def extract_prefix(filename):
     parts = filename.split('.')
     return parts[0]
@@ -179,13 +133,6 @@ def extract_prefix(filename):
 def extract_format(filename):
     parts = filename.split('.')
     return parts[-1]
-
-
-def remove_row_by_item(df, items_to_remove, column=None):
-    """ remove based on specified items """
-    df_updated = df[~df[column].isin(items_to_remove)]
-    df_updated.reset_index(inplace=True, drop=True)
-    return df_updated
 
 
 def keep_row_by_item(df, items_to_keep, column=None):
@@ -205,6 +152,10 @@ def read_tsv(tsv_file):
     df = pd.read_csv(tsv_file, sep='\t', low_memory=False)
     return df
 
+
+def read_csv(csv_file):
+    df = pd.read_csv(csv_file)
+    return df
 
 def read_tsv_large(tsv_file):
     try:

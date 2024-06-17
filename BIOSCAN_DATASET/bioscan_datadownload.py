@@ -42,7 +42,7 @@ def make_download(configs):
     :return:
     """
 
-    if configs['file_to_download'] is None:
+    if not configs['download']:
         print("No file is selected to download!")
         return
 
@@ -50,36 +50,48 @@ def make_download(configs):
     download_path = configs['download_path']
     file_selected = configs["file_to_download"]
 
-    parent_folder_main = "1ft17GpcC_xDhx5lOBhYAEtox0sdZchjA"
-    parent_folder_original = "15CIT4DIe_--I20h-KwLbFmGefpBMHx5A"
-    parent_folder_cropped = "1CUBZLO5u_uEYptZE-S8B6RVeBNc5jFdx"
+    parent_main = "1ft17GpcC_xDhx5lOBhYAEtox0sdZchjA"
 
-    dataset_metadata_tsv = ['BIOSCAN_Insect_Dataset_metadata.tsv']
-    dataset_metadata_jsonld = ['BIOSCAN_Insect_Dataset_metadata.jsonld']
-    dataset_original_256_zip = ['original_256.zip']
-    dataset_cropped_256_zip = ['cropped_256.zip']
-    dataset_original_256_hdf5 = ['original_256.hdf5']
-    dataset_cropped_256_hdf5 = ['original_256.hdf5']
-    dataset_original_package = [f"bioscan_images_original_full_part{id + 1}.zip" for id in range(113)]
-    dataset_cropped_package = [f"bioscan_images_cropped_full_part{id + 1}.zip" for id in range(113)]
-    files_list = [dataset_metadata_tsv, dataset_metadata_jsonld, dataset_original_256_zip,
-                  dataset_cropped_256_zip, dataset_original_256_hdf5, dataset_cropped_256_hdf5,
-                  dataset_original_package, dataset_cropped_package]
+    parent_original = ""
+    original_full = ['']
+
+    parent_original_cropped = ""
+    original_cropped = ['']
+
+    parent_metadata = "1TLVw0P4MT_5lPrgjMCMREiP8KW-V4nTb"
+    metadata_zip = ['BIOSCAN_5M_Insect_Dataset_metadata_MultiTypes.zip']
+
+    parent_original_256 = "1YWnmoraPAGcQKwL9Y7F4WC1o60pMQhO8"
+    original_256_zip = ['BIOSCAN_5M_original_256.zip',
+                        'BIOSCAN_5M_original_256_pretrain.zip',
+                        'BIOSCAN_5M_original_256_train.zip',
+                        'BIOSCAN_5M_original_256_eval.zip']
+
+    parent_cropped_256 = "1tqpzBoTAfENTY9Ndx_h9DFl1XzHHixg_"
+    cropped_256_zip = ['BIOSCAN_5M_cropped_256.zip',
+                       'BIOSCAN_5M_cropped_256_pretrain.zip',
+                       'BIOSCAN_5M_cropped_256_train.zip',
+                       'BIOSCAN_5M_cropped_256_eval.zip']
+
+    original_256_hdf5 = ''
+    cropped_256_hdf5 = ''
+
+    files_list = [metadata_zip, original_256_zip, cropped_256_zip]
     files_list = list(itertools.chain(*files_list))
 
     if file_selected not in files_list:
-        raise RuntimeError(f"File:{file_selected} is not available for download!")
+        raise RuntimeError(f"File: {file_selected} is not available for download!")
 
     file_id_mapping = read_id_mapping(id_mapping_path=id_mapping_path)
 
-    if file_selected in dataset_original_package:
-        parent_folder_id = parent_folder_original
+    if file_selected in original_256_zip:
+        parent_folder_id = parent_original_256
 
-    elif file_selected in dataset_cropped_package:
-        parent_folder_id = parent_folder_cropped
+    elif file_selected in cropped_256_zip:
+        parent_folder_id = parent_cropped_256
 
-    else:
-        parent_folder_id = parent_folder_main
+    elif file_selected in metadata_zip:
+        parent_folder_id = parent_metadata
 
     # wget_download(parent_folder_id, file_id_mapping[file_selected], file_selected, download_path=download_path)
     gdown_download(file_id_mapping[file_selected], file_selected, download_path=download_path)
