@@ -1,7 +1,7 @@
 # BIOSCAN-5M
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/fig1.png" alt="Alt Text" />
-  <figcaption><b>Figure 4:</b> A BIOSCAN-5M dataset sample.</figcaption>
+  <figcaption><b>Figure 1:</b> A BIOSCAN-5M dataset sample.</figcaption>
 </figure>
 
 ##### <h3> Overview
@@ -41,7 +41,7 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/images.png" alt="Alt Text" />
-  <figcaption><b>Figure 1:</b> Examples of the original images of the BIOSCAN-5M dataset.</figcaption>
+  <figcaption><b>Figure 2:</b> Examples of the original images of the BIOSCAN-5M dataset.</figcaption>
 </figure>
 
 
@@ -71,12 +71,12 @@ The BIOSCAN-5M dataset provides information associated with the collection sites
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/BIOSCAN_5M_Insect_Dataset_lat_lon_map.png" alt="Alt Text" />
-  <figcaption><b>Figure 1:</b> Latitude and longitude coordinates associated with the sites of collection.</figcaption>
+  <figcaption><b>Figure 3:</b> Latitude and longitude coordinates associated with the sites of collection.</figcaption>
 </figure>
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/map_supplement3.png" alt="Alt Text" />
-  <figcaption><b>Figure 2:</b> Countries associated with the sites of collection.</figcaption>
+  <figcaption><b>Figure 4:</b> Countries associated with the sites of collection.</figcaption>
 </figure>
 
 
@@ -86,7 +86,7 @@ The BIOSCAN-5M dataset provides associated with the size the organisms:
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/images_masks.png" alt="Alt Text" />
-  <figcaption><b>Figure 3:</b> Examples of original images (top) and their corresponding masks (bottom) depicting pixels occupied by the organism.</figcaption>
+  <figcaption><b>Figure 5:</b> Examples of original images (top) and their corresponding masks (bottom) depicting pixels occupied by the organism.</figcaption>
 </figure>
 
 Additionally utilizing our cropping tool, we calculated the following information about the size of the organism:
@@ -95,7 +95,7 @@ Additionally utilizing our cropping tool, we calculated the following informatio
  
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/area_frac.png" alt="Alt Text" />
-  <figcaption><b>Figure 4:</b> Examples of the original images with the bounding box detected by our cropping tool.</figcaption>
+  <figcaption><b>Figure 6:</b> Examples of the original images with the bounding box detected by our cropping tool.</figcaption>
 </figure>
 
 ###### <h2> Benchmark Experiments
