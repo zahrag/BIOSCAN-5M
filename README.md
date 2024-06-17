@@ -55,15 +55,19 @@ The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biolog
 size information of the organisms. We created both CSV and JSONLD types of the metadata file.
 
 ###### <h3> Geographical Information
-The BIOSCAN-5M dataset provides information associated with the cite of collection of the organisms:
+The BIOSCAN-5M dataset provides information associated with the collection sites of the organisms:
 * Latitude and Longitude coordinates
 
-![Alt Text](BIOSCAN_images/repo_images/BIOSCAN_5M_Insect_Dataset_lat_lon_map.png)
-
+<div style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/BIOSCAN_5M_Insect_Dataset_lat_lon_map.png" alt="Alt Text" />
+  <p><b>Figure 1:</b> Latitude and longitude coordinates associated with the cites of collection.</p>
+</div>
 
 * Country
-![Alt Text](BIOSCAN_images/repo_images/map_supplement3.png)
-
+<div style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/map_supplement3.png" alt="Alt Text" />
+  <p><b>Figure 1:</b> Countries associated with the sites of collection.</p>
+</div>
 
 * Province or State
 
