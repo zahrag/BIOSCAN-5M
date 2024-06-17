@@ -58,16 +58,16 @@ size information of the organisms. We created both CSV and JSONLD types of the m
 The BIOSCAN-5M dataset provides information associated with the collection sites of the organisms:
 * Latitude and Longitude coordinates
 
-<div style="text-align: center;">
+<figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/BIOSCAN_5M_Insect_Dataset_lat_lon_map.png" alt="Alt Text" />
-  <p><b>Figure 1:</b> Latitude and longitude coordinates associated with the sites of collection.</p>
-</div>
+  <figcaption><b>Figure 2:</b> Latitude and longitude coordinates associated with the sites of collection.</figcaption>
+</figure>
 
 * Country
-<div style="text-align: center;">
+<figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/map_supplement3.png" alt="Alt Text" />
-  <p><b>Figure 2:</b> Countries associated with the sites of collection.</p>
-</div>
+  <figcaption><b>Figure 2:</b> Countries associated with the sites of collection.</figcaption>
+</figure>
 
 * Province or State
 
