@@ -38,8 +38,10 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/images.png" alt="Alt Text" />
-  <figcaption><b>Figure 4:</b> Examples of the original images of the BIOSCAN-5M dataset.</figcaption>
+  <figcaption><b>Figure 1:</b> Examples of the original images of the BIOSCAN-5M dataset.</figcaption>
 </figure>
+
+
 The BIOSCAN-5M dataset comprises resized and cropped images.
 We have provided various packages of the BIOSCAN-5M dataset, each tailored for specific purposes.
 
