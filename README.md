@@ -12,7 +12,7 @@ please cite the [Paper]():
 ```
 @inproceedings{gharaee24,
     title={BIOSCAN-5M: A Multimodal Dataset for Insect Biodiversity},
-    author={Gharaee, Z. and Lowe, S. C. and Gong, Z. and Arias. P. M. and Wang, A. T. and Pellegrino, N. 
+    author={Gharaee, Z. and Lowe, S. C. and Gong, Z. and Arias. P. M. and Pellegrino, N. and Wang, A. T. 
     and Haurum, J. B. and Zarubiieva, I. and Kari, L. and Steinke, D. and Taylor, G. W. and Fieguth, P. and Chang, A. X.},
     publisher={arxiv},
     year={2024},
