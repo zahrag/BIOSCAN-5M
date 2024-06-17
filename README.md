@@ -1,5 +1,8 @@
 # BIOSCAN-5M
-
+<figure style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/Fig1_supp_new.png" alt="Alt Text" />
+  <figcaption><b>Figure 4:</b> A BIOSCAN-5M dataset sample.</figcaption>
+</figure>
 
 ##### <h3> Overview
 This repository contains the code and data related to the to the [BIOSCAN-5M ](https://biodiversitygenomics.net/5M-insects/)
