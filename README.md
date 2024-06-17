@@ -62,7 +62,7 @@ The BIOSCAN-5M dataset provides information associated with the collection sites
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/BIOSCAN_5M_Insect_Dataset_lat_lon_map.png" alt="Alt Text" />
-  <figcaption><b>Figure 2:</b> Latitude and longitude coordinates associated with the sites of collection.</figcaption>
+  <figcaption><b>Figure 1:</b> Latitude and longitude coordinates associated with the sites of collection.</figcaption>
 </figure>
 
 <figure style="text-align: center;">
