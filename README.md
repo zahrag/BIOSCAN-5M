@@ -66,7 +66,7 @@ The BIOSCAN-5M dataset provides information associated with the collection sites
 * Country
 <div style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/map_supplement3.png" alt="Alt Text" />
-  <p><b>Figure 1:</b> Countries associated with the sites of collection.</p>
+  <p><b>Figure 2:</b> Countries associated with the sites of collection.</p>
 </div>
 
 * Province or State
