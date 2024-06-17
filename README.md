@@ -1,6 +1,6 @@
 # BIOSCAN-5M
 <figure style="text-align: center;">
-  <img src="BIOSCAN_images/repo_images/Fig1_supp_new.png" alt="Alt Text" />
+  <img src="BIOSCAN_images/repo_images/fig1.png" alt="Alt Text" />
   <figcaption><b>Figure 4:</b> A BIOSCAN-5M dataset sample.</figcaption>
 </figure>
 
@@ -97,3 +97,5 @@ Additionally utilizing our cropping tool, we calculated the following informatio
   <img src="BIOSCAN_images/repo_images/area_frac.png" alt="Alt Text" />
   <figcaption><b>Figure 4:</b> Examples of the original images with the bounding box detected by our cropping tool.</figcaption>
 </figure>
+
+###### <h2> Benchmark Experiments
