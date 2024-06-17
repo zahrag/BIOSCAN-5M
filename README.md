@@ -99,3 +99,38 @@ Additionally utilizing our cropping tool, we calculated the following informatio
 </figure>
 
 ###### <h2> Benchmark Experiments
+
+###### <h3> DNA-based taxonomic classification
+Two stages of the proposed semi-supervised learning set-up based on [BarcodeBERT](https://arxiv.org/abs/2311.02401). 
+* (1) Pretraining: DNA sequences are tokenized using non-overlapping k-mers and 50% of the tokens are masked for the MLM task. 
+Tokens are encoded and fed into a transformer model. The output embeddings are used for token-level classification. 
+* (2) Fine-tuning: All DNA sequences in a dataset are tokenized using non-overlapping $k$-mer tokenization and all tokenized sequences, without masking, are passed through the pretrained transformer model.  Global mean-pooling is applied over the token-level embeddings and the output is used for taxonomic classification.
+<figure style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/barcode_bert_n2.png" alt="Alt Text" />
+  <figcaption><b>Figure 7:</b> BarcodeBERT model architecture.</figcaption>
+</figure>
+
+###### <h3> Zero-shot transfer learning
+We follow the experimental setup recommended by [BIOSCAN_ZSC](https://arxiv.org/abs/2406.02465). 
+* (1) Take pretrained encoders. 
+* (2) Extract feature vectors from the stimuli by passing them through an encoder. 
+* (3) Cluster the reduced embeddings with Agglomerative Clustering. 
+* (4) Evaluate against the ground-truth annotations with Adjusted Mutual Information.
+
+<figure style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/bioscan_zsc_n1.png" alt="Alt Text" />
+  <figcaption><b>Figure 8:</b> BIOSCAN-ZSC model architecture.</figcaption>
+</figure>
+
+###### <h3> Multimodal retrieval learning
+Our experiments using the [BIOSCAN-CLIP](https://arxiv.org/abs/2405.17537) are conducted in two steps. 
+* (1) Training: Multiple modalities, including RGB images, textual taxonomy, and DNA sequences, are encoded separately, 
+and trained using a contrastive loss function. 
+* (2) Inference: Image vs DNA embedding is used as a query, and compared to the embeddings obtained from a database of image, 
+DNA and text (keys). The cosine similarity is used to find the closest key embedding, and the corresponding taxonomic label is used to classify the query.
+
+<figure style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/bioscan_clip.png" alt="Alt Text" />
+  <figcaption><b>Figure 9:</b> BIOSCAN-CLIP model architecture.</figcaption>
+</figure>
+
