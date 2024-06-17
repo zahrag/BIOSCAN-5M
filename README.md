@@ -7,7 +7,7 @@ This repository contains the code and data related to the to the [BIOSCAN-5M ](h
 dataset.  
 BIOSCAN-5M is a comprehensive dataset comprising multi-modal information about over 5 million specimens, with 98% being insects. 
 
-Anyone interested in using BIOSCAN-1M Insect dataset and/or the corresponding code repository, 
+Anyone interested in using BIOSCAN-5M dataset and/or the corresponding code repository, 
 please cite the [Paper]():
 
 ```
