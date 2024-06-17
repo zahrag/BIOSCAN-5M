@@ -56,7 +56,7 @@ size information of the organisms. We created both CSV and JSONLD types of the m
 
 ###### <h3> Geographical Information
 The BIOSCAN-5M dataset provides information associated with the cite of collection of the organisms:
-*Latitude and Longitude coordinates
+* Latitude and Longitude coordinates
 
 ![Alt Text](BIOSCAN_images/repo_images/BIOSCAN_5M_Insect_Dataset_lat_lon_map.png)
 
