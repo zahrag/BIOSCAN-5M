@@ -2,3 +2,7 @@
 	path = BarcodeBERT
 	url = https://github.com/Kari-Genomics-Lab/BarcodeBERT.git
 	branch = BIOSCAN-5M
+[submodule "BIOSCAN_ZSC"]
+	path = BIOSCAN_ZSC
+	url = https://github.com/scottclowe/zs-ssl-clustering
+	branch = BIOSCAN-5M
