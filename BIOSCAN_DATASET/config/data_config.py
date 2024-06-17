@@ -30,7 +30,7 @@ def config_base(parser):
 
     parser.add_argument('--metadata',
                         type=str,
-                        default='/home/zahra/Desktop/BioScan/BioScan/dataset/BIOSCAN_6M/metadata/BIOSCAN_5M_Insect_Dataset_metadata.csv',
+                        default='BIOSCAN_metadata/BIOSCAN_5M_Insect_Dataset_metadata.csv',
                         help='Path to the metadata file of the dataset.')
 
     return parser
