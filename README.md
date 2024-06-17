@@ -37,16 +37,16 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 The BIOSCAN-5M dataset comprises resized and cropped images.
 We have provided various packages of the BIOSCAN-5M dataset, each tailored for specific purposes.
 
-* BIOSCAN_original.zip: The raw images of the dataset.
-* BIOSCAN_cropped.zip: Images after cropping with our cropping tool.
-* BIOSCAN_original_256.zip: Original images resized to 256 on their shorter side.
-  * BIOSCAN_original_256_pretrain.zip
-  * BIOSCAN_original_256_train.zip
-  * BIOSCAN_original_256_eval.zip
-* BIOSCAN_cropped_256.zip: Cropped images resized to 256 on their shorter side.
-  * BIOSCAN_cropped_256_pretrain.zip
-  * BIOSCAN_cropped_256_train.zip
-  * BIOSCAN_cropped_256_eval.zip
+* BIOSCAN_5M_original.zip: The raw images of the dataset.
+* BIOSCAN_5M_cropped.zip: Images after cropping with our cropping tool.
+* BIOSCAN_5M_original_256.zip: Original images resized to 256 on their shorter side.
+  * BIOSCAN_5M_original_256_pretrain.zip
+  * BIOSCAN_5M_original_256_train.zip
+  * BIOSCAN_5M_original_256_eval.zip
+* BIOSCAN_5M_cropped_256.zip: Cropped images resized to 256 on their shorter side.
+  * BIOSCAN_5M_cropped_256_pretrain.zip
+  * BIOSCAN_5M_cropped_256_train.zip
+  * BIOSCAN_5M_cropped_256_eval.zip
 
 ###### <h3> Metadata 
 The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biological information, geographic information as well as 
