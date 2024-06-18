@@ -82,7 +82,7 @@ The BIOSCAN-5M dataset provides information associated with the collection sites
 
 
 ###### <h3> Size Information
-The BIOSCAN-5M dataset provides information about size the organisms:
+The BIOSCAN-5M dataset provides information about size of the organisms:
 * Image measurement value: Total number of pixels occupied by the organism
 
 Furthermore, utilizing our cropping tool, we calculated the following information about the size of the organism:
