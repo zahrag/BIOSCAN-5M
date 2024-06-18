@@ -14,17 +14,13 @@ BIOSCAN-5M Dataset Partitioning.
 # # Setup
 import numpy as np
 import pandas as pd
-from tqdm.notebook import tqdm
+from tqdm.auto import tqdm
+import matplotlib.pyplot as plt
+from IPython.display import display
 
 tqdm.pandas()
 
-import matplotlib.pyplot as plt
-
-pd.set_option('display.max_rows', 1_000)
-
 taxon_cols = ["phylum", "class", "order", "family", "subfamily", "genus", "species"]
-
-fname = "BIOSCAN-5M_Dataset_v3.0b5.csv"
 
 df_dtypes = {
     "processid": "str",
@@ -102,6 +98,8 @@ df_dtypes = {
     "species": "category",
 }
 
+
+fname = "BIOSCAN-5M_Dataset_v3.0b5.csv"
 
 # ## Load
 df = pd.read_csv(fname, dtype=df_dtypes)
