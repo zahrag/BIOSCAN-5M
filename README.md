@@ -47,6 +47,17 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 All dataset image packages and metadata are accessible for download through the
 [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0) folder.
 
+###### <h3> Copyright and License 
+The images included in the BIOSCAN-1M Insect dataset available through this repository are subject to copyright 
+and licensing restrictions shown in the following:
+
+ - Copyright Holder: CBG Photography Group
+ - Copyright Institution: Centre for Biodiversity Genomics (email:CBGImaging@gmail.com)
+ - Photographer: CBG Robotic Imager
+ - Copyright License: Creative Commons Attribution 3.0 Unported ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/))
+ - Copyright Contact: collectionsBIO@gmail.com
+ - Copyright Year: 2021
+
 ### Metadata 
 The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biological information, geographic information as well as 
 size information of the organisms. We provide this metadata in both CSV and JSONLD file types.
