@@ -37,6 +37,9 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 The dataset image packages and metadata file are accessible for download through 
 the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0).
 
+###### <h3> Metadata 
+The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biological information, geographic information as well as 
+size information of the organisms. We created both CSV and JSONLD types of the metadata file.
 
 ###### <h3> RGB Image 
 
@@ -60,9 +63,6 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
   * BIOSCAN_5M_cropped_256_train.zip
   * BIOSCAN_5M_cropped_256_eval.zip
 
-###### <h3> Metadata 
-The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biological information, geographic information as well as 
-size information of the organisms. We created both CSV and JSONLD types of the metadata file.
 
 ###### <h3> Geographical Information
 The BIOSCAN-5M dataset provides information associated with the collection sites of the organisms:
