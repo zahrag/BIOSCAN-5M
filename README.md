@@ -12,15 +12,19 @@ dataset.
 BIOSCAN-5M is a comprehensive dataset comprising multi-modal information about over 5 million specimens, with 98% being insects. 
 
 Anyone interested in using BIOSCAN-5M dataset and/or the corresponding code repository, 
-please cite the [Paper]():
+please cite the paper:
 
-```
-@inproceedings{gharaee24,
-    title={BIOSCAN-5M: A Multimodal Dataset for Insect Biodiversity},
-    author={Gharaee, Z. and Lowe, S. C. and Gong, Z. and Arias. P. M. and Pellegrino, N. and Wang, A. T. 
-    and Haurum, J. B. and Zarubiieva, I. and Kari, L. and Steinke, D. and Taylor, G. W. and Fieguth, P. and Chang, A. X.},
-    publisher={arxiv},
+```bibtex
+@article{BIOSCAN5M,
+    title={{BIOSCAN-5M}: A Multimodal Dataset for Insect Biodiversity},
+    author={
+        Gharaee, Z. and Lowe, S. C. and Gong, Z. and Arias. P. M. and Pellegrino, N.
+        and Wang, A. T. and Haurum, J. B. and Zarubiieva, I. and Kari, L.
+        and Steinke, D. and Taylor, G. W. and Fieguth, P. and Chang, A. X.
+    },
     year={2024},
+    journal={arXiv preprint},
+    archivePrefix={arXiv},
 }
 ```
 
