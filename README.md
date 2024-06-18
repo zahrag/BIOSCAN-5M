@@ -35,7 +35,7 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 
 ##### <h3> Dataset Access
 The dataset image packages and metadata file are accessible for download through 
-the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0).
+the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0) folder.
 
 ###### <h3> Metadata 
 The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biological information, geographic information as well as 
