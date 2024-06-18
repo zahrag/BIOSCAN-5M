@@ -99,6 +99,51 @@ df_dtypes = {
 }
 
 
+def find_novel_species(df, verbose=0):
+    is_novel_species = df["species"].notna() & df["species"].str.contains(r"[mM]+[aA]+[lLiI]+[aA]+[iIlL]+[sSzZ]+[eE]+", regex=True)
+    is_novel_species |= df["species"].notna() & df["species"].str.contains(r"^[a-z]", regex=True)
+
+    is_novel_genus = df["genus"].notna() & df["genus"].str.contains(r"[mM]+[aA]+[lLiI]+[aA]+[iIlL]+[sSzZ]+[eE]+", regex=True)
+    sel = df["genus"].notna() & df["genus"].str.contains(r"^[a-z]", regex=True)
+    sel &= ~(df["genus"].notna() & df["genus"].str.startswith("unclassified"))
+    sel &= ~(df["genus"].notna() & df["genus"].str.startswith("unassigned"))
+    is_novel_genus |= sel
+
+    is_novel_species |= is_novel_genus
+    is_novel_species |= df["species"].notna() & df["species"].str.contains(r"[0-9]", regex=True)
+    is_novel_species |= df["species"].notna() & df["species"].str.contains(r"[A-Z][A-Z]", regex=True)
+
+    search_terms = [r"\baff\b" , r"\bn[\b\.\s]+sp\b", r"\bsp[\b\s]+ex\b", r"\bgen\b", r"\bsp\b\.?[\s\w\d]+", r"affinis\s+[0-9A-Z]+"]
+    search_suffix = ""
+    for c in taxon_cols[-2:]:
+        for search in search_terms:
+            sel = df[c].notna() & df[c].str.contains(search + search_suffix, regex=True)
+            if sum(sel) == 0:
+                continue
+            is_novel_species |= sel
+            if verbose >= 1:
+                print(c, search)
+                display(df.loc[sel, taxon_cols].groupby(taxon_cols, dropna=False, observed=True).size())
+                print()
+
+    for c in ["species"]:
+        for search in [r"[\_\?]"]:
+            sel = df[c].notna() & df[c].str.contains(search + search_suffix, regex=True)
+            if sum(sel) == 0:
+                continue
+            is_novel_species |= sel
+            if verbose >= 1:
+                print(c, search)
+                display(df.loc[sel, taxon_cols].groupby(taxon_cols, dropna=False, observed=True).size())
+                print()
+
+    is_novel_species |= df["species"].notna() & df["species"].str.contains(r"[^$][A-Z]", regex=True)
+    is_novel_species |= df["species"].notna() & df["species"].str.contains(r"[0-9]", regex=True)
+    is_novel_species |= df["species"].notna() & df["species"].str.contains(".", regex=False)
+
+    return is_novel_species
+
+
 def main(fname_input, output_csv, verbose=1):
     # ## Load
     if verbose >= 1:
@@ -107,6 +152,7 @@ def main(fname_input, output_csv, verbose=1):
     if verbose >= 1:
         print("Finished loading metadata.")
 
+    df["is_novel_species"] = find_novel_species(df, verbose=verbose-2)
     df["dna_barcode_strip"] = df["dna_barcode"].str.strip("N")
 
     df
