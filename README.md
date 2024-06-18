@@ -42,17 +42,15 @@ The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biolog
 size information of the organisms. We created both CSV and JSONLD types of the metadata file.
 
 ###### <h3> RGB Image 
+The BIOSCAN-5M dataset comprises resized and cropped images.
+We have provided various packages of the BIOSCAN-5M dataset, each tailored for specific purposes.
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/images_n.png" alt="Alt Text" />
   <figcaption><b>Figure 2:</b> Examples of the original images of the BIOSCAN-5M dataset.</figcaption>
 </figure>
 
-<br>
-
-The BIOSCAN-5M dataset comprises resized and cropped images.
-We have provided various packages of the BIOSCAN-5M dataset, each tailored for specific purposes.
-
+###### <h4> Image packages
 * BIOSCAN_5M_original.zip: The raw images of the dataset.
 * BIOSCAN_5M_cropped.zip: Images after cropping with our cropping tool introduced in [BIOSCAN_1M](https://github.com/zahrag/BIOSCAN-1M).
 * BIOSCAN_5M_original_256.zip: Original images resized to 256 on their shorter side.
