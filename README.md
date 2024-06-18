@@ -86,8 +86,8 @@ The BIOSCAN-5M dataset provides information about size of the organisms:
 * Image measurement value: Total number of pixels occupied by the organism
 
 Furthermore, utilizing our cropping tool, we calculated the following information about the size of the organism:
-* Area fraction
-* Scale factor
+* Area fraction: Fraction of the original image, the cropped image comprises.
+* Scale factor: Ratio of the cropped image to the cropped and resized image.
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/images_masks.png" alt="Alt Text" />
