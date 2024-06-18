@@ -21,11 +21,8 @@ please cite the [Paper]():
     year={2024},
 }
 ```
-##### <h3> Dataset Access
-The dataset image packages and metadata file are accessible for download through 
-the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0).
 
-##### <h3> Dataset
+##### <h2> Dataset
 We present BIOSCAN-5M dataset to the machine learning community with valuable information about insect's biodiversity. 
 Each record of the BIOSCAN-5M dataset contains six primary attributes:
 * DNA Barcode Sequence
@@ -35,6 +32,10 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 * Geographical information 
 * Size information
 
+
+##### <h3> Dataset Access
+The dataset image packages and metadata file are accessible for download through 
+the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0).
 
 
 ###### <h3> RGB Image 
