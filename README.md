@@ -89,7 +89,7 @@ The BIOSCAN-5M dataset provides associated with the size the organisms:
   <figcaption><b>Figure 5:</b> Examples of original images (top) and their corresponding masks (bottom) depicting pixels occupied by the organism.</figcaption>
 </figure>
 
-Additionally utilizing our cropping tool, we calculated the following information about the size of the organism:
+Furthermore, utilizing our cropping tool, we calculated the following information about the size of the organism:
 * Area fraction
 * Scale factor
  
