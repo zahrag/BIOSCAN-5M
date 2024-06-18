@@ -63,14 +63,20 @@ df_dtypes = {
     "genus_preconflictres": "category",
     "species_preconflictres": "category",
     "nucraw": str,
+    "dna_barcode": str,
+    "dna_bin": "category",
     "country": "category",
     "province/state": "category",
+    "province_state": "category",
     "coord-lat": float,
     "coord-lon": float,
     "image_measurement_value": float,
     "image_measurement_context": "category",
+    "area_fraction": float,
+    "scale_factor": float,
     "image_file": str,
     "chunk_number": "uint8",
+    "chunk": str,
     "index_bioscan_1M_insect": "Int64",
     "_phylum_original": "category",
     "_class_original": "category",
@@ -104,6 +110,7 @@ df_dtypes = {
     "conflicted": bool,
     "conflicted_uri": bool,
     "is_novel_species": "boolean",
+    "inferred_ranks": "uint8",
     "label_was_reworded": "uint8",
     "label_was_manualeditted": "uint8",
     "label_was_inferred": "uint8",
@@ -157,11 +164,6 @@ df.memory_usage()
 
 sum(df.memory_usage()) / 1024 / 1024
 
-
-# In[262]:
-
-
-df.rename(columns={"nucraw": "dna_barcode", "uri": "dna_bin", "image_measurement_value": "surface_area", "index_bioscan_1M_insect": "bioscan1M_index"}, inplace=True)
 
 
 # # Partition
@@ -1082,150 +1084,6 @@ def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_up
 
 
 barcodes_selected = stratified_dna_image_partition(g_test, test_split_fn, lambda x: 3, test_split_fn_ub, test_split_fn_ub_barcodes, top_rand=True, seed=1)
-
-
-# In[ ]:
-
-
-raise ValueError("OLD VERSION")
-
-rng = np.random.default_rng(seed=1)
-barcodes_selected = []
-for species, grp in tqdm(g_test):
-    verbose = False
-    if False:
-    # if species in ['Chironomus luridus', 'Myrmelachista haberi', 'Myrmelachista nigrocotea']:
-    # if species in ['Chrysis viridissima', 'Drosophila eugracilis', 'Pegoplata debilis', 'Deraeocoris lutescens']:
-    # if species in ['Dasyhelea ludingensis', 'Scaptomyza pallida', 'Bifronsina bifrons']:
-    # 'Dasyhelea ludingensis', 'Scaptomyza pallida', 'Bifronsina bifrons', 'Megaselia sidneyae', 'Cotesia ruficrus'
-        verbose = True
-        print()
-        print(species)
-        display(grp)
-    n = len(grp)
-    target = test_split_fn(n)
-    if target == 0:
-        continue
-    target_lb = 3
-    target_ub = test_split_fn_ub(n)
-    n_alloc = 0
-    indices_used = []
-    grp_barcodes_selected = []
-    dnasz = grp.groupby("dna_barcode_strip").size().sort_values()
-    if verbose:
-        display(dnasz)
-    n_barcodes = len(dnasz)
-    ub_barcodes = test_split_fn_ub_barcodes(n_barcodes)
-    if verbose:
-        print(n, "samples for the species")
-        print(n_barcodes, "barcodes for the species")
-        print("target", target)
-        print("target_lb", target_lb)
-        print("target_ub", target_ub)
-        print("ub_barcodes", ub_barcodes)
-    if n_barcodes == 1:
-        # Can't allocate our only DNA barcode
-        continue
-    dnasz_cs = dnasz.cumsum()
-    if verbose:
-        pass
-        # break
-    while True:
-        if verbose:
-            print("n_alloc", n_alloc)
-            # display(dnasz)
-        # We only want to add samples which keep us below or at the target
-        # And cumsum indicates the largest value we can reach with the smallest k entries,
-        # so we need to add one of the samples that takes the cumsum to the target.
-        is_option = (dnasz <= target - n_alloc).values & (dnasz_cs >= target * 1.1 - n_alloc).values
-        if sum(is_option) == 0:
-            if verbose:
-                print("No ideal options")
-            # No ideal options, so let's make do
-            if n_alloc == 0 and not any(dnasz <= target):
-                # No options and nothing added so far
-                if dnasz.iloc[0] >= target_lb and dnasz.iloc[0] < n / 2:
-                    if verbose:
-                        print("Nothing added, taking first")
-                    idx = 0
-                else:
-                    break
-            elif dnasz.iloc[0] > target - n_alloc:  # not any(dnasz <= target - n_alloc):
-                # Everything would take us above the remaining target
-                if dnasz.iloc[0] > (target - n_alloc) / 2:
-                    # Shouldn't add the smallest because the residual would be larger than it is now
-                    if verbose:
-                        print("Last possibility avoiding smallest, increases residual")
-                    break
-                if n_alloc + dnasz.iloc[0] > target_ub:
-                    # Can't add the smallest as it takes us above our upperbound
-                    if verbose:
-                        print("Can't add smallest due to upperbound")
-                    break
-                # Add the smallest
-                idx = 0
-            elif not any(dnasz_cs >= target * 1.1 - n_alloc):
-                raise ValueError("Impossible outcome")
-            else:
-                # Find where our two criteria meet
-                option_cutoff_idx = np.nonzero(dnasz_cs >= target * 1.1 - n_alloc)[0][0]
-                idx = option_cutoff_idx
-                if (
-                    option_cutoff_idx > 0
-                    and abs(n_alloc + dnasz.iloc[option_cutoff_idx - 1] - target) < abs(target - (n_alloc + dnasz.iloc[option_cutoff_idx]))
-                ):
-                    idx = option_cutoff_idx - 1
-                if n_alloc + dnasz.iloc[option_cutoff_idx] > target_ub:
-                    break
-                if verbose:
-                    print("Breaking between criteria")
-        elif len(grp_barcodes_selected) + 1 >= ub_barcodes:
-            # We can only add one more, so add the most populated DNA that makes sense to add
-            option_cutoff_idx = np.nonzero(dnasz <= target - n_alloc)[0][-1]
-            idx = option_cutoff_idx
-            if (
-                option_cutoff_idx < len(dnasz) - 1
-                and abs(n_alloc + dnasz.iloc[option_cutoff_idx + 1] - target) < abs(target - (n_alloc + dnasz.iloc[option_cutoff_idx]))
-                and n_alloc + dnasz.iloc[option_cutoff_idx + 1] <= target_ub
-            ):
-                idx = option_cutoff_idx + 1
-            if verbose:
-                print("Choosing last barcode to add, so using largest")
-        else:
-            # idx = rng.integers(sum(is_option), size=1)[0]
-            # Only use a barcode from the intermediate set of options
-            n_options = sum(is_option)
-            idx = rng.integers(int(n_options * 0.25), int(np.ceil(n_options * 0.75)), size=1)[0]
-            idx = np.nonzero(is_option)[0][idx]
-            if verbose:
-                print(f"Randomly selected item #{idx} from {n_options} options with {dnasz.iloc[idx]} samp")
-        if verbose:
-            print(f"Adding item {idx}: {dnasz.index[idx]}")
-        grp_barcodes_selected.append(dnasz.index[idx])
-        n_alloc += dnasz.iloc[idx]
-        if n_alloc >= target:
-            break
-        dnasz_cs[idx:] -= dnasz.iloc[idx]
-        indices_used.append(idx)
-        len_pre = len(dnasz)
-        dnasz_cs.drop(dnasz.index[idx], inplace=True)
-        dnasz.drop(dnasz.index[idx], inplace=True)
-        len_post = len(dnasz)
-        if len_pre == len_post:
-            raise ValueError()
-        if len(grp_barcodes_selected) >= ub_barcodes:
-            break
-        if verbose:
-            print(f"End of loop with {len(dnasz)} = {len(dnasz_cs)} / {n_barcodes} barcodes remaining")
-    if n_alloc >= target_lb:
-        barcodes_selected.append(grp_barcodes_selected)
-        if verbose:
-            print(f"Added {len(grp_barcodes_selected)} barcodes")
-    elif verbose:
-        print(f"Skipped adding {len(grp_barcodes_selected)} barcodes")
-    if verbose:
-        print(len(grp_barcodes_selected), "barcodes selected")
-        display(grp_barcodes_selected)
 
 
 # In[1937]:
@@ -2295,7 +2153,8 @@ cols_to_save = [
     'processid',
     'sampleid',
     'image_file',
-    'chunk_number',
+    'chunk',
+    'taxon',
     'phylum',
     'class',
     'order',
@@ -2313,20 +2172,18 @@ cols_to_save = [
     'province/state',
     'coord-lat',
     'coord-lon',
-    'surface_area',
-    'bioscan1M_index',
-    # 'label_was_reworded',
-    # 'label_was_manualeditted',
-    'label_was_inferred',
-    # 'label_was_dropped',
-    # 'dna_barcode_strip',
+    'image_measurement_value',
+    'area_fraction',
+    'scale_factor',
+    'index_bioscan_1M_insect',
+    'inferred_ranks',
 ]
 
 
 # In[2228]:
 
 
-df[cols_to_save].rename(columns={"province/state": "province_state"}).to_csv("BIOSCAN-5M_Dataset_v3.1.csv", index=False)
+df[cols_to_save].to_csv("BIOSCAN-5M_Dataset_v3.1.csv", index=False)
 
 
 # # End
