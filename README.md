@@ -135,10 +135,12 @@ Tokens are encoded and fed into a transformer model. The output embeddings are u
 </figure>
 
 ### Zero-shot transfer learning
-We follow the experimental setup recommended by [BIOSCAN_ZSC](https://arxiv.org/abs/2406.02465). 
-* (1) Take pretrained encoders. 
-* (2) Extract feature vectors from the stimuli by passing them through an encoder. 
-* (3) Cluster the reduced embeddings with Agglomerative Clustering. 
+We follow the experimental setup recommended by [zero-shot clustering](https://arxiv.org/abs/2406.02465),
+expanded to operate on multiple modalities.
+* (1) Take pretrained encoders.
+* (2) Extract feature vectors from the stimuli by passing them through the pretrained encoder.
+* (3) Reduce the embeddings with UMAP.
+* (3) Cluster the reduced embeddings with Agglomerative Clustering.
 * (4) Evaluate against the ground-truth annotations with Adjusted Mutual Information.
 
 <figure style="text-align: center;">
