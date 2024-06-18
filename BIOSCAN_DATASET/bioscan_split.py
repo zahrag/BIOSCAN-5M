@@ -351,8 +351,6 @@ def main(fname_input, output_csv, verbose=1):
 
     df.loc[df["split"] == "pretrain", "species"].nunique()
 
-    df.drop(columns=['label_was_reworded', 'label_was_manualeditted', 'label_was_inferred', 'label_was_dropped']).to_csv("BIOSCAN-5M_Dataset_v3.0rc1.csv")
-
     sum(df["dna_bin"].isna())
 
     for split in df["split"].unique():
@@ -799,8 +797,6 @@ def main(fname_input, output_csv, verbose=1):
 
     100 * 40_001 / (299_584 + 40_001 + 3_757)
 
-    df.drop(columns=['label_was_reworded', 'label_was_manualeditted', 'label_was_inferred', 'label_was_dropped']).to_csv("BIOSCAN-5M_Dataset_v3.0rc4.csv")
-
     # ## val
     (301301 + 38284 + 3_757) * 5 / 100
 
@@ -1121,8 +1117,6 @@ def main(fname_input, output_csv, verbose=1):
     df.loc[df["species"].isin(single_species), "species_status"] = "seen_singleton"
 
     df
-
-    df.drop(columns=['label_was_reworded', 'label_was_manualeditted', 'label_was_inferred', 'label_was_dropped']).to_csv("BIOSCAN-5M_Dataset_v3.0rc7.csv")
 
     # ## Role
     df["role"] = "none"
