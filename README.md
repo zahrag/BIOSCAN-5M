@@ -94,7 +94,7 @@ Furthermore, utilizing our cropping tool, we calculated the following informatio
   <figcaption><b>Figure 5:</b> Examples of original images (top) and their corresponding masks (bottom) depicting pixels occupied by the organism.</figcaption>
 </figure>
 
-<br>
+<br><br><br>
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/area_frac.png" alt="Alt Text" />
