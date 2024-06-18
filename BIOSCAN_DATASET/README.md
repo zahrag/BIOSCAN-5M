@@ -1,8 +1,8 @@
-# BIOSCAN-6M
+# BIOSCAN-5M
 
 Here are the functions handling:
 
-- Download dataset packages 
+- Download dataset files 
 - Dataset statistics 
 - Data distributions 
 - Dataset split 
