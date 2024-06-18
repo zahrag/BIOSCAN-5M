@@ -93,6 +93,55 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
   * BIOSCAN_5M_cropped_256_eval.zip
 
 
+<table>
+  <thead>
+    <tr>
+      <th>BIOSCAN_5M_original</th>
+      <th>BIOSCAN_5M_cropped</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <ul>
+          <li>BIOSCAN_5M_original.zip.001</li>
+          <li>BIOSCAN_5M_original.zip.002</li>
+          <li>BIOSCAN_5M_original.zip.003</li>
+          <li>BIOSCAN_5M_original.zip.004</li>
+          <li>BIOSCAN_5M_original.zip.005</li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>BIOSCAN_5M_cropped.zip.001</li>
+          <li>BIOSCAN_5M_cropped.zip.002</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <th>BIOSCAN_5M_original_256</th>
+      <th>BIOSCAN_5M_cropped_256</th>
+    </tr>
+    <tr>
+      <td>
+        <ul>
+          <li>BIOSCAN_5M_original_256.zip</li>
+          <li>BIOSCAN_5M_original_256_pretrain.zip</li>
+          <li>BIOSCAN_5M_original_256_train.zip</li>
+          <li>BIOSCAN_5M_original_256_eval.zip</li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>BIOSCAN_5M_cropped_256.zip</li>
+          <li>BIOSCAN_5M_cropped_256_pretrain.zip</li>
+          <li>BIOSCAN_5M_cropped_256_train.zip</li>
+          <li>BIOSCAN_5M_cropped_256_eval.zip</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 
 
