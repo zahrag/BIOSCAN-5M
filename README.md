@@ -78,10 +78,9 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
 * **BIOSCAN_5M_cropped_256**: Cropped images resized to 256 on their shorter side.
  
 
-
 <table>
   <thead>
-    <tr>
+    <tr style="background-color: #f2f2f2;">
       <th>BIOSCAN_5M_original</th>
       <th>BIOSCAN_5M_cropped</th>
     </tr>
@@ -104,7 +103,7 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
         </ul>
       </td>
     </tr>
-    <tr>
+    <tr style="background-color: #f2f2f2;">
       <th>BIOSCAN_5M_original_256</th>
       <th>BIOSCAN_5M_cropped_256</th>
     </tr>
@@ -128,7 +127,6 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
     </tr>
   </tbody>
 </table>
-
 
 
 ### Geographical Information
