@@ -151,8 +151,8 @@ expanded to operate on multiple modalities.
 * (1) Take pretrained encoders.
 * (2) Extract feature vectors from the stimuli by passing them through the pretrained encoder.
 * (3) Reduce the embeddings with UMAP.
-* (3) Cluster the reduced embeddings with Agglomerative Clustering.
-* (4) Evaluate against the ground-truth annotations with Adjusted Mutual Information.
+* (4) Cluster the reduced embeddings with Agglomerative Clustering.
+* (5) Evaluate against the ground-truth annotations with Adjusted Mutual Information.
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/bioscan_zsc_n1.png" alt="Alt Text" />
