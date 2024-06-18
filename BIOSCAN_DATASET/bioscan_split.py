@@ -120,43 +120,43 @@ sum(df.memory_usage()) / 1024 / 1024
 
 # ```
 # placeholders = Maliaise0386 + ["sp.", "cf.", "nr.", "aff." , "n.sp.",  "sp. ex", "grp."]
-# 
+#
 # column: [partition/split]
-# 
+#
 # - pretrain    = everything without species labels + single_species[placeholders] + [other placeholders]
-# 
+#
 # - train       = (most samples of most species) + single_species[are proper names]
-# 
+#
 # - val         = small amount of all species in train (not single_species)
-# 
+#
 #                 (set of species = subset(train))
-# 
+#
 #                 stratfied 5%-10% of train data, same distrbn as train;
-# 
+#
 #                    exception species with fewer than 4 samples
-# 
+#
 # - test_seen   = small amount of all species in train [no placeholders]
-# 
+#
 #                 (set of species = subset(train) > num species in val)
-# 
+#
 #                 from species which have >8 samples, place half of num for species - 20
-# 
+#
 # - test_unseen = the species not in train [no placeholders]
-# 
+#
 #                 all samples from those species
-# 
+#
 #                 some species with up to 20 (say) samples, at least 2
-# 
+#
 # column: [role]
-# 
+#
 # - key / query / other=""=NA (/ more?)
-# 
+#
 #   do stratified 50/50 key/query where appropriate - apply to train, val, test_seen, test_unseen
-# 
+#
 # column: [species_status]
-# 
+#
 # - seen / unseen / placeholder / unknown
-# 
+#
 # ```
 df["split"] = "unk"
 df.loc[df["species"].isna() | df["is_novel_species"], "split"] = "pretrain"
@@ -711,7 +711,7 @@ plt.xscale("log")
 # samples to place 300466
 # species to place 8090
 # ```
-# 
+#
 # Restricting to top 50%
 # ```
 # pretrain        4754367 92.30% 1384.73%
@@ -719,13 +719,13 @@ plt.xscale("log")
 # test_unseen       53171  1.03%   15.49%
 # train              3757  0.07%    1.09%
 # unk              300232  5.83%   87.44%
-# 
+#
 # pretrain        2325492 93.52% 1626.16%
 # test_seen         18966  0.76%   13.26%
 # test_unseen       18009  0.72%   12.59%
 # train              3757  0.15%    2.63%
 # unk              120282  4.84%   84.11%
-# 
+#
 # samples to place 300232
 # species to place 8090
 # ```
@@ -961,14 +961,14 @@ df.loc[sel, "species"].nunique()
 #  6032.7  4798
 #  3757.0  1618
 # ```
-# 
+#
 # ```
 # Target Current
 # --------------
 # 15199.5 12786
 #  6199.2  4644
 #  3757.0  1615
-# 
+#
 # ```
 target_samp = val_pc_target / 100 * sum(df["split"].isin(["train", "unk"]))
 target_dna = val_pc_target / 100 * df.loc[df["split"].isin(["train", "unk"]), "dna_barcode_strip"].nunique()
@@ -1240,7 +1240,7 @@ for species, grp in tqdm(g_test):
             search_min = max(0, search_min - 1)
             search_max = min(len(dnasz), search_max + 1)
         barcode_idx = rng.integers(search_min, search_max, size=1)[0]
-        
+
         kq_barcodes[add_idx].append(dnasz.index[barcode_idx])
         kq_imcount[add_idx] += dnasz.iloc[barcode_idx]
         dnasz.drop(dnasz.index[barcode_idx], inplace=True)
