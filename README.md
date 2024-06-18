@@ -184,9 +184,9 @@ Benchmark Experiments
 
 ### DNA-based taxonomic classification
 Two stages of the proposed semi-supervised learning set-up based on [BarcodeBERT](https://arxiv.org/abs/2311.02401). 
-* (1) Pretraining: DNA sequences are tokenized using non-overlapping k-mers and 50% of the tokens are masked for the MLM task. 
+1. Pretraining: DNA sequences are tokenized using non-overlapping k-mers and 50% of the tokens are masked for the MLM task. 
 Tokens are encoded and fed into a transformer model. The output embeddings are used for token-level classification. 
-* (2) Fine-tuning: All DNA sequences in a dataset are tokenized using non-overlapping $k$-mer tokenization and all tokenized sequences, without masking, are passed through the pretrained transformer model.  Global mean-pooling is applied over the token-level embeddings and the output is used for taxonomic classification.
+2. Fine-tuning: All DNA sequences in a dataset are tokenized using non-overlapping $k$-mer tokenization and all tokenized sequences, without masking, are passed through the pretrained transformer model.  Global mean-pooling is applied over the token-level embeddings and the output is used for taxonomic classification.
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/barcode_bert_n2.png" alt="Methodology for BarcodeBERT experiments." />
   <figcaption><b>Figure 8:</b> BarcodeBERT model architecture.</figcaption>
@@ -195,11 +195,11 @@ Tokens are encoded and fed into a transformer model. The output embeddings are u
 ### Zero-shot transfer learning
 We follow the experimental setup recommended by [zero-shot clustering](https://arxiv.org/abs/2406.02465),
 expanded to operate on multiple modalities.
-* (1) Take pretrained encoders.
-* (2) Extract feature vectors from the stimuli by passing them through the pretrained encoder.
-* (3) Reduce the embeddings with UMAP.
-* (4) Cluster the reduced embeddings with Agglomerative Clustering.
-* (5) Evaluate against the ground-truth annotations with Adjusted Mutual Information.
+1. Take pretrained encoders.
+2. Extract feature vectors from the stimuli by passing them through the pretrained encoder.
+3. Reduce the embeddings with UMAP.
+4. Cluster the reduced embeddings with Agglomerative Clustering.
+5. Evaluate against the ground-truth annotations with Adjusted Mutual Information.
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/bioscan_zsc_n1.png" alt="Methodology for zero-shot clustering experiments." />
@@ -208,9 +208,9 @@ expanded to operate on multiple modalities.
 
 ### Multimodal retrieval learning
 Our experiments using the [BIOSCAN-CLIP](https://arxiv.org/abs/2405.17537) are conducted in two steps. 
-* (1) Training: Multiple modalities, including RGB images, textual taxonomy, and DNA sequences, are encoded separately, 
+1. Training: Multiple modalities, including RGB images, textual taxonomy, and DNA sequences, are encoded separately, 
 and trained using a contrastive loss function. 
-* (2) Inference: Image vs DNA embedding is used as a query, and compared to the embeddings obtained from a database of image, 
+2. Inference: Image vs DNA embedding is used as a query, and compared to the embeddings obtained from a database of image, 
 DNA and text (keys). The cosine similarity is used to find the closest key embedding, and the corresponding taxonomic label is used to classify the query.
 
 <figure style="text-align: center;">
