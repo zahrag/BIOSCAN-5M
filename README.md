@@ -48,7 +48,7 @@ size information of the organisms. We created both CSV and JSONLD types of the m
   <figcaption><b>Figure 2:</b> Examples of the original images of the BIOSCAN-5M dataset.</figcaption>
 </figure>
 
-<br><br>
+<br>
 
 The BIOSCAN-5M dataset comprises resized and cropped images.
 We have provided various packages of the BIOSCAN-5M dataset, each tailored for specific purposes.
