@@ -72,15 +72,22 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
 </figure>
 
 #### Image packages
-* BIOSCAN_5M_original.zip: The raw images of the dataset.
-* BIOSCAN_5M_cropped.zip: Images after cropping with our cropping tool introduced in [BIOSCAN_1M](https://github.com/zahrag/BIOSCAN-1M).
+* BIOSCAN_5M_original: The raw images of the dataset.
+  * BIOSCAN_5M_original.zip.001
+  * BIOSCAN_5M_original.zip.002
+  * BIOSCAN_5M_original.zip.003
+  * BIOSCAN_5M_original.zip.004
+  * BIOSCAN_5M_original.zip.005
+* BIOSCAN_5M_cropped: Images after cropping with our cropping tool introduced in [BIOSCAN_1M](https://github.com/zahrag/BIOSCAN-1M).
   * BIOSCAN_5M_cropped.zip.001
   * BIOSCAN_5M_cropped.zip.002
-* BIOSCAN_5M_original_256.zip: Original images resized to 256 on their shorter side.
+* BIOSCAN_5M_original_256: Original images resized to 256 on their shorter side.
+  * BIOSCAN_5M_original_256.zip
   * BIOSCAN_5M_original_256_pretrain.zip
   * BIOSCAN_5M_original_256_train.zip
   * BIOSCAN_5M_original_256_eval.zip
-* BIOSCAN_5M_cropped_256.zip: Cropped images resized to 256 on their shorter side.
+* BIOSCAN_5M_cropped_256: Cropped images resized to 256 on their shorter side.
+  * BIOSCAN_5M_cropped_256.zip
   * BIOSCAN_5M_cropped_256_pretrain.zip
   * BIOSCAN_5M_cropped_256_train.zip
   * BIOSCAN_5M_cropped_256_eval.zip
