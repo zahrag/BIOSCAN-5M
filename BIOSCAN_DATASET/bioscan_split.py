@@ -360,8 +360,6 @@ def main(fname_input, output_csv, verbose=1):
     df.loc[df["split"].isin(["test_seen", "train", "val"]), "split"] = "unk"
     df.loc[df["species"].isin(single_species), "split"] = "train"
 
-    df["dna_barcode_strip"] = df["dna_barcode"].str.strip("N")
-
     for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
         print(f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}%")
 
