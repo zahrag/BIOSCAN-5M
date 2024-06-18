@@ -6,3 +6,6 @@
 	path = BIOSCAN_ZSC
 	url = https://github.com/scottclowe/zs-ssl-clustering
 	branch = BIOSCAN-5M
+[submodule "BIOSCAN-CLIP"]
+	path = BIOSCAN-CLIP
+	url = git@github.com:3dlg-hcvc/bioscan-clip.git
