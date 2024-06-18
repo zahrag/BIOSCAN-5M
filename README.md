@@ -7,12 +7,12 @@ BIOSCAN-5M
 
 Overview
 ========
-This repository contains the code and data related to the to the [BIOSCAN-5M ](https://biodiversitygenomics.net/5M-insects/)
-dataset.  
-BIOSCAN-5M is a comprehensive dataset comprising multi-modal information about over 5 million specimens, with 98% being insects. 
+This repository contains the code and data related to the to the [BIOSCAN-5M](https://biodiversitygenomics.net/5M-insects/)
+dataset.
+BIOSCAN-5M is a comprehensive multi-modal dataset comprised of over 5 million specimens, 98% of which are insects.
+Every record has **both image and DNA** data.
 
-Anyone interested in using BIOSCAN-5M dataset and/or the corresponding code repository, 
-please cite the paper:
+If you make use of the BIOSCAN-5M dataset and/or this code repository, please cite the following paper:
 
 ```bibtex
 @article{BIOSCAN5M,
@@ -30,24 +30,26 @@ please cite the paper:
 
 Dataset
 =======
-We present BIOSCAN-5M dataset to the machine learning community with valuable information about insect's biodiversity. 
+We present BIOSCAN-5M dataset to the machine learning community.
+We hope this dataset will facilitate the development of tools to automate aspects of the monitoring of global insect biodiversity.
+
 Each record of the BIOSCAN-5M dataset contains six primary attributes:
-* DNA Barcode Sequence
-* Barcode Index Number (BIN)
-* Biological Taxonomy Classification
 * RGB image
-* Geographical information 
-* Size information
+* DNA barcode sequence
+* Barcode Index Number (BIN)
+* Biological taxonomic classification
+* Geographical information (latitude/longitude)
+* Specimen size
 
 
 ### Dataset Access
 
-The dataset image packages and metadata file are accessible for download through 
-the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0) folder.
+All dataset image packages and metadata are accessible for download through the
+[GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0) folder.
 
 ### Metadata 
 The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biological information, geographic information as well as 
-size information of the organisms. We created both CSV and JSONLD types of the metadata file.
+size information of the organisms. We provide this metadata in both CSV and JSONLD file types.
 
 ### RGB Image 
 The BIOSCAN-5M dataset comprises resized and cropped images.
@@ -111,7 +113,8 @@ Furthermore, utilizing our cropping tool, we calculated the following informatio
 </figure>
 
 ### Non-insect organisms
-The BIOSCAN-5M dataset contains non-insect taxonomic classes with a total of 137,479 organisms.
+In addition to insects (98% of specimens), the BIOSCAN-5M dataset also contains arthropods from non-insect taxonomic classes.
+These are primarily arachnids and springtails (Collembola).
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/non_insect.png" alt="Alt Text" />
