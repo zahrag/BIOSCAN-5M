@@ -75,6 +75,8 @@ The BIOSCAN-5M dataset provides Geographic information associated with the colle
   <figcaption><b>Figure 3:</b> Locations obtained from latitude and longitude coordinates associated with the sites of collection.</figcaption>
 </figure>
 
+<br><br>
+
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/map_supplement3.png" alt="Alt Text" />
   <figcaption><b>Figure 4:</b> Countries associated with the sites of collection.</figcaption>
