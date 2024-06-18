@@ -174,7 +174,7 @@ These are primarily arachnids and springtails (Collembola).
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/non_insect.png" alt="Alt Text" />
-  <figcaption><b>Figure 6:</b> Examples of the original images of non-insect organisms.</figcaption>
+  <figcaption><b>Figure 7:</b> Examples of the original images of non-insect organisms.</figcaption>
 </figure>
 
 Benchmark Experiments
