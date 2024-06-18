@@ -4,7 +4,7 @@
   <figcaption><b>Figure 1:</b> A BIOSCAN-5M dataset sample.</figcaption>
 </figure>
 
-##### <h3> Overview
+##### <h2> Overview
 This repository contains the code and data related to the to the [BIOSCAN-5M ](https://biodiversitygenomics.net/5M-insects/)
 dataset.  
 BIOSCAN-5M is a comprehensive dataset comprising multi-modal information about over 5 million specimens, with 98% being insects. 
