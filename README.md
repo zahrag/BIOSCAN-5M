@@ -85,7 +85,7 @@ The BIOSCAN-5M dataset provides Geographic information associated with the colle
 The BIOSCAN-5M dataset provides information about size of the organisms:
 * Image measurement value: Total number of pixels occupied by the organism
 
-Furthermore, utilizing our cropping tool, we calculated the following information about the size of the organism:
+Furthermore, utilizing our cropping tool, we calculated the following information about size of the organisms:
 * Area fraction: Fraction of the original image, the cropped image comprises.
 * Scale factor: Ratio of the cropped image to the cropped and resized image.
 
