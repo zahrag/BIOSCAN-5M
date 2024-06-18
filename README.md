@@ -99,6 +99,14 @@ Furthermore, utilizing our cropping tool, we calculated the following informatio
   <figcaption><b>Figure 6:</b> Examples of the original images with the bounding box detected by our cropping tool.</figcaption>
 </figure>
 
+###### <h3> Non-insect organisms
+The BIOSCAN-5M dataset contains non-insect taxonomic classes with a total of 137,479 organisms.
+
+<figure style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/non_insect.png" alt="Alt Text" />
+  <figcaption><b>Figure 6:</b> Examples of the original images of non-insect organisms.</figcaption>
+</figure>
+
 ###### <h2> Benchmark Experiments
 
 ###### <h3> DNA-based taxonomic classification
@@ -108,7 +116,7 @@ Tokens are encoded and fed into a transformer model. The output embeddings are u
 * (2) Fine-tuning: All DNA sequences in a dataset are tokenized using non-overlapping $k$-mer tokenization and all tokenized sequences, without masking, are passed through the pretrained transformer model.  Global mean-pooling is applied over the token-level embeddings and the output is used for taxonomic classification.
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/barcode_bert_n2.png" alt="Alt Text" />
-  <figcaption><b>Figure 7:</b> BarcodeBERT model architecture.</figcaption>
+  <figcaption><b>Figure 8:</b> BarcodeBERT model architecture.</figcaption>
 </figure>
 
 ###### <h3> Zero-shot transfer learning
@@ -120,7 +128,7 @@ We follow the experimental setup recommended by [BIOSCAN_ZSC](https://arxiv.org/
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/bioscan_zsc_n1.png" alt="Alt Text" />
-  <figcaption><b>Figure 8:</b> BIOSCAN-ZSC model architecture.</figcaption>
+  <figcaption><b>Figure 9:</b> BIOSCAN-ZSC model architecture.</figcaption>
 </figure>
 
 ###### <h3> Multimodal retrieval learning
@@ -132,6 +140,6 @@ DNA and text (keys). The cosine similarity is used to find the closest key embed
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/bioscan_clip.png" alt="Alt Text" />
-  <figcaption><b>Figure 9:</b> BIOSCAN-CLIP model architecture.</figcaption>
+  <figcaption><b>Figure 10:</b> BIOSCAN-CLIP model architecture.</figcaption>
 </figure>
 
