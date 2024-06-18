@@ -1,3 +1,3 @@
-# BIOSCAN-6M
+# BIOSCAN-5M
 
-BIOSCAN Dataset packages (ZIP, HDF5) containing RGB images are saved here. 
+BIOSCAN-5M Dataset images. 
