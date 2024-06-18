@@ -98,7 +98,6 @@ df_dtypes = {
     "species": "category",
 }
 
-
 fname = "BIOSCAN-5M_Dataset_v3.0b5.csv"
 
 # ## Load
@@ -113,8 +112,6 @@ df.dtypes
 df.memory_usage()
 
 sum(df.memory_usage()) / 1024 / 1024
-
-
 
 # # Partition
 
@@ -173,7 +170,6 @@ catalogued_species
 
 len(catalogued_species)
 
-
 # ## Single sample species
 partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "genus", "species"]]
 print("samples to place", len(partition_candidates))
@@ -190,7 +186,6 @@ single_species = list(sp_sz[sp_sz == 1].index)
 len(single_species)
 
 df.loc[df["species"].isin(single_species), "split"] = "train"
-
 
 # ## test_unseen
 np.unique(df["split"], return_counts=True)
@@ -258,7 +253,6 @@ for cutoff in range(51):
     n_sel_samp = sum(partition_candidates['species'].isin(_sp_sz_trainval_dna[sel_sp].index))
     print(f"{cutoff:3d}  {sum(_sp_sz_trainval_dna == cutoff):5d}  {n_sel_sp:5d}  {100 * n_sel_sp / len(sel_sp):5.2f}%  {n_sel_samp:6d}  {100 * n_sel_samp / len(partition_candidates):5.2f}%")
 
-
 # ### actual
 sel_known_genus = df["genus"].isin(df.loc[df["split"] != "pretrain", "genus"])
 
@@ -312,7 +306,6 @@ sum(df["dna_bin"].isna())
 for split in df["split"].unique():
     print(split, sum(df.loc[df["split"] == split, "dna_bin"].isna()))
 
-
 # ## test_seen
 df.loc[df["split"].isin(["test_seen", "train", "val"]), "split"] = "unk"
 df.loc[df["species"].isin(single_species), "split"] = "train"
@@ -342,6 +335,7 @@ np.sum(np.minimum(20, np.floor(sp_sz[sp_sz >= 8] / 2)))
 
 np.sum(np.minimum(20, np.floor(sp_sz[sp_sz >= 10] / 2)))
 
+
 def test_split_fn(n):
     if n < 8:
         return 0
@@ -349,17 +343,20 @@ def test_split_fn(n):
     k = min(k, 25)
     return k
 
+
 def test_split_fn_lb(n):
     if n < 8:
         return 0
     k = int(np.floor(3 + (n - 8) / 5))
     return k
 
+
 def test_split_fn_ub(n):
     if n < 8:
         return 0
     k = int(np.floor(4 + (n - 8) / 3))
     return k
+
 
 def test_split_fn_lb_barcodes(n):
     if n < 3:
@@ -368,11 +365,13 @@ def test_split_fn_lb_barcodes(n):
     k = min(k, 15)
     return k
 
+
 def test_split_fn_ub_barcodes(n):
     if n < 3:
         return 0
     k = int(np.floor(1 + (n - 2) / 3))
     return k
+
 
 for i in range(1, 100):
     print(f"{i:3d}  {test_split_fn(i):3d}  {100 * test_split_fn(i) / i:5.2f}%")
@@ -461,6 +460,7 @@ idx = rng.integers(len(options), size=1)[0]
 idx
 
 options.index[idx]
+
 
 def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_upper_fn, soft_upper=1.1, center_rand=False, top_rand=False, seed=None):
     rng = np.random.default_rng(seed=seed)
@@ -611,10 +611,11 @@ def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_up
             display(grp_barcodes_selected)
     return barcodes_selected
 
+
 barcodes_selected = stratified_dna_image_partition(g_test, test_split_fn, lambda x: 3, test_split_fn_ub, test_split_fn_ub_barcodes, top_rand=True, seed=1)
 
 print("target", target)
-print("n_alloc", n_alloc)
+# print("n_alloc", n_alloc)
 print("dnasz")
 print(dnasz.values)
 print("dnasz_cs")
@@ -690,12 +691,6 @@ plt.xscale("log")
 plt.scatter(df_tmp2["total"], df_tmp2["test_pc"])
 plt.xscale("log")
 
-
-#for species, k in tqdm(sp_sztest[sp_sztest > 0].items(), total=sum(sp_sztest > 0)):
-#    id_move_to_test = partition_candidates.loc[partition_candidates["species"] == species, "processid"].iloc[:k]
-#    df.loc[df["processid"].isin(id_move_to_test), "split"] = "test_seen"
-
-
 # Without restricting the random selection:
 # ```
 # pretrain        4754367 92.30%
@@ -754,7 +749,6 @@ print("species to place", partition_candidates["species"].nunique())
 
 df.drop(columns=['label_was_reworded', 'label_was_manualeditted', 'label_was_inferred', 'label_was_dropped']).to_csv("BIOSCAN-5M_Dataset_v3.0rc4.csv")
 
-
 # ## val
 (301301 + 38284 + 3_757) * 5 / 100
 
@@ -806,15 +800,6 @@ barcodes_selected = []
 soft_upper = 1.1
 for species, grp in tqdm(g_test):
     verbose = False
-    if False:
-    # if species in ['Chironomus luridus', 'Myrmelachista haberi', 'Myrmelachista nigrocotea']:
-    # if species in ['Chrysis viridissima', 'Drosophila eugracilis', 'Pegoplata debilis', 'Deraeocoris lutescens']:
-    # if species in ['Dasyhelea ludingensis', 'Scaptomyza pallida', 'Bifronsina bifrons']:
-    # 'Dasyhelea ludingensis', 'Scaptomyza pallida', 'Bifronsina bifrons', 'Megaselia sidneyae', 'Cotesia ruficrus'
-        verbose = True
-        print()
-        print(species)
-        display(grp)
     n = len(grp)
     if n < 20:
         continue
@@ -953,7 +938,6 @@ sum(sel)
 
 df.loc[sel, "species"].nunique()
 
-
 # ```
 # Target Current
 # --------------
@@ -1051,7 +1035,6 @@ partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["
 print("samples to place", len(partition_candidates))
 print("species to place", partition_candidates["species"].nunique())
 
-
 # ## train
 df.loc[df["split"] == "unk", "split"] = "train"
 
@@ -1072,7 +1055,6 @@ partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["
 print("samples to place", len(partition_candidates))
 print("species to place", partition_candidates["species"].nunique())
 
-
 # # Extras
 
 # ## species status
@@ -1089,7 +1071,6 @@ df.loc[df["species"].isin(single_species), "species_status"] = "seen_singleton"
 df
 
 df.drop(columns=['label_was_reworded', 'label_was_manualeditted', 'label_was_inferred', 'label_was_dropped']).to_csv("BIOSCAN-5M_Dataset_v3.0rc7.csv")
-
 
 # ## Role
 df["role"] = "none"
@@ -1267,7 +1248,6 @@ df.loc[df["dna_barcode_strip"].isin(all_q_barcodes), "role"] = "query"
 
 df.groupby(["split", "role"], dropna=False, observed=True).size()
 
-
 # # Save
 for c in df.columns:
     print(c)
@@ -1305,6 +1285,5 @@ cols_to_save = [
 ]
 
 df[cols_to_save].to_csv("BIOSCAN-5M_Dataset_v3.1.csv", index=False)
-
 
 # # End
