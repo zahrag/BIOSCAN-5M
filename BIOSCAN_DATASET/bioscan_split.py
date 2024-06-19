@@ -973,40 +973,10 @@ def main(fname_input, output_csv, verbose=1):
     df.loc[df["dna_barcode_strip"].isin(all_k_barcodes), "role"] = "key"
     df.loc[df["dna_barcode_strip"].isin(all_q_barcodes), "role"] = "query"
 
-    # # Save
-    cols_to_save = [
-        'processid',
-        'sampleid',
-        'image_file',
-        'chunk',
-        'taxon',
-        'phylum',
-        'class',
-        'order',
-        'family',
-        'subfamily',
-        'genus',
-        'species',
-        'is_novel_species',
-        'dna_bin',
-        'dna_barcode',
-        'split',
-        'role',
-        'species_status',
-        'country',
-        'province/state',
-        'coord-lat',
-        'coord-lon',
-        'image_measurement_value',
-        'area_fraction',
-        'scale_factor',
-        'index_bioscan_1M_insect',
-        'inferred_ranks',
-    ]
-
     # Save output ----------------------------------------------------------------------
+    df.drop(columns=["dna_barcode_strip", "is_novel_species"], inplace=True)
     print(f"Saving to {output_csv}")
-    df[cols_to_save].to_csv(output_csv, index=False)
+    df.to_csv(output_csv, index=False)
     print("Finished saving.")
 
 
