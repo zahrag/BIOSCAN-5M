@@ -134,7 +134,9 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
 
 
 ### Geographical Information
-The BIOSCAN-5M dataset provides Geographic information associated with the collection sites of the organisms:
+The BIOSCAN-5M dataset provides Geographic information associated with the collection sites of the organisms. 
+The following geographic data is presented in the <code>country</code>, <code>province_state</code>, <code>latitude</code>, and 
+<code>longitude</code> fields of the metadata file(s):
 * Latitude and Longitude coordinates
 * Country
 * Province or State
