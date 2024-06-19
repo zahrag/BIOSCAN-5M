@@ -196,7 +196,7 @@ We partitioned the BIOSCAN-5M dataset into splits for both closed-world and open
 and whose genus name is a scientific name
 (<code>key_unseen</code>, <code>val_unseen</code>, and <code>test_unseen</code> partitions).
   * This task requires the model to correctly group together new species that were not seen during training.
-  In the retreival paradigm, this can be performed using <code>test_unseen</code> records as queries against keys from the <code>key_unseen</code> records.
+  * In the retreival paradigm, this task can be performed using <code>test_unseen</code> records as queries against keys from the <code>key_unseen</code> records.
   * Alternatively, this data can be evaluated at the genus-level by classification via the species in the <code>train</code> partition.
 
 * Samples labelled with placeholder species names, and whose genus name is not a scientific name are placed in the <code>other_heldout</code> partition.
