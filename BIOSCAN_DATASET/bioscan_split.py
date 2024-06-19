@@ -396,13 +396,14 @@ def main(fname_input, output_csv, verbose=1):
         print("samples to place", len(partition_candidates))
         print("species to place", partition_candidates["species"].nunique())
 
+    # Add all of single species samples to training set
     sp_sz = partition_candidates.groupby("species", observed=True).size()
-
     single_species = list(sp_sz[sp_sz == 1].index)
-
     df.loc[df["species"].isin(single_species), "split"] = "train"
 
-    # ## test_unseen
+    # test_unseen partition ------------------------------------------------------------
+    if verbose >= 1:
+        print("Partitioning test_unseen split")
 
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "genus", "species"]]
     if verbose >= 2:
@@ -496,8 +497,10 @@ def main(fname_input, output_csv, verbose=1):
             print(split, sum(df.loc[df["split"] == split, "dna_bin"].isna()))
 
 
+    # test_seen ------------------------------------------------------------------------
+    if verbose >= 1:
+        print("Partitioning test_seen")
 
-    # ## test_seen
     df.loc[df["split"].isin(["test_seen", "train", "val"]), "split"] = "unk"
     df.loc[df["species"].isin(single_species), "split"] = "train"
 
@@ -594,7 +597,6 @@ def main(fname_input, output_csv, verbose=1):
         plt.xscale("log")
         plt.show()
 
-
     # Without restricting the random selection:
     # ```
     # pretrain        4754367 92.30%
@@ -649,9 +651,12 @@ def main(fname_input, output_csv, verbose=1):
         print("samples to place", len(partition_candidates))
         print("species to place", partition_candidates["species"].nunique())
 
+    # val partition --------------------------------------------------------------------
+    if verbose >= 1:
+        print("Partitioning validation split")
+
     sp_sz_val = partition_candidates.groupby("species", observed=True).size()
 
-    # ## val
     # Randomize the order of the data so we select random samples from each species
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "dna_barcode_strip", "genus", "species"]]
     partition_candidates = partition_candidates.sample(frac=1, random_state=2)
@@ -660,8 +665,10 @@ def main(fname_input, output_csv, verbose=1):
 
     val_pc_target = 5
 
-    # barcodes_selected = stratified_dna_image_partition(g_test, lambda x: val_pc_target / 100 * x, lambda x: 0, lambda x: val_pc_target / 50 * x, lambda x: val_pc_target / 100 * x, top_rand=True, seed=3)
+    # Not the same thing...
+    # barcodes_selected = stratified_dna_image_partition(g_test, lambda x: val_pc_target / 100 * x, lambda x: 0, lambda x: val_pc_target / 50 * x, lambda x: val_pc_target / 100 * x, top_rand=True, seed=3, verbose=verbose-1)
 
+    # TODO: Resolve with common function
     rng = np.random.default_rng(seed=3)
     barcodes_selected = []
     soft_upper = 1.1
@@ -910,7 +917,11 @@ def main(fname_input, output_csv, verbose=1):
         print("samples to place", len(partition_candidates))
         print("species to place", partition_candidates["species"].nunique())
 
-    # ## train
+
+    # train partition ------------------------------------------------------------------
+    if verbose >= 1:
+        print("Partitioning training split")
+
     df.loc[df["split"] == "unk", "split"] = "train"
 
     n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test_seen", "unk"]))
