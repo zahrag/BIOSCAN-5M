@@ -210,10 +210,7 @@ and whose genus name is a scientific name
 
 <div align="center">
   <img src="BIOSCAN_images/repo_images/treemap_partitions.svg" alt="Treemap diagram showing number of samples per partition" />
-  <p><b>Figure 8:</b> Treemap diagram showing number of samples per partition. For the pretrain partition (blues), 
-                      we provide a further breakdown indicating the most fine-grained taxonomic rank that is labelled 
-                      for the samples. For the remainder of the partitions (all of which are labelled to species level) 
-                      we show the number of samples in the partition. Samples for seen species are shown in shades of green, and unseen in shades of red.</p>
+  <p><b>Figure 8:</b> Treemap diagram showing number of samples per partition. For the pretrain partition (blues), we provide a further breakdown indicating the most fine-grained taxonomic rank that is labelled for the samples. For the remainder of the partitions (all of which are labelled to species level) we show the number of samples in the partition. Samples for seen species are shown in shades of green, and unseen in shades of red.</p>
 </div>
 
 
