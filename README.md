@@ -182,8 +182,10 @@ These are primarily arachnids and springtails (Collembola).
   <figcaption><b>Figure 8:</b> Examples of the original images of non-insect organisms.</figcaption>
 </figure>
 
-Data Partitions
+Benchmark Experiments
 =====================
+
+### Data Partitions
 We partitioned the BIOSCAN-5M dataset into splits for both closed-world and open-world machine learning problems.
 
 * The **closed-world** classification task uses samples labelled with a scientific name for their species
@@ -215,9 +217,6 @@ To use the partitions we propose, see the <code>split</code> field of the metada
   </figcaption>
 </figure>
 
-
-Benchmark Experiments
-=====================
 
 ### DNA-based taxonomic classification
 Two stages of the proposed semi-supervised learning set-up based on [BarcodeBERT](https://arxiv.org/abs/2311.02401). 
