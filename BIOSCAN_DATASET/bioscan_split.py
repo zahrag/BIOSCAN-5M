@@ -144,13 +144,11 @@ def find_novel_species(df, verbose=0):
     return is_novel_species
 
 
-def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_upper_fn, soft_upper=1.1, center_rand=False, top_rand=False, seed=None):
+def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_upper_fn, soft_upper=1.1, center_rand=False, top_rand=False, seed=None, verbose=0):
     rng = np.random.default_rng(seed=seed)
     barcodes_selected = []
     for species, grp in tqdm(g_test):
-        verbose = False
-        if False:
-            verbose = True
+        if verbose >= 1:
             print()
             print(species)
             display(grp)
@@ -164,12 +162,12 @@ def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_up
         indices_used = []
         grp_barcodes_selected = []
         dnasz = grp.groupby("dna_barcode_strip").size().sort_values()
-        if verbose:
+        if verbose >= 1:
             display(dnasz)
         n_barcodes = len(dnasz)
         # lb_barcodes = dna_lower_fn(n_barcodes)
         ub_barcodes = dna_upper_fn(n_barcodes)
-        if verbose:
+        if verbose >= 1:
             print(n, "samples for the species")
             print(n_barcodes, "barcodes for the species")
             print("target", target)
@@ -180,11 +178,8 @@ def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_up
             # Can't allocate our only DNA barcode
             continue
         dnasz_cs = dnasz.cumsum()
-        if verbose:
-            pass
-            # break
         while True:
-            if verbose:
+            if verbose >= 1:
                 print("n_alloc", n_alloc)
                 # display(dnasz)
             # We only want to add samples which keep us below or at the target
@@ -192,13 +187,13 @@ def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_up
             # so we need to add one of the samples that takes the cumsum to the target.
             is_option = (dnasz <= target - n_alloc).values & (dnasz_cs >= target * soft_upper - n_alloc).values
             if sum(is_option) == 0:
-                if verbose:
+                if verbose >= 1:
                     print("No ideal options")
                 # No ideal options, so let's make do
                 if n_alloc == 0 and not any(dnasz <= target):
                     # No options and nothing added so far
                     if dnasz.iloc[0] >= lb_samp and dnasz.iloc[0] < n / 2:
-                        if verbose:
+                        if verbose >= 1:
                             print("Nothing added, taking first")
                         idx = 0
                     else:
@@ -207,12 +202,12 @@ def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_up
                     # Everything would take us above the remaining target
                     if dnasz.iloc[0] > (target - n_alloc) / 2:
                         # Shouldn't add the smallest because the residual would be larger than it is now
-                        if verbose:
+                        if verbose >= 1:
                             print("Last possibility avoiding smallest, increases residual")
                         break
                     if n_alloc + dnasz.iloc[0] > ub_samp:
                         # Can't add the smallest as it takes us above our upperbound
-                        if verbose:
+                        if verbose >= 1:
                             print("Can't add smallest due to upperbound")
                         break
                     # Add the smallest
@@ -230,7 +225,7 @@ def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_up
                         idx = option_cutoff_idx - 1
                     if n_alloc + dnasz.iloc[option_cutoff_idx] > ub_samp:
                         break
-                    if verbose:
+                    if verbose >= 1:
                         print("Breaking between criteria")
             elif len(grp_barcodes_selected) + 1 >= ub_barcodes:
                 # We can only add one more, so add the most populated DNA that makes sense to add
@@ -242,7 +237,7 @@ def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_up
                     and n_alloc + dnasz.iloc[option_cutoff_idx + 1] <= ub_samp
                 ):
                     idx = option_cutoff_idx + 1
-                if verbose:
+                if verbose >= 1:
                     print("Choosing last barcode to add, so using largest")
             else:
                 n_options = sum(is_option)
@@ -262,9 +257,9 @@ def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_up
                     max_idx = min(max_idx + 1, n_options)
                 idx = rng.integers(min_idx, max_idx, size=1)[0]
                 idx = np.nonzero(is_option)[0][idx]
-                if verbose:
+                if verbose >= 1:
                     print(f"Randomly selected item #{idx} from {n_options} options with {dnasz.iloc[idx]} samp")
-            if verbose:
+            if verbose >= 1:
                 print(f"Adding item {idx}: {dnasz.index[idx]}")
             grp_barcodes_selected.append(dnasz.index[idx])
             n_alloc += dnasz.iloc[idx]
@@ -280,15 +275,15 @@ def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_up
                 raise ValueError()
             if len(grp_barcodes_selected) >= ub_barcodes:
                 break
-            if verbose:
+            if verbose >= 1:
                 print(f"End of loop with {len(dnasz)} = {len(dnasz_cs)} / {n_barcodes} barcodes remaining")
         if n_alloc >= lb_samp:
             barcodes_selected.append(grp_barcodes_selected)
-            if verbose:
+            if verbose >= 1:
                 print(f"Added {len(grp_barcodes_selected)} barcodes")
-        elif verbose:
+        elif verbose >= 1:
             print(f"Skipped adding {len(grp_barcodes_selected)} barcodes")
-        if verbose:
+        if verbose >= 1:
             print(len(grp_barcodes_selected), "barcodes selected")
             display(grp_barcodes_selected)
     return barcodes_selected
@@ -334,10 +329,10 @@ def test_split_fn_ub_barcodes(n):
 
 def main(fname_input, output_csv, verbose=1):
     # ## Load
-    if verbose >= 1:
+    if verbose >= 0:
         print(f"Loading {fname_input}")
     df = pd.read_csv(fname_input, dtype=df_dtypes)
-    if verbose >= 1:
+    if verbose >= 0:
         print("Finished loading metadata.")
 
     df["is_novel_species"] = find_novel_species(df, verbose=verbose-2)
@@ -388,16 +383,18 @@ def main(fname_input, output_csv, verbose=1):
     df["split"] = "unk"
     df.loc[df["species"].isna() | df["is_novel_species"], "split"] = "pretrain"
 
-    print(sum(df["split"] == "pretrain"))
-    print(sum((df["split"] == "pretrain") & df["species"].notna()))
-    print(df.loc[df["split"] == "pretrain", taxon_cols].nunique())
+    if verbose >= 2:
+        print(sum(df["split"] == "pretrain"))
+        print(sum((df["split"] == "pretrain") & df["species"].notna()))
+        print(df.loc[df["split"] == "pretrain", taxon_cols].nunique())
 
     catalogued_species = df.loc[df["species"].notna() & (df["split"] == "unk"), "species"].unique()
 
     # ## Single sample species
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "genus", "species"]]
-    print("samples to place", len(partition_candidates))
-    print("species to place", partition_candidates["species"].nunique())
+    if verbose >= 2:
+        print("samples to place", len(partition_candidates))
+        print("species to place", partition_candidates["species"].nunique())
 
     sp_sz = partition_candidates.groupby("species", observed=True).size()
 
@@ -408,63 +405,81 @@ def main(fname_input, output_csv, verbose=1):
     # ## test_unseen
 
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "genus", "species"]]
-    print("samples to place", len(partition_candidates))
-    print("species to place", partition_candidates["species"].nunique())
+    if verbose >= 2:
+        print("samples to place", len(partition_candidates))
+        print("species to place", partition_candidates["species"].nunique())
 
     sp_sz = partition_candidates.groupby("species", observed=True).size()
+    if verbose >= 2:
+        print("samples to place", len(partition_candidates))
+        print("species to place", partition_candidates["species"].nunique())
+        print(sp_sz)
+    if verbose >= 3:
+        plt.hist(sp_sz, np.arange(100))
+        plt.show()
+        plt.hist(sp_sz, np.arange(max(sp_sz)), cumulative=True)
+        plt.show()
+        plt.hist(sp_sz, np.arange(200), cumulative=True)
+        plt.show()
 
-    plt.hist(sp_sz, np.arange(100))
-
-    plt.hist(sp_sz, np.arange(max(sp_sz)), cumulative=True)
-
-    plt.hist(sp_sz, np.arange(200), cumulative=True)
-
-    print("cut  at_cut  cumm  (%)     n_samp  (%)")
-    print("-----------------------------------------")
-    for cutoff in range(51):
-        sel_sp = sp_sz <= cutoff
-        n_sel_sp = sum(sel_sp)
-        n_sel_samp = sum(partition_candidates['species'].isin(sp_sz[sel_sp].index))
-        print(f"{cutoff:3d}  {sum(sp_sz == cutoff):5d}  {n_sel_sp:5d}  {100 * n_sel_sp / len(sel_sp):5.2f}%  {n_sel_samp:6d}  {100 * n_sel_samp / len(partition_candidates):5.2f}%")
+    if verbose >= 2:
+        print("cut  at_cut  cumm  (%)     n_samp  (%)")
+        print("-----------------------------------------")
+        for cutoff in range(51):
+            sel_sp = sp_sz <= cutoff
+            n_sel_sp = sum(sel_sp)
+            n_sel_samp = sum(partition_candidates['species'].isin(sp_sz[sel_sp].index))
+            print(f"{cutoff:3d}  {sum(sp_sz == cutoff):5d}  {n_sel_sp:5d}  {100 * n_sel_sp / len(sel_sp):5.2f}%  {n_sel_samp:6d}  {100 * n_sel_samp / len(partition_candidates):5.2f}%")
 
     ge_sz = partition_candidates.groupby("genus", observed=True).size()
+    if verbose >= 2:
+        print(ge_sz)
+    if verbose >= 3:
+        plt.hist(ge_sz, np.arange(200), cumulative=True)
+        plt.show()
 
-    plt.hist(ge_sz, np.arange(200), cumulative=True)
-
-    print("cut  n_genus (%)     n_samp  (%)")
-    print("----------------------------------")
-    for cutoff in range(51):
-        sel_ge = ge_sz <= cutoff
-        n_sel_ge = sum(sel_ge)
-        n_sel_samp = sum(partition_candidates['genus'].isin(ge_sz[sel_ge].index))
-        print(f"{cutoff:3d}  {n_sel_ge:5d}  {100 * n_sel_ge / len(ge_sz):5.2f}%  {n_sel_samp:6d}  {100 * n_sel_samp / len(partition_candidates):5.2f}%")
+    if verbose >= 2:
+        print("cut  n_genus (%)     n_samp  (%)")
+        print("----------------------------------")
+        for cutoff in range(51):
+            sel_ge = ge_sz <= cutoff
+            n_sel_ge = sum(sel_ge)
+            n_sel_samp = sum(partition_candidates['genus'].isin(ge_sz[sel_ge].index))
+            print(f"{cutoff:3d}  {n_sel_ge:5d}  {100 * n_sel_ge / len(ge_sz):5.2f}%  {n_sel_samp:6d}  {100 * n_sel_samp / len(partition_candidates):5.2f}%")
 
     nspecies_per_genus = partition_candidates[["genus", "species"]].drop_duplicates().groupby("genus", observed=True).size()
 
-    plt.hist(nspecies_per_genus, np.arange(40), cumulative=True)
+    if verbose >= 3:
+        plt.hist(nspecies_per_genus, np.arange(40), cumulative=True)
+        plt.show()
 
     _sp_sz_trainval_dna = df.loc[df["split"].isin(["unk", "train", "val", "test_seen"])].drop_duplicates("dna_barcode_strip").groupby("species", observed=True, dropna=False).size()
 
-    plt.hist(_sp_sz_trainval_dna, np.arange(40))
-    plt.show()
+    if verbose >= 3:
+        plt.hist(_sp_sz_trainval_dna, np.arange(40))
+        plt.show()
+        plt.hist(_sp_sz_trainval_dna, np.arange(40), cumulative=True)
+        plt.show()
 
-    plt.hist(_sp_sz_trainval_dna, np.arange(40), cumulative=True)
-    plt.show()
-
-    print("cut  at_cut  cumm  (%)     n_samp  (%)")
-    print("-----------------------------------------")
-    for cutoff in range(51):
-        sel_sp = _sp_sz_trainval_dna <= cutoff
-        n_sel_sp = sum(sel_sp)
-        n_sel_samp = sum(partition_candidates['species'].isin(_sp_sz_trainval_dna[sel_sp].index))
-        print(f"{cutoff:3d}  {sum(_sp_sz_trainval_dna == cutoff):5d}  {n_sel_sp:5d}  {100 * n_sel_sp / len(sel_sp):5.2f}%  {n_sel_samp:6d}  {100 * n_sel_samp / len(partition_candidates):5.2f}%")
+    if verbose >= 2:
+        print("cut  at_cut  cumm  (%)     n_samp  (%)")
+        print("-----------------------------------------")
+        for cutoff in range(51):
+            sel_sp = _sp_sz_trainval_dna <= cutoff
+            n_sel_sp = sum(sel_sp)
+            n_sel_samp = sum(partition_candidates['species'].isin(_sp_sz_trainval_dna[sel_sp].index))
+            print(f"{cutoff:3d}  {sum(_sp_sz_trainval_dna == cutoff):5d}  {n_sel_sp:5d}  {100 * n_sel_sp / len(sel_sp):5.2f}%  {n_sel_samp:6d}  {100 * n_sel_samp / len(partition_candidates):5.2f}%")
 
     # ### actual
     sel_known_genus = df["genus"].isin(df.loc[df["split"] != "pretrain", "genus"])
 
     sel_viable = sel_known_genus & (df["split"] == "pretrain") & df["species"].notna()
+    if verbose >= 2:
+        display(df.loc[sel_viable, taxon_cols].groupby(taxon_cols, dropna=False, observed=True).size())
 
     g_pt_species = df.loc[sel_viable, ["genus", "species"]].groupby("species", observed=True).size()
+    if verbose >= 2:
+        print(g_pt_species[g_pt_species >= 8])
 
     df.loc[df["species"].isin(g_pt_species[g_pt_species >= 8].index), "split"] = "test_unseen"
 
@@ -472,11 +487,15 @@ def main(fname_input, output_csv, verbose=1):
         print(f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}%")
 
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "genus", "species"]]
-    print("samples to place", len(partition_candidates))
-    print("species to place", partition_candidates["species"].nunique())
+    if verbose >= 2:
+        print("samples to place", len(partition_candidates))
+        print("species to place", partition_candidates["species"].nunique())
+        print(sorted(df.loc[df["split"] == "test_unseen", "genus"].unique()))
+        print(df.loc[df["split"] == "pretrain", "species"].nunique())
+        for split in df["split"].unique():
+            print(split, sum(df.loc[df["split"] == split, "dna_bin"].isna()))
 
-    for split in df["split"].unique():
-        print(split, sum(df.loc[df["split"] == split, "dna_bin"].isna()))
+
 
     # ## test_seen
     df.loc[df["split"].isin(["test_seen", "train", "val"]), "split"] = "unk"
@@ -486,21 +505,24 @@ def main(fname_input, output_csv, verbose=1):
         print(f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}%")
 
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "dna_barcode_strip", "genus", "species"]]
-    print("samples to place", len(partition_candidates))
-    print("species to place", partition_candidates["species"].nunique())
+    if verbose >= 2:
+        print("samples to place", len(partition_candidates))
+        print("species to place", partition_candidates["species"].nunique())
 
     sp_sz = partition_candidates.groupby("species", observed=True).size()
 
     sp_sztest = sp_sz.apply(test_split_fn)
-
-    print(sum(sp_sztest > 0), "species")
-    print(sum(sp_sztest), "samples")
+    if verbose >= 2:
+        print(sp_sztest)
+        print(sum(sp_sztest > 0), "species")
+        print(sum(sp_sztest), "samples")
 
     df_tmp = pd.concat([sp_sz, sp_sztest], axis=1, keys=["total", "test"])
     df_tmp["train"] = df_tmp["total"] - df_tmp["test"]
     df_tmp["test_pc"] = 100 * df_tmp["test"] / df_tmp["total"]
     df_tmp["train_pc"] = 100 * df_tmp["train"] / df_tmp["total"]
-    print(df_tmp)
+    if verbose >= 2:
+        print(df_tmp)
 
     # Randomize the order of the data so we select random samples from each species
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "dna_barcode_strip", "genus", "species"]]
@@ -510,23 +532,17 @@ def main(fname_input, output_csv, verbose=1):
 
     rng = np.random.default_rng(seed=1)
 
-    barcodes_selected = stratified_dna_image_partition(g_test, test_split_fn, lambda x: 3, test_split_fn_ub, test_split_fn_ub_barcodes, top_rand=True, seed=1)
-
-    print("target", target)
-    # print("n_alloc", n_alloc)
-    print("dnasz")
-    print(dnasz.values)
-    print("dnasz_cs")
-    print(dnasz_cs.values)
-
-    print(len(barcodes_selected))
+    barcodes_selected = stratified_dna_image_partition(g_test, test_split_fn, lambda x: 3, test_split_fn_ub, test_split_fn_ub_barcodes, top_rand=True, seed=1, verbose=verbose-2)
+    if verbose >= 2:
+        print(len(barcodes_selected))
 
     barcodes_selected = [b for bs in barcodes_selected for b in bs]
-
-    len(barcodes_selected)
+    if verbose >= 2:
+        print(len(barcodes_selected))
 
     sel = df["dna_barcode_strip"].isin(barcodes_selected)
-    print(df.loc[sel, "species"].nunique())
+    if verbose >= 2:
+        print(df.loc[sel, "species"].nunique())
 
     df.loc[df["split"] == "test_seen", "split"] = "unk"
     df.loc[sel, "split"] = "test_seen"
@@ -535,25 +551,29 @@ def main(fname_input, output_csv, verbose=1):
 
     _sp_sz_test = df.loc[df["split"] == "test_seen"].groupby("species", observed=True, dropna=False).size()
 
-    print(_sp_sz_test.sum())
-
-    print(_sp_sz_trainval.sum())
-
-    print(100 * _sp_sz_test.sum() / _sp_sz_trainval.sum())
+    if verbose >= 2:
+        print(_sp_sz_test.sum())
+        print(_sp_sz_trainval.sum())
+        print(100 * _sp_sz_test.sum() / _sp_sz_trainval.sum())
 
     df_tmp2 = pd.concat([_sp_sz_trainval, _sp_sz_test], axis=1, keys=["trainval", "test"])
     df_tmp2.loc[df_tmp2["test"].isna(), "test"] = 0
     df_tmp2["total"] = df_tmp2["trainval"] + df_tmp2["test"]
     df_tmp2["test_pc"] = 100 * df_tmp2["test"] / df_tmp2["total"]
 
-    plt.scatter(df_tmp2["total"], df_tmp2["test"])
+    if verbose >= 3:
+        plt.scatter(df_tmp2["total"], df_tmp2["test"])
+        plt.show()
+        plt.scatter(df_tmp2["total"], df_tmp2["test"])
+        plt.xscale("log")
+        plt.show()
+        plt.scatter(df_tmp2["total"], df_tmp2["test"])
+        plt.xscale("log")
+        plt.yscale("log")
+        plt.show()
 
-    plt.scatter(df_tmp2["total"], df_tmp2["test"])
-    plt.xscale("log")
-
-    plt.scatter(df_tmp2["total"], df_tmp2["test"])
-    plt.xscale("log")
-    plt.yscale("log")
+    if verbose >= 2:
+        print(df_tmp2["test_pc"].sort_values())
 
     _sp_sz_trainval_dna = df.loc[df["split"].isin(["unk", "train", "val"])].drop_duplicates("dna_barcode_strip").groupby("species", observed=True, dropna=False).size()
 
@@ -564,13 +584,16 @@ def main(fname_input, output_csv, verbose=1):
     df_tmp2["total"] = df_tmp2["trainval"] + df_tmp2["test"]
     df_tmp2["test_pc"] = 100 * df_tmp2["test"] / df_tmp2["total"]
 
-    plt.scatter(df_tmp2["total"], df_tmp2["test"])
+    if verbose >= 3:
+        plt.scatter(df_tmp2["total"], df_tmp2["test"])
+        plt.show()
+        plt.scatter(df_tmp2["total"], df_tmp2["test"])
+        plt.xscale("log")
+        plt.show()
+        plt.scatter(df_tmp2["total"], df_tmp2["test_pc"])
+        plt.xscale("log")
+        plt.show()
 
-    plt.scatter(df_tmp2["total"], df_tmp2["test"])
-    plt.xscale("log")
-
-    plt.scatter(df_tmp2["total"], df_tmp2["test_pc"])
-    plt.xscale("log")
 
     # Without restricting the random selection:
     # ```
@@ -605,22 +628,28 @@ def main(fname_input, output_csv, verbose=1):
     # samples to place 300232
     # species to place 8090
     # ```
+
     n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test_seen", "unk"]))
     n_dna_trainvaltest = df.loc[df["split"].isin(["train", "val", "test_seen", "unk"]), "dna_barcode"].nunique()
 
-    for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
-        print(f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}% {100 * n_samp / n_samp_trainvaltest:7.2f}%")
+    if verbose >= 2:
+        for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
+            print(f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}% {100 * n_samp / n_samp_trainvaltest:7.2f}%")
+        print()
 
-    print()
     n_samp_trainvaltest = df["split"].isin(["train", "val", "test_seen", "unk"])
     n_barcodes = df["dna_barcode"].nunique()
-    for partition, n_samp in zip(*np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)):
-        print(f"{partition:15s} {n_samp:7d} {100 * n_samp / n_barcodes:5.2f}% {100 * n_samp / n_dna_trainvaltest:7.2f}%")
+    if verbose >= 2:
+        for partition, n_samp in zip(*np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)):
+            print(f"{partition:15s} {n_samp:7d} {100 * n_samp / n_barcodes:5.2f}% {100 * n_samp / n_dna_trainvaltest:7.2f}%")
+        print()
 
-    print()
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "genus", "species"]]
-    print("samples to place", len(partition_candidates))
-    print("species to place", partition_candidates["species"].nunique())
+    if verbose >= 2:
+        print("samples to place", len(partition_candidates))
+        print("species to place", partition_candidates["species"].nunique())
+
+    sp_sz_val = partition_candidates.groupby("species", observed=True).size()
 
     # ## val
     # Randomize the order of the data so we select random samples from each species
@@ -637,7 +666,6 @@ def main(fname_input, output_csv, verbose=1):
     barcodes_selected = []
     soft_upper = 1.1
     for species, grp in tqdm(g_test):
-        verbose = False
         n = len(grp)
         if n < 20:
             continue
@@ -650,11 +678,11 @@ def main(fname_input, output_csv, verbose=1):
         indices_used = []
         grp_barcodes_selected = []
         dnasz = grp.groupby("dna_barcode_strip").size().sort_values()
-        if verbose:
+        if verbose >= 3:
             display(dnasz)
         n_barcodes = len(dnasz)
         ub_barcodes = val_pc_target / 100 * n_barcodes
-        if verbose:
+        if verbose >= 3:
             print(n, "samples for the species")
             print(n_barcodes, "barcodes for the species")
             print("target", target)
@@ -669,7 +697,7 @@ def main(fname_input, output_csv, verbose=1):
             pass
             # break
         while True:
-            if verbose:
+            if verbose >= 3:
                 print("n_alloc", n_alloc)
                 # display(dnasz)
             # We only want to add samples which keep us below or at the target
@@ -677,13 +705,13 @@ def main(fname_input, output_csv, verbose=1):
             # so we need to add one of the samples that takes the cumsum to the target.
             is_option = (dnasz <= target - n_alloc).values & (dnasz_cs >= target * soft_upper - n_alloc).values
             if sum(is_option) == 0:
-                if verbose:
+                if verbose >= 3:
                     print("No ideal options")
                 # No ideal options, so let's make do
                 if n_alloc == 0 and not any(dnasz <= target):
                     # No options and nothing added so far
                     if dnasz.iloc[0] >= target_lb and dnasz.iloc[0] < n / 2:
-                        if verbose:
+                        if verbose >= 3:
                             print("Nothing added, taking first")
                         idx = 0
                     else:
@@ -692,12 +720,12 @@ def main(fname_input, output_csv, verbose=1):
                     # Everything would take us above the remaining target
                     if dnasz.iloc[0] > (target - n_alloc) / 2:
                         # Shouldn't add the smallest because the residual would be larger than it is now
-                        if verbose:
+                        if verbose >= 3:
                             print("Last possibility avoiding smallest, increases residual")
                         break
                     if n_alloc + dnasz.iloc[0] > target_ub:
                         # Can't add the smallest as it takes us above our upperbound
-                        if verbose:
+                        if verbose >= 3:
                             print("Can't add smallest due to upperbound")
                         break
                     # Add the smallest
@@ -715,7 +743,7 @@ def main(fname_input, output_csv, verbose=1):
                         idx = option_cutoff_idx - 1
                     if n_alloc + dnasz.iloc[option_cutoff_idx] > target_ub:
                         break
-                    if verbose:
+                    if verbose >= 3:
                         print("Breaking between criteria")
             elif len(grp_barcodes_selected) + 1 >= ub_barcodes:
                 # We can only add one more, so add the most populated DNA that makes sense to add
@@ -727,16 +755,16 @@ def main(fname_input, output_csv, verbose=1):
                     and n_alloc + dnasz.iloc[option_cutoff_idx + 1] <= target_ub
                 ):
                     idx = option_cutoff_idx + 1
-                if verbose:
+                if verbose >= 3:
                     print("Choosing last barcode to add, so using largest")
             else:
                 # idx = rng.integers(sum(is_option), size=1)[0]
                 # Only use a barcode from the larger X of what is possible
                 idx = rng.integers(int(sum(is_option) * 0.5), sum(is_option), size=1)[0]
                 idx = np.nonzero(is_option)[0][idx]
-                if verbose:
+                if verbose >= 3:
                     print(f"Randomly selected item #{idx} from {sum(is_option)} options with {dnasz.iloc[idx]} samp")
-            if verbose:
+            if verbose >= 3:
                 print(f"Adding item {idx}: {dnasz.index[idx]}")
             grp_barcodes_selected.append(dnasz.index[idx])
             n_alloc += dnasz.iloc[idx]
@@ -752,25 +780,32 @@ def main(fname_input, output_csv, verbose=1):
                 raise ValueError()
             if len(grp_barcodes_selected) >= ub_barcodes:
                 break
-            if verbose:
+            if verbose >= 3:
                 print(f"End of loop with {len(dnasz)} = {len(dnasz_cs)} / {n_barcodes} barcodes remaining")
         if n_alloc >= target_lb:
             barcodes_selected.append(grp_barcodes_selected)
-            if verbose:
+            if verbose >= 3:
                 print(f"Added {len(grp_barcodes_selected)} barcodes")
-        elif verbose:
+        elif verbose >= 3:
             print(f"Skipped adding {len(grp_barcodes_selected)} barcodes")
-        if verbose:
+        if verbose >= 3:
             print(len(grp_barcodes_selected), "barcodes selected")
             display(grp_barcodes_selected)
 
-    print(len(barcodes_selected))
+    if verbose >= 2:
+        print(len(barcodes_selected))
 
     barcodes_selected = [b for bs in barcodes_selected for b in bs]
-    print(len(barcodes_selected))
+
+    if verbose >= 2:
+        print(len(barcodes_selected))
 
     sel = df["dna_barcode_strip"].isin(barcodes_selected)
-    print(sum(sel), df.loc[sel, "species"].nunique())
+
+    if verbose >= 2:
+        print(sum(sel))
+        print(df.loc[sel, "species"].nunique())
+
 
     # ```
     # Target Current
@@ -788,22 +823,25 @@ def main(fname_input, output_csv, verbose=1):
     #  3757.0  1615
     #
     # ```
+
     target_samp = val_pc_target / 100 * sum(df["split"].isin(["train", "unk"]))
     target_dna = val_pc_target / 100 * df.loc[df["split"].isin(["train", "unk"]), "dna_barcode_strip"].nunique()
     target_spec = df.loc[df["split"].isin(["train"]), "species"].nunique()
 
-    print("Target Current")
-    print("--------------")
-    print(f"{target_samp:7.1f} {sum(sel):5d}")
-    print(f"{target_dna:7.1f} {len(barcodes_selected):5d}")
-    print(f"{target_spec:7.1f} {df.loc[sel, 'species'].nunique():5d}")
+    if verbose >= 1:
+        print("Target Current")
+        print("--------------")
+        print(f"{target_samp:7.1f} {sum(sel):5d}")
+        print(f"{target_dna:7.1f} {len(barcodes_selected):5d}")
+        print(f"{target_spec:7.1f} {df.loc[sel, 'species'].nunique():5d}")
 
     g_val_sz = g_test.size()
     g_val_sz = g_val_sz[g_val_sz < 20]
 
     small_spec_target = val_pc_target / 100 * (len(single_species) + sum(g_val_sz))
     small_spec_target = round(small_spec_target)
-    print(small_spec_target)
+    if verbose >= 1:
+        print(small_spec_target)
 
     # rng = np.random.default_rng(seed=4)
     df_test = df.loc[df["split"] == "test_seen"]
@@ -813,7 +851,6 @@ def main(fname_input, output_csv, verbose=1):
     tally_skip_test = 0
     tally_skip_dna = 0
     for species, grp in tqdm(g_test):
-        verbose = False
         n = len(grp)
         if n >= 20 or n < 7:
             tally_skip_size += 1
@@ -832,11 +869,11 @@ def main(fname_input, output_csv, verbose=1):
         if n_alloc_total >= small_spec_target:
             break
 
-    print("tally_skip_size", tally_skip_size)
-    print("tally_skip_test", tally_skip_test)
-    print("tally_skip_dna", tally_skip_dna)
-
-    print(n_alloc_total, len(barcodes_selected2), small_spec_target)
+    if verbose >= 1:
+        print("tally_skip_size", tally_skip_size)
+        print("tally_skip_test", tally_skip_test)
+        print("tally_skip_dna", tally_skip_dna)
+        print(n_alloc_total, len(barcodes_selected2), small_spec_target)
 
     sel = df["dna_barcode_strip"].isin(barcodes_selected + barcodes_selected2)
 
@@ -844,30 +881,34 @@ def main(fname_input, output_csv, verbose=1):
     target_dna = val_pc_target / 100 * df.loc[df["split"].isin(["train", "unk"]), "dna_barcode_strip"].nunique()
     target_spec = df.loc[df["split"].isin(["train"]), "species"].nunique()
 
-    print("Target Current")
-    print("--------------")
-    print(f"{target_samp:7.1f} {sum(sel):5d}")
-    print(f"{target_dna:7.1f} {len(barcodes_selected) + len(barcodes_selected2):5d}")
-    print(f"{target_spec:7.1f} {df.loc[sel, 'species'].nunique():5d}")
+    if verbose >= 1:
+        print("Target Current")
+        print("--------------")
+        print(f"{target_samp:7.1f} {sum(sel):5d}")
+        print(f"{target_dna:7.1f} {len(barcodes_selected) + len(barcodes_selected2):5d}")
+        print(f"{target_spec:7.1f} {df.loc[sel, 'species'].nunique():5d}")
 
     df.loc[sel, "split"] = "val"
 
     n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test_seen", "unk"]))
     n_dna_trainvaltest = df.loc[df["split"].isin(["train", "val", "test_seen", "unk"]), "dna_barcode"].nunique()
 
-    for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
-        print(f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}% {100 * n_samp / n_samp_trainvaltest:7.2f}%")
+    if verbose >= 2:
+        for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
+            print(f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}% {100 * n_samp / n_samp_trainvaltest:7.2f}%")
+        print()
 
-    print()
     n_samp_trainvaltest = df["split"].isin(["train", "val", "test_seen", "unk"])
     n_barcodes = df["dna_barcode"].nunique()
-    for partition, n_samp in zip(*np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)):
-        print(f"{partition:15s} {n_samp:7d} {100 * n_samp / n_barcodes:5.2f}% {100 * n_samp / n_dna_trainvaltest:7.2f}%")
+    if verbose >= 2:
+        for partition, n_samp in zip(*np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)):
+            print(f"{partition:15s} {n_samp:7d} {100 * n_samp / n_barcodes:5.2f}% {100 * n_samp / n_dna_trainvaltest:7.2f}%")
+        print()
 
-    print()
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "genus", "species"]]
-    print("samples to place", len(partition_candidates))
-    print("species to place", partition_candidates["species"].nunique())
+    if verbose >= 2:
+        print("samples to place", len(partition_candidates))
+        print("species to place", partition_candidates["species"].nunique())
 
     # ## train
     df.loc[df["split"] == "unk", "split"] = "train"
@@ -875,19 +916,23 @@ def main(fname_input, output_csv, verbose=1):
     n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test_seen", "unk"]))
     n_dna_trainvaltest = df.loc[df["split"].isin(["train", "val", "test_seen", "unk"]), "dna_barcode"].nunique()
 
-    for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
-        print(f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}% {100 * n_samp / n_samp_trainvaltest:7.2f}%")
+    if verbose >= 2:
+        for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
+            print(f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}% {100 * n_samp / n_samp_trainvaltest:7.2f}%")
+        print()
 
-    print()
     n_samp_trainvaltest = df["split"].isin(["train", "val", "test_seen", "unk"])
     n_barcodes = df["dna_barcode"].nunique()
-    for partition, n_samp in zip(*np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)):
-        print(f"{partition:15s} {n_samp:7d} {100 * n_samp / n_barcodes:5.2f}% {100 * n_samp / n_dna_trainvaltest:7.2f}%")
 
-    print()
+    if verbose >= 2:
+        for partition, n_samp in zip(*np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)):
+            print(f"{partition:15s} {n_samp:7d} {100 * n_samp / n_barcodes:5.2f}% {100 * n_samp / n_dna_trainvaltest:7.2f}%")
+        print()
+
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "genus", "species"]]
-    print("samples to place", len(partition_candidates))
-    print("species to place", partition_candidates["species"].nunique())
+    if verbose >= 2:
+        print("samples to place", len(partition_candidates))
+        print("species to place", partition_candidates["species"].nunique())
 
     # # Extras
 
@@ -973,11 +1018,17 @@ def main(fname_input, output_csv, verbose=1):
     df.loc[df["dna_barcode_strip"].isin(all_k_barcodes), "role"] = "key"
     df.loc[df["dna_barcode_strip"].isin(all_q_barcodes), "role"] = "query"
 
+    if verbose >= 1:
+        print("\nFinal split (number of samples per partition):")
+        display(df.groupby(["split", "role"], dropna=False, observed=True).size())
+
     # Save output ----------------------------------------------------------------------
     df.drop(columns=["dna_barcode_strip", "is_novel_species"], inplace=True)
-    print(f"Saving to {output_csv}")
+    if verbose >= 0:
+        print(f"Saving to {output_csv}")
     df.to_csv(output_csv, index=False)
-    print("Finished saving.")
+    if verbose >= 0:
+        print("Finished saving.")
 
 
 def get_parser():
