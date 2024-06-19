@@ -1,5 +1,5 @@
 BIOSCAN-5M
-========
+==========
 <div align="center">
   <img src="BIOSCAN_images/repo_images/fig1.png" alt="An example record from the BIOSCAN-5M dataset" />
   <p><b>Figure 1:</b> A BIOSCAN-5M dataset sample with multimodal data types.
@@ -7,7 +7,7 @@ BIOSCAN-5M
 
 
 Overview
-========
+--------
 This repository contains the code and data related to the to the [BIOSCAN-5M](https://biodiversitygenomics.net/5M-insects/)
 dataset.
 BIOSCAN-5M is a comprehensive multi-modal dataset comprised of over 5 million specimens, 98% of which are insects.
@@ -32,7 +32,7 @@ If you make use of the BIOSCAN-5M dataset and/or this code repository, please ci
 ```
 
 Dataset
-=======
+-------
 We present BIOSCAN-5M dataset to the machine learning community.
 We hope this dataset will facilitate the development of tools to automate aspects of the monitoring of global insect biodiversity.
 
@@ -56,7 +56,7 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 All dataset image packages and metadata files are accessible for download through the
 [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0) folder.
 
-###### <h3> Copyright and License 
+### Copyright and License 
 The images included in the BIOSCAN-1M Insect dataset available through this repository are subject to copyright 
 and licensing restrictions shown in the following:
 
@@ -194,7 +194,7 @@ These are primarily arachnids and springtails (Collembola).
 </div>
 
 Benchmark Experiments
-=====================
+---------------------
 
 ### Data Partitions
 We partitioned the BIOSCAN-5M dataset into splits for both closed-world and open-world machine learning problems. 
