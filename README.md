@@ -25,9 +25,9 @@ If you make use of the BIOSCAN-5M dataset and/or this code repository, please ci
     year={2024},
     eprint={2406.12723},
     archivePrefix={arXiv},
-    primaryClass={cs.LG}
+    primaryClass={cs.LG},
+    doi={10.48550/arxiv.2406.12723},
 }
-
 ```
 
 Dataset
