@@ -2,7 +2,7 @@ BIOSCAN-5M
 ----------
 <div align="center">
   <img src="BIOSCAN_images/repo_images/fig1.png" alt="An example record from the BIOSCAN-5M dataset" />
-  <p><b>Figure 1:</b>A BIOSCAN-5M dataset sample with multimodal data types.
+  <p><b>Figure 1:</b> A BIOSCAN-5M dataset sample with multimodal data types.
 </div>
 Overview
 ========
