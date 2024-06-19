@@ -53,7 +53,7 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 
 ### Dataset Access
 
-All dataset image packages and metadata are accessible for download through the
+All dataset image packages and metadata files are accessible for download through the
 [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0) folder.
 
 ###### <h3> Copyright and License 
