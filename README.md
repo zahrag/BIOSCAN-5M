@@ -154,7 +154,10 @@ The following geographic data is presented in the <code>country</code>, <code>pr
 </div>
 
 ### Size Information
-The BIOSCAN-5M dataset provides information about size of the organisms:
+The BIOSCAN-5M dataset provides information about size of the organisms. 
+The size data is presented in the <code>image_measurement_value</code>, <code>area_fraction</code>, and 
+<code>scale_factor</code> fields of the metadata file(s):
+
 * Image measurement value: Total number of pixels occupied by the organism
 
 Furthermore, utilizing our cropping tool, we calculated the following information about size of the organisms:
