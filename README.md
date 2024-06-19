@@ -65,39 +65,6 @@ The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biolog
 size information of the organisms. We provide this metadata in both CSV and JSONLD file types.
 
 
-### Partitions
-We partitioned the BIOSCAN-5M dataset into splits for both closed-world and open-world machine learning problems.
-
-* The **closed-world** classification task uses samples labelled with a scientific name for their species
-(<code>train</code>, <code>val</code>, and <code>test</code> partitions).
-  * This task requires the model to correctly classify new images and DNA barcodes of across a known set of species labels that were seen during training.
-
-* The **open-world** classification task uses samples whose species name is a placeholder name,
-and whose genus name is a scientific name
-(<code>key_unseen</code>, <code>val_unseen</code>, and <code>test_unseen</code> partitions).
-  * This task requires the model to correctly group together new species that were not seen during training.
-  In the retreival paradigm, this can be performed using <code>test_unseen</code> records as queries against keys from the <code>key_unseen</code> records.
-  * Alternatively, this data can be evaluated at the genus-level by classification via the species in the <code>train</code> partition.
-
-* Other samples labelled with placeholder species names are placed in the <code>other_heldout</code> partition.
-  * This data can be used to train an unseen species novelty detector.
-
-* Samples without species labels are placed in the <code>pretrain</code> partition.
-  * This data can be used for self-supervised or semi-supervised training. 
-  This partition comprises 90% of the data.
-
-To use the partitions we propose, see the <code>split</code> field of the metadata file(s).
-
-<figure style="text-align: center;">
-  <img src="BIOSCAN_images/repo_images/treemap_partitions.svg" alt="Treemap diagram showing number of samples per partition." />
-  <figcaption><b>Figure 3:</b> Treemap diagram showing number of samples per partition.
-  For the pretrain partition (blues), we provide a further breakdown indicating the most fine-grained taxonomic rank that is labelled for the samples.
-  For the remainder of the partitions (all of which are labelled to species level) we show the number of samples in the partition.
-  Samples for seen species are shown in shades of green, and unseen in shades of red.
-  </figcaption>
-</figure>
-
-
 ### RGB Image 
 The BIOSCAN-5M dataset comprises resized and cropped images.
 We have provided various packages of the BIOSCAN-5M dataset, each tailored for specific purposes.
@@ -214,6 +181,40 @@ These are primarily arachnids and springtails (Collembola).
   <img src="BIOSCAN_images/repo_images/non_insect.png" alt="An array of example non-insect arthropod images from the BIOSCAN-5M dataset." />
   <figcaption><b>Figure 8:</b> Examples of the original images of non-insect organisms.</figcaption>
 </figure>
+
+Data Partitions
+=====================
+We partitioned the BIOSCAN-5M dataset into splits for both closed-world and open-world machine learning problems.
+
+* The **closed-world** classification task uses samples labelled with a scientific name for their species
+(<code>train</code>, <code>val</code>, and <code>test</code> partitions).
+  * This task requires the model to correctly classify new images and DNA barcodes of across a known set of species labels that were seen during training.
+
+* The **open-world** classification task uses samples whose species name is a placeholder name,
+and whose genus name is a scientific name
+(<code>key_unseen</code>, <code>val_unseen</code>, and <code>test_unseen</code> partitions).
+  * This task requires the model to correctly group together new species that were not seen during training.
+  In the retreival paradigm, this can be performed using <code>test_unseen</code> records as queries against keys from the <code>key_unseen</code> records.
+  * Alternatively, this data can be evaluated at the genus-level by classification via the species in the <code>train</code> partition.
+
+* Other samples labelled with placeholder species names are placed in the <code>other_heldout</code> partition.
+  * This data can be used to train an unseen species novelty detector.
+
+* Samples without species labels are placed in the <code>pretrain</code> partition.
+  * This data can be used for self-supervised or semi-supervised training. 
+  This partition comprises 90% of the data.
+
+To use the partitions we propose, see the <code>split</code> field of the metadata file(s).
+
+<figure style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/treemap_partitions.svg" alt="Treemap diagram showing number of samples per partition." />
+  <figcaption><b>Figure 3:</b> Treemap diagram showing number of samples per partition.
+  For the pretrain partition (blues), we provide a further breakdown indicating the most fine-grained taxonomic rank that is labelled for the samples.
+  For the remainder of the partitions (all of which are labelled to species level) we show the number of samples in the partition.
+  Samples for seen species are shown in shades of green, and unseen in shades of red.
+  </figcaption>
+</figure>
+
 
 Benchmark Experiments
 =====================
