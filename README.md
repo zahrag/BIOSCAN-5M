@@ -38,11 +38,17 @@ We hope this dataset will facilitate the development of tools to automate aspect
 
 Each record of the BIOSCAN-5M dataset contains six primary attributes:
 * RGB image
+  * Metadata filed: <code>processid</code>
 * DNA barcode sequence
+  * Metadata filed: <code>dna_barcode</code>
 * Barcode Index Number (BIN)
+  * Metadata filed: <code>dna_bin</code>
 * Biological taxonomic classification
+  * Metadata fields: <code>phylum</code>, <code>class</code>, <code>order</code>, <code>family</code>, <code>subfamily</code>, <code>genus</code>, <code>species</code>
 * Geographical information 
+  * Metadata fields: <code>country</code>, <code>province_state</code>, <code>latitude</code>, and <code>longitude</code>
 * Specimen size
+  * Metadata fields: <code>image_measurement_value</code>, <code>area_fraction</code>, and <code>scale_factor</code>
 
 
 ### Dataset Access
