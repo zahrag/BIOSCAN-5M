@@ -113,7 +113,7 @@ def find_novel_species(df, verbose=0):
     is_novel_species |= df["species"].notna() & df["species"].str.contains(r"[0-9]", regex=True)
     is_novel_species |= df["species"].notna() & df["species"].str.contains(r"[A-Z][A-Z]", regex=True)
 
-    search_terms = [r"\baff\b" , r"\bn[\b\.\s]+sp\b", r"\bsp[\b\s]+ex\b", r"\bgen\b", r"\bsp\b\.?[\s\w\d]+", r"affinis\s+[0-9A-Z]+"]
+    search_terms = [r"\baff\b", r"\bn[\b\.\s]+sp\b", r"\bsp[\b\s]+ex\b", r"\bgen\b", r"\bsp\b\.?[\s\w\d]+", r"affinis\s+[0-9A-Z]+"]
     search_suffix = ""
     for c in taxon_cols[-2:]:
         for search in search_terms:
@@ -326,7 +326,6 @@ def test_split_fn_ub_barcodes(n):
     return k
 
 
-
 def main(fname_input, output_csv, verbose=1):
     # ## Load
     if verbose >= 0:
@@ -387,8 +386,6 @@ def main(fname_input, output_csv, verbose=1):
         print(sum(df["split"] == "pretrain"))
         print(sum((df["split"] == "pretrain") & df["species"].notna()))
         print(df.loc[df["split"] == "pretrain", taxon_cols].nunique())
-
-    catalogued_species = df.loc[df["species"].notna() & (df["split"] == "unk"), "species"].unique()
 
     # ## Single sample species
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "genus", "species"]]
@@ -495,7 +492,6 @@ def main(fname_input, output_csv, verbose=1):
         print(df.loc[df["split"] == "pretrain", "species"].nunique())
         for split in df["split"].unique():
             print(split, sum(df.loc[df["split"] == split, "dna_bin"].isna()))
-
 
     # test_seen ------------------------------------------------------------------------
     if verbose >= 1:
@@ -655,8 +651,6 @@ def main(fname_input, output_csv, verbose=1):
     if verbose >= 1:
         print("Partitioning validation split")
 
-    sp_sz_val = partition_candidates.groupby("species", observed=True).size()
-
     # Randomize the order of the data so we select random samples from each species
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "dna_barcode_strip", "genus", "species"]]
     partition_candidates = partition_candidates.sample(frac=1, random_state=2)
@@ -813,7 +807,6 @@ def main(fname_input, output_csv, verbose=1):
         print(sum(sel))
         print(df.loc[sel, "species"].nunique())
 
-
     # ```
     # Target Current
     # --------------
@@ -917,7 +910,6 @@ def main(fname_input, output_csv, verbose=1):
         print("samples to place", len(partition_candidates))
         print("species to place", partition_candidates["species"].nunique())
 
-
     # train partition ------------------------------------------------------------------
     if verbose >= 1:
         print("Partitioning training split")
@@ -973,7 +965,6 @@ def main(fname_input, output_csv, verbose=1):
     soft_upper = 1.1
 
     all_kq_barcodes = []
-    all_kq_images = []
 
     for species, grp in tqdm(g_test):
         kq_barcodes = [[], []]
