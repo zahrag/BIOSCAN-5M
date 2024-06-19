@@ -41,7 +41,7 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 * DNA barcode sequence
 * Barcode Index Number (BIN)
 * Biological taxonomic classification
-* Geographical information (latitude/longitude)
+* Geographical information 
 * Specimen size
 
 
