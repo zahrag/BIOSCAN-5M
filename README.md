@@ -199,7 +199,7 @@ and whose genus name is a scientific name
   In the retreival paradigm, this can be performed using <code>test_unseen</code> records as queries against keys from the <code>key_unseen</code> records.
   * Alternatively, this data can be evaluated at the genus-level by classification via the species in the <code>train</code> partition.
 
-* Other samples labelled with placeholder species names are placed in the <code>other_heldout</code> partition.
+* Samples labelled with placeholder species names, and whose genus name is not a scientific name are placed in the <code>other_heldout</code> partition.
   * This data can be used to train an unseen species novelty detector.
 
 * Samples without species labels are placed in the <code>pretrain</code> partition, which comprises 90% of the data.
