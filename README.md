@@ -86,6 +86,15 @@ This partition comprises 90% of the data.
 
 To use the partitions we propose, see the <code>split</code> field of the metadata.
 
+<figure style="text-align: center;">
+  <img src="BIOSCAN_images/repo_images/treemap_partitions.svg" alt="Treemap diagram showing number of samples per partition." />
+  <figcaption><b>Figure 3:</b> Treemap diagram showing number of samples per partition.
+  For the pretrain partition (blues), we provide a further breakdown indicating the most fine-grained taxonomic rank that is labelled for the samples.
+  For the remainder of the partitions (all of which are labelled to species level) we show the number of samples in the partition.
+  Samples for seen species are shown in shades of green, and unseen in shades of red.
+  </figcaption>
+</figure>
+
 
 ### RGB Image 
 The BIOSCAN-5M dataset comprises resized and cropped images.
@@ -162,14 +171,14 @@ The BIOSCAN-5M dataset provides Geographic information associated with the colle
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/BIOSCAN_5M_Insect_Dataset_lat_lon_map.png" alt="World map overlaid with the distribution of sample collection sites and their frequencies." />
-  <figcaption><b>Figure 3:</b> Locations obtained from latitude and longitude coordinates associated with the sites of collection.</figcaption>
+  <figcaption><b>Figure 4:</b> Locations obtained from latitude and longitude coordinates associated with the sites of collection.</figcaption>
 </figure>
 
 <br><br>
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/map_supplement3.png" alt="World map overlaid with the number of samples collected per country." />
-  <figcaption><b>Figure 4:</b> Countries associated with the sites of collection.</figcaption>
+  <figcaption><b>Figure 5:</b> Countries associated with the sites of collection.</figcaption>
 </figure>
 
 
@@ -183,7 +192,7 @@ Furthermore, utilizing our cropping tool, we calculated the following informatio
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/images_masks.png" alt="Example pixel masks of the organism." />
-  <figcaption><b>Figure 5:</b> Examples of original images (top) and their corresponding masks (bottom) depicting pixels occupied by the organism.</figcaption>
+  <figcaption><b>Figure 6:</b> Examples of original images (top) and their corresponding masks (bottom) depicting pixels occupied by the organism.</figcaption>
 </figure>
 
 ### Cropped images
@@ -192,7 +201,7 @@ We used this to crop each image down to only the region of interest.
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/area_frac.png" alt="Example bounding boxes extracted with the cropping tool." />
-  <figcaption><b>Figure 6:</b> Examples of the original images with the bounding box detected by our cropping tool.</figcaption>
+  <figcaption><b>Figure 7:</b> Examples of the original images with the bounding box detected by our cropping tool.</figcaption>
 </figure>
 
 ### Non-insect organisms
@@ -201,7 +210,7 @@ These are primarily arachnids and springtails (Collembola).
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/non_insect.png" alt="An array of example non-insect arthropod images from the BIOSCAN-5M dataset." />
-  <figcaption><b>Figure 7:</b> Examples of the original images of non-insect organisms.</figcaption>
+  <figcaption><b>Figure 8:</b> Examples of the original images of non-insect organisms.</figcaption>
 </figure>
 
 Benchmark Experiments
@@ -214,7 +223,7 @@ Tokens are encoded and fed into a transformer model. The output embeddings are u
 2. Fine-tuning: All DNA sequences in a dataset are tokenized using non-overlapping $k$-mer tokenization and all tokenized sequences, without masking, are passed through the pretrained transformer model.  Global mean-pooling is applied over the token-level embeddings and the output is used for taxonomic classification.
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/barcode_bert_n2.png" alt="Methodology for BarcodeBERT experiments." />
-  <figcaption><b>Figure 8:</b> BarcodeBERT model architecture.</figcaption>
+  <figcaption><b>Figure 9:</b> BarcodeBERT model architecture.</figcaption>
 </figure>
 
 ### Zero-shot transfer learning
@@ -228,7 +237,7 @@ expanded to operate on multiple modalities.
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/bioscan_zsc_n1.png" alt="Methodology for zero-shot clustering experiments." />
-  <figcaption><b>Figure 9:</b> BIOSCAN-ZSC model architecture.</figcaption>
+  <figcaption><b>Figure 10:</b> BIOSCAN-ZSC model architecture.</figcaption>
 </figure>
 
 ### Multimodal retrieval learning
@@ -240,6 +249,6 @@ DNA and text (keys). The cosine similarity is used to find the closest key embed
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/bioscan_clip.png" alt="Methodology for BIOSCAN-CLIP experiments." />
-  <figcaption><b>Figure 10:</b> BIOSCAN-CLIP model architecture.</figcaption>
+  <figcaption><b>Figure 11:</b> BIOSCAN-CLIP model architecture.</figcaption>
 </figure>
 
