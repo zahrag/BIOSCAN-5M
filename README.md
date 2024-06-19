@@ -68,21 +68,23 @@ size information of the organisms. We provide this metadata in both CSV and JSON
 ### Partitions
 We partitioned the BIOSCAN-5M dataset into splits for both closed-world and open-world machine learning problems.
 
-The closed-world classification task uses samples labelled with a scientific name for their species
+* The **closed-world** classification task uses samples labelled with a scientific name for their species
 (<code>train</code>, <code>val</code>, and <code>test</code> partitions).
-This task requires the model to correctly classify new images and DNA barcodes of across a known set of species labels that were seen during training.
+  * This task requires the model to correctly classify new images and DNA barcodes of across a known set of species labels that were seen during training.
 
-The open-world classification task uses samples whose species name is a placeholder name,
+* The **open-world** classification task uses samples whose species name is a placeholder name,
 and whose genus name is a scientific name
 (<code>key_unseen</code>, <code>val_unseen</code>, and <code>test_unseen</code> partitions).
-This task requires the model to correctly group together new species that were not seen during training.
-In the retreival paradigm, this can be performed using <code>test_unseen</code> records as queries against keys from the <code>key_unseen</code> records.
-Alternatively, this data can be evaluated at the genus-level by classification via the species in the <code>train</code> partition.
+  * This task requires the model to correctly group together new species that were not seen during training.
+  In the retreival paradigm, this can be performed using <code>test_unseen</code> records as queries against keys from the <code>key_unseen</code> records.
+  * Alternatively, this data can be evaluated at the genus-level by classification via the species in the <code>train</code> partition.
 
-Other samples labelled with placeholder species names are placed in the <code>other_heldout</code> partition, and can be used to train an unseen species novelty detector.
+* Other samples labelled with placeholder species names are placed in the <code>other_heldout</code> partition.
+  * This data can be used to train an unseen species novelty detector.
 
-Samples without species labels are placed in the <code>pretrain</code> partition, which can be used for self-supervised or semi-supervised training.
-This partition comprises 90% of the data.
+* Samples without species labels are placed in the <code>pretrain</code> partition.
+  * This data can be used for self-supervised or semi-supervised training. 
+  This partition comprises 90% of the data.
 
 To use the partitions we propose, see the <code>split</code> field of the metadata file(s).
 
