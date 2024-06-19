@@ -46,9 +46,9 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 * Biological taxonomic classification
   * Metadata fields: <code>phylum</code>, <code>class</code>, <code>order</code>, <code>family</code>, <code>subfamily</code>, <code>genus</code>, <code>species</code>
 * Geographical information 
-  * Metadata fields: <code>country</code>, <code>province_state</code>, <code>latitude</code>, and <code>longitude</code>
+  * Metadata fields: <code>country</code>, <code>province_state</code>, <code>latitude</code>, <code>longitude</code>
 * Specimen size
-  * Metadata fields: <code>image_measurement_value</code>, <code>area_fraction</code>, and <code>scale_factor</code>
+  * Metadata fields: <code>image_measurement_value</code>, <code>area_fraction</code>, <code>scale_factor</code>
 
 
 ### Dataset Access
