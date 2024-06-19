@@ -207,7 +207,6 @@ and whose genus name is a scientific name
 * Samples without species labels are placed in the <code>pretrain</code> partition, which comprises 90% of the data.
   * This data can be used for self-supervised or semi-supervised training. 
 
-
 <div align="center">
   <img src="BIOSCAN_images/repo_images/treemap_partitions.svg" alt="Treemap diagram showing number of samples per partition" />
   <p><b>Figure 8:</b> Treemap diagram showing number of samples per partition. For the pretrain partition (blues), we provide a further breakdown indicating the most fine-grained taxonomic rank that is labelled for the samples. For the remainder of the partitions (all of which are labelled to species level) we show the number of samples in the partition. Samples for seen species are shown in shades of green, and unseen in shades of red.</p>
@@ -219,10 +218,12 @@ Two stages of the proposed semi-supervised learning set-up based on [BarcodeBERT
 1. Pretraining: DNA sequences are tokenized using non-overlapping k-mers and 50% of the tokens are masked for the MLM task. 
 Tokens are encoded and fed into a transformer model. The output embeddings are used for token-level classification. 
 2. Fine-tuning: All DNA sequences in a dataset are tokenized using non-overlapping $k$-mer tokenization and all tokenized sequences, without masking, are passed through the pretrained transformer model.  Global mean-pooling is applied over the token-level embeddings and the output is used for taxonomic classification.
-<figure style="text-align: center;">
+
+<div align="center">
   <img src="BIOSCAN_images/repo_images/barcode_bert_n2.png" alt="Methodology for BarcodeBERT experiments." />
-  <figcaption><b>Figure 9:</b> BarcodeBERT model architecture.</figcaption>
-</figure>
+  <p><b>Figure 8:</b> BarcodeBERT model architecture.
+</div>
+
 
 ### Zero-shot transfer learning
 We follow the experimental setup recommended by [zero-shot clustering](https://arxiv.org/abs/2406.02465),
