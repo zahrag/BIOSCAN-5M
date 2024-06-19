@@ -200,9 +200,9 @@ and whose genus name is a scientific name
 * Other samples labelled with placeholder species names are placed in the <code>other_heldout</code> partition.
   * This data can be used to train an unseen species novelty detector.
 
-* Samples without species labels are placed in the <code>pretrain</code> partition.
+* Samples without species labels are placed in the <code>pretrain</code> partition, which comprises 90% of the data.
   * This data can be used for self-supervised or semi-supervised training. 
-  This partition comprises 90% of the data.
+  
 
 To use the partitions we propose, see the <code>split</code> field of the metadata file(s).
 
