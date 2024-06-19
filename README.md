@@ -69,10 +69,11 @@ size information of the organisms. We provide this metadata in both CSV and JSON
 The BIOSCAN-5M dataset comprises resized and cropped images.
 We have provided various packages of the BIOSCAN-5M dataset, each tailored for specific purposes.
 
-<figure style="text-align: center;">
+
+<div align="center">
   <img src="BIOSCAN_images/repo_images/images_n.png" alt="An array of example insect images from the BIOSCAN-5M dataset." />
-  <figcaption><b>Figure 2:</b> Examples of the original images of the BIOSCAN-5M dataset.</figcaption>
-</figure>
+  <p><b>Figure 2:</b> Examples of the original images of the BIOSCAN-5M dataset.
+</div>
 
 #### Image packages
 * **BIOSCAN_5M_original**: The raw images of the dataset.
