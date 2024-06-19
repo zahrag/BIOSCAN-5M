@@ -16,17 +16,14 @@ If you make use of the BIOSCAN-5M dataset and/or this code repository, please ci
 
 ```bibtex
 @misc{gharaee2024bioscan5m,
-    title={{BIOSCAN-5M}: A Multimodal Dataset for Insect Biodiversity},
-    author={
-        Gharaee, Z. and Lowe, S. C. and Gong, Z. and Arias. P. M. and Pellegrino, N.
-        and Wang, A. T. and Haurum, J. B. and Zarubiieva, I. and Kari, L.
-        and Steinke, D. and Taylor, G. W. and Fieguth, P. and Chang, A. X.
-    },
+    title={BIOSCAN-5M: A Multimodal Dataset for Insect Biodiversity},
+    author={Zahra Gharaee and Scott C. Lowe and ZeMing Gong and Pablo Millan Arias and Nicholas 
+    Pellegrino and Austin T. Wang and Joakim Bruslund Haurum and Iuliia Zarubiieva and Lila Kari and 
+    Dirk Steinke and Graham W. Taylor and Paul Fieguth and Angel X. Chang},
     year={2024},
-    journal={arXiv preprint},
-    archivePrefix={arXiv},
     eprint={2406.12723},
-    url={https://arxiv.org/abs/2406.12723}
+    archivePrefix={arXiv},
+    primaryClass={cs.LG}
 }
 
 ```
