@@ -16,7 +16,7 @@ If you make use of the BIOSCAN-5M dataset and/or this code repository, please ci
 
 ```bibtex
 @misc{gharaee2024bioscan5m,
-    title={BIOSCAN-5M: A Multimodal Dataset for Insect Biodiversity},
+    title={{BIOSCAN-5M}: A Multimodal Dataset for Insect Biodiversity},
     author={Zahra Gharaee and Scott C. Lowe and ZeMing Gong and Pablo Millan Arias
         and Nicholas Pellegrino and Austin T. Wang and Joakim Bruslund Haurum
         and Iuliia Zarubiieva and Lila Kari and Dirk Steinke and Graham W. Taylor
