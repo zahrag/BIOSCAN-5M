@@ -64,6 +64,29 @@ and licensing restrictions shown in the following:
 The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biological information, geographic information as well as 
 size information of the organisms. We provide this metadata in both CSV and JSONLD file types.
 
+
+### Partitioning
+We partitioned the BIOSCAN-5M dataset for both closed-world and open-world machine learning problems.
+
+The closed-world classification task uses samples labelled with a scientific name for their species
+(<code>train</code>, <code>val</code>, and <code>test</code> partitions).
+This task requires the model to correctly classify new images and DNA barcodes of across a known set of species labels that were seen during training.
+
+The open-world classification task uses samples whose species name is a placeholder name,
+and whose genus name is in the <code>train</code> partition.
+(<code>key_unseen</code>, <code>val_unseen</code>, and <code>test_unseen</code> partitions).
+This task requires the model to correctly group together new species that were not seen during training.
+In the retreival paradigm, this can be performed using <code>test_unseen</code> records as queries against a database of records with keys comprised of <code>key_unseen</code>.
+Alternatively, this data can be evaluated at the genus-level by classification against the <code>train</code> partition.
+
+Other samples with labelled with placeholder species names are placed in the <code>other_heldout</code> partition, and can be used to train an unseen species novelty detector.
+
+Samples without species labels are placed in the <code>pretrain</code> partition, which can be used for self-supervised or semi-supervised training.
+This partition comprises 90% of the data.
+
+To use the partitions we propose, see the <code>split</code> field of the metadata.
+
+
 ### RGB Image 
 The BIOSCAN-5M dataset comprises resized and cropped images.
 We have provided various packages of the BIOSCAN-5M dataset, each tailored for specific purposes.
