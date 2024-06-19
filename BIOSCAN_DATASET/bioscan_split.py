@@ -329,13 +329,21 @@ def test_split_fn_ub_barcodes(n):
 
 
 def show_partition_stats(df, show_empty=False):
-    out = "partition      n_samp n_barcode  n_spec\n"
-    out += "---------------------------------------\n"
+    out = r"partition      samples         barcodes         species    " + "\n"
+    out += "-----------------------------------------------------------\n"
+    n_barcode_total = df["dna_barcode"].nunique()
+    n_species_total = df["species"].nunique()
     for partition in df["split"].unique():
         sel = df["split"] == partition
         if not show_empty and sum(sel) == 0:
             continue
-        out += f"{partition:13s} {sum(sel):8d} {df.loc[sel, 'dna_barcode'].nunique():8d} {df.loc[sel, 'species'].nunique():6d}\n"
+        n_barcode = df.loc[sel, "dna_barcode"].nunique()
+        n_species = df.loc[sel, "species"].nunique()
+        out += f"{partition:13s}"
+        out += f" {sum(sel):8d} {100 * sum(sel) / len(df):5.1f}%"
+        out += f" {n_barcode:8d} {100 * n_barcode / n_barcode_total:5.1f}%"
+        out += f" {n_species:6d} {100 * n_species / n_species_total:5.1f}%"
+        out += "\n"
     print("\n" + out)
 
 
