@@ -145,11 +145,10 @@ The BIOSCAN-5M dataset provides Geographic information associated with the colle
 
 <br><br>
 
-<figure style="text-align: center;">
+<div align="center">
   <img src="BIOSCAN_images/repo_images/map_supplement3.png" alt="World map overlaid with the number of samples collected per country." />
-  <figcaption><b>Figure 4:</b> Countries associated with the sites of collection.</figcaption>
-</figure>
-
+  <p><b>Figure 4:</b> Countries associated with the sites of collection.
+</div>
 
 ### Size Information
 The BIOSCAN-5M dataset provides information about size of the organisms:
@@ -176,7 +175,6 @@ We used this to crop each image down to only the region of interest.
 ### Non-insect organisms
 In addition to insects (98% of specimens), the BIOSCAN-5M dataset also contains arthropods from non-insect taxonomic classes.
 These are primarily arachnids and springtails (Collembola).
-
 
 <div align="center">
   <img src="BIOSCAN_images/repo_images/non_insect.png" alt="An array of example non-insect arthropod images from the BIOSCAN-5M dataset." />
