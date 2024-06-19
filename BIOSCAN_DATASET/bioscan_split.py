@@ -11,7 +11,7 @@ BIOSCAN-5M Dataset Partitioning.
 :License: MIT
 """
 
-# # Setup
+# Setup
 import numpy as np
 import pandas as pd
 from tqdm.auto import tqdm
@@ -348,7 +348,7 @@ def show_partition_stats(df, show_empty=False):
 
 
 def main(fname_input, output_csv, verbose=1):
-    # ## Load
+    # Load
     if verbose >= 0:
         print(f"Loading {fname_input}")
     df = pd.read_csv(fname_input, dtype=df_dtypes)
@@ -359,8 +359,6 @@ def main(fname_input, output_csv, verbose=1):
 
     df["is_novel_species"] = find_novel_species(df, verbose=verbose-2)
     df["dna_barcode_strip"] = df["dna_barcode"].str.strip("N")
-
-    # # Partition
 
     # ```
     # placeholders = Maliaise0386 + ["sp.", "cf.", "nr.", "aff." , "n.sp.",  "sp. ex", "grp."]
@@ -414,7 +412,7 @@ def main(fname_input, output_csv, verbose=1):
     if verbose >= 2:
         show_partition_stats(df)
 
-    # ## Single sample species
+    # Single sample species
     partition_candidates = df.loc[df["species"].notna() & (df["split"] == "unk"), ["processid", "genus", "species"]]
 
     if verbose >= 2:
@@ -495,7 +493,6 @@ def main(fname_input, output_csv, verbose=1):
             n_sel_samp = sum(partition_candidates['species'].isin(_sp_sz_trainval_dna[sel_sp].index))
             print(f"{cutoff:3d}  {sum(_sp_sz_trainval_dna == cutoff):5d}  {n_sel_sp:5d}  {100 * n_sel_sp / len(sel_sp):5.2f}%  {n_sel_samp:6d}  {100 * n_sel_samp / len(partition_candidates):5.2f}%")
 
-    # ### actual
     sel_known_genus = df["genus"].isin(df.loc[df["split"] != "pretrain", "genus"])
 
     sel_viable = sel_known_genus & (df["split"] == "pretrain") & df["species"].notna()
@@ -933,14 +930,14 @@ def main(fname_input, output_csv, verbose=1):
     if verbose >= 1:
         print("\nAdding key/query roles")
 
-    # ## species status
+    # species status
     df["species_status"] = "unknown"
     df.loc[df["split"].isin(["train", "val", "test_seen"]), "species_status"] = "seen"
     df.loc[df["is_novel_species"].notna() & df["is_novel_species"], "species_status"] = "pretrain_only"
     df.loc[df["split"].isin(["test_unseen"]), "species_status"] = "unseen"
     df.loc[df["species"].isin(single_species), "species_status"] = "seen_singleton"
 
-    # ## Role
+    # Role
     df["role"] = "none"
 
     df.loc[df["split"] == "train", "role"] = "key"
