@@ -213,7 +213,7 @@ and whose genus name is a scientific name
 </div>
 
 
-### DNA-based taxonomic classification
+### DNA-based taxonomic classification task
 Two stages of the proposed semi-supervised learning set-up based on [BarcodeBERT](https://arxiv.org/abs/2311.02401). 
 1. Pretraining: DNA sequences are tokenized using non-overlapping k-mers and 50% of the tokens are masked for the MLM task. 
 Tokens are encoded and fed into a transformer model. The output embeddings are used for token-level classification. 
@@ -225,7 +225,7 @@ Tokens are encoded and fed into a transformer model. The output embeddings are u
 </div>
 
 
-### Zero-shot transfer learning
+### Zero-shot transfer learning task
 We follow the experimental setup recommended by [zero-shot clustering](https://arxiv.org/abs/2406.02465),
 expanded to operate on multiple modalities.
 1. Take pretrained encoders.
@@ -240,7 +240,7 @@ expanded to operate on multiple modalities.
 </div>
 
 
-### Multimodal retrieval learning
+### Multimodal retrieval learning task
 Our experiments using the [BIOSCAN-CLIP](https://arxiv.org/abs/2405.17537) are conducted in two steps. 
 1. Training: Multiple modalities, including RGB images, textual taxonomy, and DNA sequences, are encoded separately, 
 and trained using a contrastive loss function. 
