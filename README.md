@@ -186,7 +186,9 @@ Benchmark Experiments
 =====================
 
 ### Data Partitions
-We partitioned the BIOSCAN-5M dataset into splits for both closed-world and open-world machine learning problems.
+We partitioned the BIOSCAN-5M dataset into splits for both closed-world and open-world machine learning problems. 
+To use the partitions we propose, see the <code>split</code> field of the metadata file(s).
+
 
 * The **closed-world** classification task uses samples labelled with a scientific name for their species
 (<code>train</code>, <code>val</code>, and <code>test</code> partitions).
@@ -206,7 +208,6 @@ and whose genus name is a scientific name
   * This data can be used for self-supervised or semi-supervised training. 
   
 
-To use the partitions we propose, see the <code>split</code> field of the metadata file(s).
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/treemap_partitions.svg" alt="Treemap diagram showing number of samples per partition." />
