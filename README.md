@@ -207,8 +207,8 @@ and whose genus name is a scientific name
 * Samples without species labels are placed in the <code>pretrain</code> partition, which comprises 90% of the data.
   * This data can be used for self-supervised or semi-supervised training. 
 
-<figure style="display: flex; flex-direction: column; align-items: center;">
-  <img src="BIOSCAN_images/repo_images/treemap_partitions.svg" alt="Treemap diagram showing number of samples per partition." style="max-width: 100%; height: auto;" />
+<figure style="text-align: center; margin: auto;">
+  <img src="BIOSCAN_images/repo_images/treemap_partitions.svg" alt="Treemap diagram showing number of samples per partition." style="display: block; margin: auto;" />
   <figcaption style="text-align: center;">
     <b>Figure 8:</b> Treemap diagram showing number of samples per partition.
     For the pretrain partition (blues), we provide a further breakdown indicating the most fine-grained taxonomic rank that is labelled for the samples.
@@ -216,8 +216,6 @@ and whose genus name is a scientific name
     Samples for seen species are shown in shades of green, and unseen in shades of red.
   </figcaption>
 </figure>
-
-
 
 ### DNA-based taxonomic classification
 Two stages of the proposed semi-supervised learning set-up based on [BarcodeBERT](https://arxiv.org/abs/2311.02401). 
