@@ -221,7 +221,7 @@ Tokens are encoded and fed into a transformer model. The output embeddings are u
 
 <div align="center">
   <img src="BIOSCAN_images/repo_images/barcode_bert_n2.png" alt="Methodology for BarcodeBERT experiments." />
-  <p><b>Figure 8:</b> BarcodeBERT model architecture.
+  <p><b>Figure 9:</b> BarcodeBERT model architecture.
 </div>
 
 
@@ -234,10 +234,11 @@ expanded to operate on multiple modalities.
 4. Cluster the reduced embeddings with Agglomerative Clustering.
 5. Evaluate against the ground-truth annotations with Adjusted Mutual Information.
 
-<figure style="text-align: center;">
+<div align="center">
   <img src="BIOSCAN_images/repo_images/bioscan_zsc_n1.png" alt="Methodology for zero-shot clustering experiments." />
-  <figcaption><b>Figure 10:</b> BIOSCAN-ZSC model architecture.</figcaption>
-</figure>
+  <p><b>Figure 10:</b> BIOSCAN-ZSC model architecture.
+</div>
+
 
 ### Multimodal retrieval learning
 Our experiments using the [BIOSCAN-CLIP](https://arxiv.org/abs/2405.17537) are conducted in two steps. 
@@ -246,8 +247,8 @@ and trained using a contrastive loss function.
 2. Inference: Image vs DNA embedding is used as a query, and compared to the embeddings obtained from a database of image, 
 DNA and text (keys). The cosine similarity is used to find the closest key embedding, and the corresponding taxonomic label is used to classify the query.
 
-<figure style="text-align: center;">
+<div align="center">
   <img src="BIOSCAN_images/repo_images/bioscan_clip.png" alt="Methodology for BIOSCAN-CLIP experiments." />
-  <figcaption><b>Figure 11:</b> BIOSCAN-CLIP model architecture.</figcaption>
-</figure>
+  <p><b>Figure 11:</b> BIOSCAN-CLIP model architecture.
+</div>
 
