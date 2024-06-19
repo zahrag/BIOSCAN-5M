@@ -140,14 +140,14 @@ The BIOSCAN-5M dataset provides Geographic information associated with the colle
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/BIOSCAN_5M_Insect_Dataset_lat_lon_map.png" alt="World map overlaid with the distribution of sample collection sites and their frequencies." />
-  <figcaption><b>Figure 4:</b> Locations obtained from latitude and longitude coordinates associated with the sites of collection.</figcaption>
+  <figcaption><b>Figure 3:</b> Locations obtained from latitude and longitude coordinates associated with the sites of collection.</figcaption>
 </figure>
 
 <br><br>
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/map_supplement3.png" alt="World map overlaid with the number of samples collected per country." />
-  <figcaption><b>Figure 5:</b> Countries associated with the sites of collection.</figcaption>
+  <figcaption><b>Figure 4:</b> Countries associated with the sites of collection.</figcaption>
 </figure>
 
 
@@ -161,7 +161,7 @@ Furthermore, utilizing our cropping tool, we calculated the following informatio
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/images_masks.png" alt="Example pixel masks of the organism." />
-  <figcaption><b>Figure 6:</b> Examples of original images (top) and their corresponding masks (bottom) depicting pixels occupied by the organism.</figcaption>
+  <figcaption><b>Figure 5:</b> Examples of original images (top) and their corresponding masks (bottom) depicting pixels occupied by the organism.</figcaption>
 </figure>
 
 ### Cropped images
@@ -170,7 +170,7 @@ We used this to crop each image down to only the region of interest.
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/area_frac.png" alt="Example bounding boxes extracted with the cropping tool." />
-  <figcaption><b>Figure 7:</b> Examples of the original images with the bounding box detected by our cropping tool.</figcaption>
+  <figcaption><b>Figure 6:</b> Examples of the original images with the bounding box detected by our cropping tool.</figcaption>
 </figure>
 
 ### Non-insect organisms
@@ -179,7 +179,7 @@ These are primarily arachnids and springtails (Collembola).
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/non_insect.png" alt="An array of example non-insect arthropod images from the BIOSCAN-5M dataset." />
-  <figcaption><b>Figure 8:</b> Examples of the original images of non-insect organisms.</figcaption>
+  <figcaption><b>Figure 7:</b> Examples of the original images of non-insect organisms.</figcaption>
 </figure>
 
 Benchmark Experiments
@@ -210,7 +210,7 @@ To use the partitions we propose, see the <code>split</code> field of the metada
 
 <figure style="text-align: center;">
   <img src="BIOSCAN_images/repo_images/treemap_partitions.svg" alt="Treemap diagram showing number of samples per partition." />
-  <figcaption><b>Figure 3:</b> Treemap diagram showing number of samples per partition.
+  <figcaption><b>Figure 8:</b> Treemap diagram showing number of samples per partition.
   For the pretrain partition (blues), we provide a further breakdown indicating the most fine-grained taxonomic rank that is labelled for the samples.
   For the remainder of the partitions (all of which are labelled to species level) we show the number of samples in the partition.
   Samples for seen species are shown in shades of green, and unseen in shades of red.
