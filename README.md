@@ -26,6 +26,7 @@ If you make use of the BIOSCAN-5M dataset and/or this code repository, please ci
     journal={arXiv preprint},
     archivePrefix={arXiv},
     eprint={2406.12723},
+    url={https://arxiv.org/abs/2406.12723}
 }
 
 ```
