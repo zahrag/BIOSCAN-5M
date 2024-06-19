@@ -1,10 +1,9 @@
 BIOSCAN-5M
 ----------
-<figure style="text-align: center;">
+<div align="center">
   <img src="BIOSCAN_images/repo_images/fig1.png" alt="An example record from the BIOSCAN-5M dataset" />
-  <figcaption><b>Figure 1:</b> A BIOSCAN-5M dataset sample.</figcaption>
-</figure>
-
+  <p><b>Figure 1:</b>A BIOSCAN-5M dataset sample with multimodal data types.
+</div>
 Overview
 ========
 This repository contains the code and data related to the to the [BIOSCAN-5M](https://biodiversitygenomics.net/5M-insects/)
@@ -68,7 +67,6 @@ size information of the organisms. We provide this metadata in both CSV and JSON
 ### RGB Image 
 The BIOSCAN-5M dataset comprises resized and cropped images.
 We have provided various packages of the BIOSCAN-5M dataset, each tailored for specific purposes.
-
 
 <div align="center">
   <img src="BIOSCAN_images/repo_images/images_n.png" alt="An array of example insect images from the BIOSCAN-5M dataset." />
