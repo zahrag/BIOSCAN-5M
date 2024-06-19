@@ -12,7 +12,7 @@ dataset.
 BIOSCAN-5M is a comprehensive multi-modal dataset comprised of over 5 million specimens, 98% of which are insects.
 Every record has **both image and DNA** data.
 
-If you make use of the BIOSCAN-5M dataset and/or this code repository, please cite the following paper:
+If you make use of the BIOSCAN-5M dataset and/or this code repository, please cite the following [paper](https://arxiv.org/abs/2406.12723):
 
 ```bibtex
 @article{BIOSCAN5M,
@@ -25,7 +25,9 @@ If you make use of the BIOSCAN-5M dataset and/or this code repository, please ci
     year={2024},
     journal={arXiv preprint},
     archivePrefix={arXiv},
+    eprint={2406.12723},
 }
+
 ```
 
 Dataset
