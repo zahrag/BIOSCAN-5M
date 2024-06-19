@@ -15,7 +15,7 @@ Every record has **both image and DNA** data.
 If you make use of the BIOSCAN-5M dataset and/or this code repository, please cite the following [paper](https://arxiv.org/abs/2406.12723):
 
 ```bibtex
-@article{BIOSCAN5M,
+@misc{gharaee2024bioscan5m,
     title={{BIOSCAN-5M}: A Multimodal Dataset for Insect Biodiversity},
     author={
         Gharaee, Z. and Lowe, S. C. and Gong, Z. and Arias. P. M. and Pellegrino, N.
