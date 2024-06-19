@@ -144,6 +144,194 @@ def find_novel_species(df, verbose=0):
     return is_novel_species
 
 
+def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_upper_fn, soft_upper=1.1, center_rand=False, top_rand=False, seed=None):
+    rng = np.random.default_rng(seed=seed)
+    barcodes_selected = []
+    for species, grp in tqdm(g_test):
+        verbose = False
+        if False:
+            verbose = True
+            print()
+            print(species)
+            display(grp)
+        n = len(grp)
+        target = target_fn(n)
+        if target == 0:
+            continue
+        lb_samp = lower_fn(n)
+        ub_samp = upper_fn(n)
+        n_alloc = 0
+        indices_used = []
+        grp_barcodes_selected = []
+        dnasz = grp.groupby("dna_barcode_strip").size().sort_values()
+        if verbose:
+            display(dnasz)
+        n_barcodes = len(dnasz)
+        # lb_barcodes = dna_lower_fn(n_barcodes)
+        ub_barcodes = dna_upper_fn(n_barcodes)
+        if verbose:
+            print(n, "samples for the species")
+            print(n_barcodes, "barcodes for the species")
+            print("target", target)
+            print("lb_samp", lb_samp)
+            print("ub_samp", ub_samp)
+            print("ub_barcodes", ub_barcodes)
+        if n_barcodes == 1:
+            # Can't allocate our only DNA barcode
+            continue
+        dnasz_cs = dnasz.cumsum()
+        if verbose:
+            pass
+            # break
+        while True:
+            if verbose:
+                print("n_alloc", n_alloc)
+                # display(dnasz)
+            # We only want to add samples which keep us below or at the target
+            # And cumsum indicates the largest value we can reach with the smallest k entries,
+            # so we need to add one of the samples that takes the cumsum to the target.
+            is_option = (dnasz <= target - n_alloc).values & (dnasz_cs >= target * soft_upper - n_alloc).values
+            if sum(is_option) == 0:
+                if verbose:
+                    print("No ideal options")
+                # No ideal options, so let's make do
+                if n_alloc == 0 and not any(dnasz <= target):
+                    # No options and nothing added so far
+                    if dnasz.iloc[0] >= lb_samp and dnasz.iloc[0] < n / 2:
+                        if verbose:
+                            print("Nothing added, taking first")
+                        idx = 0
+                    else:
+                        break
+                elif dnasz.iloc[0] > target - n_alloc:  # not any(dnasz <= target - n_alloc):
+                    # Everything would take us above the remaining target
+                    if dnasz.iloc[0] > (target - n_alloc) / 2:
+                        # Shouldn't add the smallest because the residual would be larger than it is now
+                        if verbose:
+                            print("Last possibility avoiding smallest, increases residual")
+                        break
+                    if n_alloc + dnasz.iloc[0] > ub_samp:
+                        # Can't add the smallest as it takes us above our upperbound
+                        if verbose:
+                            print("Can't add smallest due to upperbound")
+                        break
+                    # Add the smallest
+                    idx = 0
+                elif not any(dnasz_cs >= target * soft_upper - n_alloc):
+                    raise ValueError("Impossible outcome")
+                else:
+                    # Find where our two criteria meet
+                    option_cutoff_idx = np.nonzero(dnasz_cs >= target * soft_upper - n_alloc)[0][0]
+                    idx = option_cutoff_idx
+                    if (
+                        option_cutoff_idx > 0
+                        and abs(n_alloc + dnasz.iloc[option_cutoff_idx - 1] - target) < abs(target - (n_alloc + dnasz.iloc[option_cutoff_idx]))
+                    ):
+                        idx = option_cutoff_idx - 1
+                    if n_alloc + dnasz.iloc[option_cutoff_idx] > ub_samp:
+                        break
+                    if verbose:
+                        print("Breaking between criteria")
+            elif len(grp_barcodes_selected) + 1 >= ub_barcodes:
+                # We can only add one more, so add the most populated DNA that makes sense to add
+                option_cutoff_idx = np.nonzero(dnasz <= target - n_alloc)[0][-1]
+                idx = option_cutoff_idx
+                if (
+                    option_cutoff_idx < len(dnasz) - 1
+                    and abs(n_alloc + dnasz.iloc[option_cutoff_idx + 1] - target) < abs(target - (n_alloc + dnasz.iloc[option_cutoff_idx]))
+                    and n_alloc + dnasz.iloc[option_cutoff_idx + 1] <= ub_samp
+                ):
+                    idx = option_cutoff_idx + 1
+                if verbose:
+                    print("Choosing last barcode to add, so using largest")
+            else:
+                n_options = sum(is_option)
+                min_idx = 0
+                max_idx = n_options
+                if center_rand:
+                    # Only use a barcode from the intermediate set of options
+                    min_idx = max(min_idx, int(n_options * 0.25))
+                    max_idx = int(np.ceil(n_options * 0.75))
+                elif top_rand:
+                    # Only use a barcode from the largest options
+                    min_idx = max(min_idx, int(n_options * 0.5))
+                else:
+                    idx = rng.integers(n_options, size=1)[0]
+                if max_idx <= min_idx:
+                    min_idx = max(min_idx - 1, 0)
+                    max_idx = min(max_idx + 1, n_options)
+                idx = rng.integers(min_idx, max_idx, size=1)[0]
+                idx = np.nonzero(is_option)[0][idx]
+                if verbose:
+                    print(f"Randomly selected item #{idx} from {n_options} options with {dnasz.iloc[idx]} samp")
+            if verbose:
+                print(f"Adding item {idx}: {dnasz.index[idx]}")
+            grp_barcodes_selected.append(dnasz.index[idx])
+            n_alloc += dnasz.iloc[idx]
+            if n_alloc >= target:
+                break
+            dnasz_cs[idx:] -= dnasz.iloc[idx]
+            indices_used.append(idx)
+            len_pre = len(dnasz)
+            dnasz_cs.drop(dnasz.index[idx], inplace=True)
+            dnasz.drop(dnasz.index[idx], inplace=True)
+            len_post = len(dnasz)
+            if len_pre == len_post:
+                raise ValueError()
+            if len(grp_barcodes_selected) >= ub_barcodes:
+                break
+            if verbose:
+                print(f"End of loop with {len(dnasz)} = {len(dnasz_cs)} / {n_barcodes} barcodes remaining")
+        if n_alloc >= lb_samp:
+            barcodes_selected.append(grp_barcodes_selected)
+            if verbose:
+                print(f"Added {len(grp_barcodes_selected)} barcodes")
+        elif verbose:
+            print(f"Skipped adding {len(grp_barcodes_selected)} barcodes")
+        if verbose:
+            print(len(grp_barcodes_selected), "barcodes selected")
+            display(grp_barcodes_selected)
+    return barcodes_selected
+
+
+def test_split_fn(n):
+    if n < 8:
+        return 0
+    k = int(np.floor(4 + (n - 8) / 4))
+    k = min(k, 25)
+    return k
+
+
+def test_split_fn_lb(n):
+    if n < 8:
+        return 0
+    k = int(np.floor(3 + (n - 8) / 5))
+    return k
+
+
+def test_split_fn_ub(n):
+    if n < 8:
+        return 0
+    k = int(np.floor(4 + (n - 8) / 3))
+    return k
+
+
+def test_split_fn_lb_barcodes(n):
+    if n < 3:
+        return 0
+    k = int(np.floor(1 + (n - 2) / 5))
+    k = min(k, 15)
+    return k
+
+
+def test_split_fn_ub_barcodes(n):
+    if n < 3:
+        return 0
+    k = int(np.floor(1 + (n - 2) / 3))
+    return k
+
+
+
 def main(fname_input, output_csv, verbose=1):
     # ## Load
     if verbose >= 1:
@@ -303,44 +491,6 @@ def main(fname_input, output_csv, verbose=1):
 
     sp_sz = partition_candidates.groupby("species", observed=True).size()
 
-
-    def test_split_fn(n):
-        if n < 8:
-            return 0
-        k = int(np.floor(4 + (n - 8) / 4))
-        k = min(k, 25)
-        return k
-
-
-    def test_split_fn_lb(n):
-        if n < 8:
-            return 0
-        k = int(np.floor(3 + (n - 8) / 5))
-        return k
-
-
-    def test_split_fn_ub(n):
-        if n < 8:
-            return 0
-        k = int(np.floor(4 + (n - 8) / 3))
-        return k
-
-
-    def test_split_fn_lb_barcodes(n):
-        if n < 3:
-            return 0
-        k = int(np.floor(1 + (n - 2) / 5))
-        k = min(k, 15)
-        return k
-
-
-    def test_split_fn_ub_barcodes(n):
-        if n < 3:
-            return 0
-        k = int(np.floor(1 + (n - 2) / 3))
-        return k
-
-
     sp_sztest = sp_sz.apply(test_split_fn)
 
     print(sum(sp_sztest > 0), "species")
@@ -359,156 +509,6 @@ def main(fname_input, output_csv, verbose=1):
     g_test = partition_candidates.groupby("species", observed=True)
 
     rng = np.random.default_rng(seed=1)
-
-    def stratified_dna_image_partition(g_test, target_fn, lower_fn, upper_fn, dna_upper_fn, soft_upper=1.1, center_rand=False, top_rand=False, seed=None):
-        rng = np.random.default_rng(seed=seed)
-        barcodes_selected = []
-        for species, grp in tqdm(g_test):
-            verbose = False
-            if False:
-                verbose = True
-                print()
-                print(species)
-                display(grp)
-            n = len(grp)
-            target = target_fn(n)
-            if target == 0:
-                continue
-            lb_samp = lower_fn(n)
-            ub_samp = upper_fn(n)
-            n_alloc = 0
-            indices_used = []
-            grp_barcodes_selected = []
-            dnasz = grp.groupby("dna_barcode_strip").size().sort_values()
-            if verbose:
-                display(dnasz)
-            n_barcodes = len(dnasz)
-            # lb_barcodes = dna_lower_fn(n_barcodes)
-            ub_barcodes = dna_upper_fn(n_barcodes)
-            if verbose:
-                print(n, "samples for the species")
-                print(n_barcodes, "barcodes for the species")
-                print("target", target)
-                print("lb_samp", lb_samp)
-                print("ub_samp", ub_samp)
-                print("ub_barcodes", ub_barcodes)
-            if n_barcodes == 1:
-                # Can't allocate our only DNA barcode
-                continue
-            dnasz_cs = dnasz.cumsum()
-            if verbose:
-                pass
-                # break
-            while True:
-                if verbose:
-                    print("n_alloc", n_alloc)
-                    # display(dnasz)
-                # We only want to add samples which keep us below or at the target
-                # And cumsum indicates the largest value we can reach with the smallest k entries,
-                # so we need to add one of the samples that takes the cumsum to the target.
-                is_option = (dnasz <= target - n_alloc).values & (dnasz_cs >= target * soft_upper - n_alloc).values
-                if sum(is_option) == 0:
-                    if verbose:
-                        print("No ideal options")
-                    # No ideal options, so let's make do
-                    if n_alloc == 0 and not any(dnasz <= target):
-                        # No options and nothing added so far
-                        if dnasz.iloc[0] >= lb_samp and dnasz.iloc[0] < n / 2:
-                            if verbose:
-                                print("Nothing added, taking first")
-                            idx = 0
-                        else:
-                            break
-                    elif dnasz.iloc[0] > target - n_alloc:  # not any(dnasz <= target - n_alloc):
-                        # Everything would take us above the remaining target
-                        if dnasz.iloc[0] > (target - n_alloc) / 2:
-                            # Shouldn't add the smallest because the residual would be larger than it is now
-                            if verbose:
-                                print("Last possibility avoiding smallest, increases residual")
-                            break
-                        if n_alloc + dnasz.iloc[0] > ub_samp:
-                            # Can't add the smallest as it takes us above our upperbound
-                            if verbose:
-                                print("Can't add smallest due to upperbound")
-                            break
-                        # Add the smallest
-                        idx = 0
-                    elif not any(dnasz_cs >= target * soft_upper - n_alloc):
-                        raise ValueError("Impossible outcome")
-                    else:
-                        # Find where our two criteria meet
-                        option_cutoff_idx = np.nonzero(dnasz_cs >= target * soft_upper - n_alloc)[0][0]
-                        idx = option_cutoff_idx
-                        if (
-                            option_cutoff_idx > 0
-                            and abs(n_alloc + dnasz.iloc[option_cutoff_idx - 1] - target) < abs(target - (n_alloc + dnasz.iloc[option_cutoff_idx]))
-                        ):
-                            idx = option_cutoff_idx - 1
-                        if n_alloc + dnasz.iloc[option_cutoff_idx] > ub_samp:
-                            break
-                        if verbose:
-                            print("Breaking between criteria")
-                elif len(grp_barcodes_selected) + 1 >= ub_barcodes:
-                    # We can only add one more, so add the most populated DNA that makes sense to add
-                    option_cutoff_idx = np.nonzero(dnasz <= target - n_alloc)[0][-1]
-                    idx = option_cutoff_idx
-                    if (
-                        option_cutoff_idx < len(dnasz) - 1
-                        and abs(n_alloc + dnasz.iloc[option_cutoff_idx + 1] - target) < abs(target - (n_alloc + dnasz.iloc[option_cutoff_idx]))
-                        and n_alloc + dnasz.iloc[option_cutoff_idx + 1] <= ub_samp
-                    ):
-                        idx = option_cutoff_idx + 1
-                    if verbose:
-                        print("Choosing last barcode to add, so using largest")
-                else:
-                    n_options = sum(is_option)
-                    min_idx = 0
-                    max_idx = n_options
-                    if center_rand:
-                        # Only use a barcode from the intermediate set of options
-                        min_idx = max(min_idx, int(n_options * 0.25))
-                        max_idx = int(np.ceil(n_options * 0.75))
-                    elif top_rand:
-                        # Only use a barcode from the largest options
-                        min_idx = max(min_idx, int(n_options * 0.5))
-                    else:
-                        idx = rng.integers(n_options, size=1)[0]
-                    if max_idx <= min_idx:
-                        min_idx = max(min_idx - 1, 0)
-                        max_idx = min(max_idx + 1, n_options)
-                    idx = rng.integers(min_idx, max_idx, size=1)[0]
-                    idx = np.nonzero(is_option)[0][idx]
-                    if verbose:
-                        print(f"Randomly selected item #{idx} from {n_options} options with {dnasz.iloc[idx]} samp")
-                if verbose:
-                    print(f"Adding item {idx}: {dnasz.index[idx]}")
-                grp_barcodes_selected.append(dnasz.index[idx])
-                n_alloc += dnasz.iloc[idx]
-                if n_alloc >= target:
-                    break
-                dnasz_cs[idx:] -= dnasz.iloc[idx]
-                indices_used.append(idx)
-                len_pre = len(dnasz)
-                dnasz_cs.drop(dnasz.index[idx], inplace=True)
-                dnasz.drop(dnasz.index[idx], inplace=True)
-                len_post = len(dnasz)
-                if len_pre == len_post:
-                    raise ValueError()
-                if len(grp_barcodes_selected) >= ub_barcodes:
-                    break
-                if verbose:
-                    print(f"End of loop with {len(dnasz)} = {len(dnasz_cs)} / {n_barcodes} barcodes remaining")
-            if n_alloc >= lb_samp:
-                barcodes_selected.append(grp_barcodes_selected)
-                if verbose:
-                    print(f"Added {len(grp_barcodes_selected)} barcodes")
-            elif verbose:
-                print(f"Skipped adding {len(grp_barcodes_selected)} barcodes")
-            if verbose:
-                print(len(grp_barcodes_selected), "barcodes selected")
-                display(grp_barcodes_selected)
-        return barcodes_selected
-
 
     barcodes_selected = stratified_dna_image_partition(g_test, test_split_fn, lambda x: 3, test_split_fn_ub, test_split_fn_ub_barcodes, top_rand=True, seed=1)
 
