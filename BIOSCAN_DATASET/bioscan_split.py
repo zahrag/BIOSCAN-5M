@@ -349,7 +349,30 @@ def show_partition_stats(df, show_empty=False):
 
 
 def main(fname_input, output_csv, verbose=1):
-    # Load
+    """
+    Partition data into splits.
+
+    Divide the data into the following partitions:
+
+        - pretrain: samples without species labels
+        - train: samples with scientific names as species labels
+        - val: validation data, ~5% of train data, matching distribution
+        - test: test data, ~11% of train data, with flattened distribution
+        - key_unseen: key database for unseen species
+        - val_unseen: validation data for unseen species, 20% of unseen species
+        - test_unseen: test data for unseen species, with flatten distribution
+        - other_heldout: remaining samples with placeholder species labels
+
+    Parameters
+    ----------
+    fname_input : str
+        Input CSV file name.
+    output_csv : str
+        Output CSV file name.
+    verbose : int, default=1
+        Verbosity level.
+    """
+    # Load metadata
     if verbose >= 0:
         print(f"Loading {fname_input}")
     df = pd.read_csv(fname_input, dtype=df_dtypes)
