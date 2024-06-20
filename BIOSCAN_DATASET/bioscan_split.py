@@ -333,7 +333,8 @@ def show_partition_stats(df, show_empty=False):
     out += "---------------------------------------------------------------\n"
     n_barcode_total = df["dna_barcode"].nunique()
     n_species_total = df["species"].nunique()
-    for partition in df["split"].unique():
+    partitions = ["pretrain", "train", "val", "test", "key_unseen", "val_unseen", "test_unseen"]
+    for partition in partitions + list(set(df["split"].unique()).difference(partitions)):
         sel = df["split"] == partition
         if not show_empty and sum(sel) == 0:
             continue
