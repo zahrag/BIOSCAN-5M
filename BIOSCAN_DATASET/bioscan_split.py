@@ -182,6 +182,7 @@ def stratified_dna_image_partition(
     soft_upper=1.1,
     center_rand=False,
     top_rand=False,
+    barcode_column="dna_barcode_strip",
     seed=None,
     verbose=0,
 ):
@@ -225,6 +226,8 @@ def stratified_dna_image_partition(
     top_rand : bool, default=False
         If True, only select barcodes from the top 50% of the barcode
         options by number of samples per barcode.
+    barcode_column : str, default="dna_barcode_strip"
+        Column name for the DNA barcode, which will be grouped by per species.
     seed : int, default=None
         Random seed for reproducibility.
     verbose : int, default=0
@@ -248,7 +251,7 @@ def stratified_dna_image_partition(
         n_alloc = 0
         indices_used = []
         grp_barcodes_selected = []
-        dnasz = grp.groupby("dna_barcode_strip").size().sort_values()
+        dnasz = grp.groupby(barcode_column).size().sort_values()
         if verbose >= 3:
             display(dnasz)
         n_barcodes = len(dnasz)
