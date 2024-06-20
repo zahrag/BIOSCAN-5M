@@ -99,17 +99,17 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
     <tr>
       <td>
         <ul>
-          <li>BIOSCAN_5M_original_full_01.zip</li>
-          <li>BIOSCAN_5M_original_full_02.zip</li>
-          <li>BIOSCAN_5M_original_full_03.zip</li>
-          <li>BIOSCAN_5M_original_full_04.zip</li>
-          <li>BIOSCAN_5M_original_full_05.zip</li>
+          <li>BIOSCAN_5M_original_full.01.zip</li>
+          <li>BIOSCAN_5M_original_full.02.zip</li>
+          <li>BIOSCAN_5M_original_full.03.zip</li>
+          <li>BIOSCAN_5M_original_full.04.zip</li>
+          <li>BIOSCAN_5M_original_full.05.zip</li>
         </ul>
       </td>
       <td>
         <ul>
-          <li>BIOSCAN_5M_cropped_01.zip</li>
-          <li>BIOSCAN_5M_cropped_02.zip</li>
+          <li>BIOSCAN_5M_cropped.01.zip</li>
+          <li>BIOSCAN_5M_cropped.02.zip</li>
         </ul>
       </td>
     </tr>
