@@ -518,13 +518,12 @@ def main(input_csv, output_csv, verbose=1):
     if verbose >= 1:
         print("\nCreating unseen species set")
 
-    partition_candidates = df.loc[
-        df["species"].notna() & (df["split"] == "tbd"),
-        ["processid", "genus", "species"],
-    ]
-    sp_sz = partition_candidates.groupby("species", observed=True).size()
-
     if verbose >= 3:
+        partition_candidates = df.loc[
+            df["species"].notna() & (df["split"] == "tbd"),
+            ["processid", "genus", "species"],
+        ]
+        sp_sz = partition_candidates.groupby("species", observed=True).size()
         print()
         print(sp_sz)
     if verbose >= 4:
@@ -548,8 +547,8 @@ def main(input_csv, output_csv, verbose=1):
                 f"  {n_sel_samp:6d}  {100 * n_sel_samp / len(partition_candidates):5.2f}%"
             )
 
-    ge_sz = partition_candidates.groupby("genus", observed=True).size()
     if verbose >= 3:
+        ge_sz = partition_candidates.groupby("genus", observed=True).size()
         print()
         print(ge_sz)
     if verbose >= 4:
@@ -569,22 +568,20 @@ def main(input_csv, output_csv, verbose=1):
                 f"  {n_sel_samp:6d}  {100 * n_sel_samp / len(partition_candidates):5.2f}%"
             )
 
-    nspecies_per_genus = (
-        partition_candidates[["genus", "species"]].drop_duplicates().groupby("genus", observed=True).size()
-    )
-
     if verbose >= 4:
+        nspecies_per_genus = (
+            partition_candidates[["genus", "species"]].drop_duplicates().groupby("genus", observed=True).size()
+        )
         plt.hist(nspecies_per_genus, np.arange(40), cumulative=True)
         plt.show()
 
-    _sp_sz_trainval_dna = (
-        df.loc[df["split"].isin(["tbd", "train", "val", "test"])]
-        .drop_duplicates("dna_barcode_strip")
-        .groupby("species", observed=True, dropna=False)
-        .size()
-    )
-
     if verbose >= 4:
+        _sp_sz_trainval_dna = (
+            df.loc[df["split"].isin(["tbd", "train", "val", "test"])]
+            .drop_duplicates("dna_barcode_strip")
+            .groupby("species", observed=True, dropna=False)
+            .size()
+        )
         plt.hist(_sp_sz_trainval_dna, np.arange(40))
         plt.show()
         plt.hist(_sp_sz_trainval_dna, np.arange(40), cumulative=True)
@@ -629,22 +626,20 @@ def main(input_csv, output_csv, verbose=1):
     df.loc[df["split"].isin(["test", "train", "val"]), "split"] = "tbd"
     df.loc[df["species"].isin(single_species), "split"] = "train"
 
-    partition_candidates = df.loc[
-        df["species"].notna() & (df["split"] == "tbd"),
-        ["processid", "dna_barcode_strip", "genus", "species"],
-    ]
-    sp_sz = partition_candidates.groupby("species", observed=True).size()
-
-    sp_sztest = sp_sz.apply(test_split_fn)
     if verbose >= 2:
+        partition_candidates = df.loc[
+            df["species"].notna() & (df["split"] == "tbd"),
+            ["processid", "dna_barcode_strip", "genus", "species"],
+        ]
+        sp_sz = partition_candidates.groupby("species", observed=True).size()
+        sp_sztest = sp_sz.apply(test_split_fn)
         print(sum(sp_sztest > 0), "species to place")
         print(sum(sp_sztest), "samples to place")
 
-    df_tmp = pd.concat([sp_sz, sp_sztest], axis=1, keys=["total", "test"])
-    df_tmp["train"] = df_tmp["total"] - df_tmp["test"]
-    df_tmp["test_pc"] = 100 * df_tmp["test"] / df_tmp["total"]
-    df_tmp["train_pc"] = 100 * df_tmp["train"] / df_tmp["total"]
-    if verbose >= 2:
+        df_tmp = pd.concat([sp_sz, sp_sztest], axis=1, keys=["total", "test"])
+        df_tmp["train"] = df_tmp["total"] - df_tmp["test"]
+        df_tmp["test_pc"] = 100 * df_tmp["test"] / df_tmp["total"]
+        df_tmp["train_pc"] = 100 * df_tmp["train"] / df_tmp["total"]
         print(df_tmp)
 
     # Randomize the order of the data so we select random samples from each species
@@ -655,8 +650,6 @@ def main(input_csv, output_csv, verbose=1):
     partition_candidates = partition_candidates.sample(frac=1, random_state=0)
 
     g_test = partition_candidates.groupby("species", observed=True)
-
-    rng = np.random.default_rng(seed=1)
 
     barcodes_selected = stratified_dna_image_partition(
         g_test,
@@ -684,24 +677,22 @@ def main(input_csv, output_csv, verbose=1):
     df.loc[df["split"] == "test", "split"] = "tbd"
     df.loc[sel, "split"] = "test"
 
-    _sp_sz_trainval = (
-        df.loc[df["split"].isin(["tbd", "train", "val"])].groupby("species", observed=True, dropna=False).size()
-    )
-
-    _sp_sz_test = df.loc[df["split"] == "test"].groupby("species", observed=True, dropna=False).size()
-
     if verbose >= 2:
+        _sp_sz_trainval = (
+            df.loc[df["split"].isin(["tbd", "train", "val"])].groupby("species", observed=True, dropna=False).size()
+        )
+        _sp_sz_test = df.loc[df["split"] == "test"].groupby("species", observed=True, dropna=False).size()
         print(
             f"{_sp_sz_test.sum()} of {_sp_sz_trainval.sum()} viable samples"
             f" ({100 * _sp_sz_test.sum() / _sp_sz_trainval.sum():.1f}%) placed in test_seen"
         )
 
-    df_tmp2 = pd.concat([_sp_sz_trainval, _sp_sz_test], axis=1, keys=["trainval", "test"])
-    df_tmp2.loc[df_tmp2["test"].isna(), "test"] = 0
-    df_tmp2["total"] = df_tmp2["trainval"] + df_tmp2["test"]
-    df_tmp2["test_pc"] = 100 * df_tmp2["test"] / df_tmp2["total"]
-
     if verbose >= 3:
+        df_tmp2 = pd.concat([_sp_sz_trainval, _sp_sz_test], axis=1, keys=["trainval", "test"])
+        df_tmp2.loc[df_tmp2["test"].isna(), "test"] = 0
+        df_tmp2["total"] = df_tmp2["trainval"] + df_tmp2["test"]
+        df_tmp2["test_pc"] = 100 * df_tmp2["test"] / df_tmp2["total"]
+
         plt.scatter(df_tmp2["total"], df_tmp2["test"])
         plt.show()
         plt.scatter(df_tmp2["total"], df_tmp2["test"])
@@ -712,26 +703,23 @@ def main(input_csv, output_csv, verbose=1):
         plt.yscale("log")
         plt.show()
 
-    _sp_sz_trainval_dna = (
-        df.loc[df["split"].isin(["tbd", "train", "val"])]
-        .drop_duplicates("dna_barcode_strip")
-        .groupby("species", observed=True, dropna=False)
-        .size()
-    )
-
-    _sp_sz_test_dna = (
-        df.loc[df["split"] == "test"]
-        .drop_duplicates("dna_barcode_strip")
-        .groupby("species", observed=True, dropna=False)
-        .size()
-    )
-
-    df_tmp2 = pd.concat([_sp_sz_trainval_dna, _sp_sz_test_dna], axis=1, keys=["trainval", "test"])
-    df_tmp2.loc[df_tmp2["test"].isna(), "test"] = 0
-    df_tmp2["total"] = df_tmp2["trainval"] + df_tmp2["test"]
-    df_tmp2["test_pc"] = 100 * df_tmp2["test"] / df_tmp2["total"]
-
     if verbose >= 3:
+        _sp_sz_trainval_dna = (
+            df.loc[df["split"].isin(["tbd", "train", "val"])]
+            .drop_duplicates("dna_barcode_strip")
+            .groupby("species", observed=True, dropna=False)
+            .size()
+        )
+        _sp_sz_test_dna = (
+            df.loc[df["split"] == "test"]
+            .drop_duplicates("dna_barcode_strip")
+            .groupby("species", observed=True, dropna=False)
+            .size()
+        )
+        df_tmp2 = pd.concat([_sp_sz_trainval_dna, _sp_sz_test_dna], axis=1, keys=["trainval", "test"])
+        df_tmp2.loc[df_tmp2["test"].isna(), "test"] = 0
+        df_tmp2["total"] = df_tmp2["trainval"] + df_tmp2["test"]
+        df_tmp2["test_pc"] = 100 * df_tmp2["test"] / df_tmp2["total"]
         plt.scatter(df_tmp2["total"], df_tmp2["test"])
         plt.show()
         plt.scatter(df_tmp2["total"], df_tmp2["test"])
@@ -741,19 +729,18 @@ def main(input_csv, output_csv, verbose=1):
         plt.xscale("log")
         plt.show()
 
-    n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test", "tbd"]))
-    n_dna_trainvaltest = df.loc[df["split"].isin(["train", "val", "test", "tbd"]), "dna_barcode"].nunique()
-
     if verbose >= 3:
+        n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test", "tbd"]))
+        n_dna_trainvaltest = df.loc[df["split"].isin(["train", "val", "test", "tbd"]), "dna_barcode"].nunique()
         for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
             print(
                 f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}% {100 * n_samp / n_samp_trainvaltest:7.2f}%"
             )
         print()
 
-    n_samp_trainvaltest = df["split"].isin(["train", "val", "test", "tbd"])
-    n_barcodes = df["dna_barcode"].nunique()
     if verbose >= 3:
+        n_samp_trainvaltest = df["split"].isin(["train", "val", "test", "tbd"])
+        n_barcodes = df["dna_barcode"].nunique()
         for partition, n_samp in zip(
             *np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)
         ):
@@ -763,11 +750,6 @@ def main(input_csv, output_csv, verbose=1):
                 f" {100 * n_samp / n_dna_trainvaltest:7.2f}%"
             )
         print()
-
-    partition_candidates = df.loc[
-        df["species"].notna() & (df["split"] == "tbd"),
-        ["processid", "genus", "species"],
-    ]
 
     if verbose >= 2:
         show_partition_stats(df)
@@ -815,11 +797,10 @@ def main(input_csv, output_csv, verbose=1):
         print(sum(sel), "samples selected")
         print(df.loc[sel, "species"].nunique(), "species selected")
 
-    target_samp = val_pc_target / 100 * sum(df["split"].isin(["train", "tbd"]))
-    target_dna = val_pc_target / 100 * df.loc[df["split"].isin(["train", "tbd"]), "dna_barcode_strip"].nunique()
-    target_spec = df.loc[df["split"].isin(["train"]), "species"].nunique()
-
     if verbose >= 2:
+        target_samp = val_pc_target / 100 * sum(df["split"].isin(["train", "tbd"]))
+        target_dna = val_pc_target / 100 * df.loc[df["split"].isin(["train", "tbd"]), "dna_barcode_strip"].nunique()
+        target_spec = df.loc[df["split"].isin(["train"]), "species"].nunique()
         print()
         print("          Target Current")
         print("------------------------")
@@ -869,11 +850,10 @@ def main(input_csv, output_csv, verbose=1):
 
     sel = df["dna_barcode_strip"].isin(barcodes_selected + barcodes_selected2)
 
-    target_samp = val_pc_target / 100 * sum(df["split"].isin(["train", "tbd"]))
-    target_dna = val_pc_target / 100 * df.loc[df["split"].isin(["train", "tbd"]), "dna_barcode_strip"].nunique()
-    target_spec = df.loc[df["split"].isin(["train"]), "species"].nunique()
-
     if verbose >= 2:
+        target_samp = val_pc_target / 100 * sum(df["split"].isin(["train", "tbd"]))
+        target_dna = val_pc_target / 100 * df.loc[df["split"].isin(["train", "tbd"]), "dna_barcode_strip"].nunique()
+        target_spec = df.loc[df["split"].isin(["train"]), "species"].nunique()
         print()
         print("          Target Current")
         print("------------------------")
@@ -884,10 +864,9 @@ def main(input_csv, output_csv, verbose=1):
 
     df.loc[sel, "split"] = "val"
 
-    n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test", "tbd"]))
-    n_dna_trainvaltest = df.loc[df["split"].isin(["train", "val", "test", "tbd"]), "dna_barcode"].nunique()
-
     if verbose >= 3:
+        n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test", "tbd"]))
+        n_dna_trainvaltest = df.loc[df["split"].isin(["train", "val", "test", "tbd"]), "dna_barcode"].nunique()
         print("seen samples distribution")
         for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
             if partition not in ["train", "val", "test", "tbd"]:
@@ -897,9 +876,9 @@ def main(input_csv, output_csv, verbose=1):
             )
         print()
 
-    n_samp_trainvaltest = df["split"].isin(["train", "val", "test", "tbd"])
-    n_barcodes = df["dna_barcode"].nunique()
     if verbose >= 3:
+        n_samp_trainvaltest = df["split"].isin(["train", "val", "test", "tbd"])
+        n_barcodes = df["dna_barcode"].nunique()
         print("seen barcodes distribution")
         for partition, n_samp in zip(
             *np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)
@@ -913,11 +892,6 @@ def main(input_csv, output_csv, verbose=1):
             )
         print()
 
-    partition_candidates = df.loc[
-        df["species"].notna() & (df["split"] == "tbd"),
-        ["processid", "genus", "species"],
-    ]
-
     if verbose >= 2:
         show_partition_stats(df)
 
@@ -927,16 +901,33 @@ def main(input_csv, output_csv, verbose=1):
 
     df.loc[df["split"] == "tbd", "split"] = "train"
 
-    n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test", "tbd"]))
-    n_dna_trainvaltest = df.loc[df["split"].isin(["train", "val", "test", "tbd"]), "dna_barcode"].nunique()
+    if verbose >= 3:
+        n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test", "tbd"]))
+        n_dna_trainvaltest = df.loc[df["split"].isin(["train", "val", "test", "tbd"]), "dna_barcode"].nunique()
+        print("seen samples distribution")
+        for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
+            if partition not in ["train", "val", "test", "tbd"]:
+                continue
+            print(
+                f"{partition:15s} {n_samp:7d} {100 * n_samp / len(df):5.2f}% {100 * n_samp / n_samp_trainvaltest:7.2f}%"
+            )
+        print()
 
-    n_samp_trainvaltest = df["split"].isin(["train", "val", "test", "tbd"])
-    n_barcodes = df["dna_barcode"].nunique()
-
-    partition_candidates = df.loc[
-        df["species"].notna() & (df["split"] == "tbd"),
-        ["processid", "genus", "species"],
-    ]
+    if verbose >= 3:
+        n_samp_trainvaltest = df["split"].isin(["train", "val", "test", "tbd"])
+        n_barcodes = df["dna_barcode"].nunique()
+        print("seen barcodes distribution")
+        for partition, n_samp in zip(
+            *np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)
+        ):
+            if partition not in ["train", "val", "test", "tbd"]:
+                continue
+            print(
+                f"{partition:15s} {n_samp:7d}"
+                f" {100 * n_samp / n_barcodes:5.2f}%"
+                f" {100 * n_samp / n_dna_trainvaltest:7.2f}%"
+            )
+        print()
 
     if verbose >= 2:
         show_partition_stats(df)
@@ -949,22 +940,20 @@ def main(input_csv, output_csv, verbose=1):
     if verbose >= 1:
         print("\nCreating test_unseen split")
 
-    partition_candidates = df.loc[
-        df["species"].notna() & (df["split"] == "unseen"),
-        ["processid", "genus", "species"],
-    ]
-    sp_sz = partition_candidates.groupby("species", observed=True).size()
-
-    sp_sztest = sp_sz.apply(test_split_fn)
     if verbose >= 2:
+        partition_candidates = df.loc[
+            df["species"].notna() & (df["split"] == "unseen"),
+            ["processid", "genus", "species"],
+        ]
+        sp_sz = partition_candidates.groupby("species", observed=True).size()
+        sp_sztest = sp_sz.apply(test_split_fn)
         print(sum(sp_sztest > 0), "species to place")
         print(sum(sp_sztest), "samples to place")
 
-    df_tmp = pd.concat([sp_sz, sp_sztest], axis=1, keys=["total", "test"])
-    df_tmp["train"] = df_tmp["total"] - df_tmp["test"]
-    df_tmp["test_pc"] = 100 * df_tmp["test"] / df_tmp["total"]
-    df_tmp["train_pc"] = 100 * df_tmp["train"] / df_tmp["total"]
-    if verbose >= 2:
+        df_tmp = pd.concat([sp_sz, sp_sztest], axis=1, keys=["total", "test"])
+        df_tmp["train"] = df_tmp["total"] - df_tmp["test"]
+        df_tmp["test_pc"] = 100 * df_tmp["test"] / df_tmp["total"]
+        df_tmp["train_pc"] = 100 * df_tmp["train"] / df_tmp["total"]
         print(df_tmp)
 
     # Randomize the order of the data so we select random samples from each species
@@ -999,24 +988,21 @@ def main(input_csv, output_csv, verbose=1):
 
     df.loc[sel, "split"] = "test_unseen"
 
-    _sp_sz_trainval = (
-        df.loc[df["split"] == "unseen"].groupby("species", observed=True, dropna=False).size()
-    )
-
-    _sp_sz_test = df.loc[df["split"] == "test_unseen"].groupby("species", observed=True, dropna=False).size()
-
     if verbose >= 2:
+        _sp_sz_trainval = (
+            df.loc[df["split"] == "unseen"].groupby("species", observed=True, dropna=False).size()
+        )
+        _sp_sz_test = df.loc[df["split"] == "test_unseen"].groupby("species", observed=True, dropna=False).size()
         print(
             f"{_sp_sz_test.sum()} of {_sp_sz_trainval.sum()} viable samples"
             f" ({100 * _sp_sz_test.sum() / _sp_sz_trainval.sum():.1f}%) placed in test_seen"
         )
 
-    df_tmp2 = pd.concat([_sp_sz_trainval, _sp_sz_test], axis=1, keys=["trainval", "test"])
-    df_tmp2.loc[df_tmp2["test"].isna(), "test"] = 0
-    df_tmp2["total"] = df_tmp2["trainval"] + df_tmp2["test"]
-    df_tmp2["test_pc"] = 100 * df_tmp2["test"] / df_tmp2["total"]
-
     if verbose >= 3:
+        df_tmp2 = pd.concat([_sp_sz_trainval, _sp_sz_test], axis=1, keys=["trainval", "test"])
+        df_tmp2.loc[df_tmp2["test"].isna(), "test"] = 0
+        df_tmp2["total"] = df_tmp2["trainval"] + df_tmp2["test"]
+        df_tmp2["test_pc"] = 100 * df_tmp2["test"] / df_tmp2["total"]
         plt.scatter(df_tmp2["total"], df_tmp2["test"])
         plt.show()
         plt.scatter(df_tmp2["total"], df_tmp2["test"])
@@ -1027,26 +1013,23 @@ def main(input_csv, output_csv, verbose=1):
         plt.yscale("log")
         plt.show()
 
-    _sp_sz_trainval_dna = (
-        df.loc[df["split"] == "unseen"]
-        .drop_duplicates("dna_barcode_strip")
-        .groupby("species", observed=True, dropna=False)
-        .size()
-    )
-
-    _sp_sz_test_dna = (
-        df.loc[df["split"] == "test_unseen"]
-        .drop_duplicates("dna_barcode_strip")
-        .groupby("species", observed=True, dropna=False)
-        .size()
-    )
-
-    df_tmp2 = pd.concat([_sp_sz_trainval_dna, _sp_sz_test_dna], axis=1, keys=["trainval", "test"])
-    df_tmp2.loc[df_tmp2["test"].isna(), "test"] = 0
-    df_tmp2["total"] = df_tmp2["trainval"] + df_tmp2["test"]
-    df_tmp2["test_pc"] = 100 * df_tmp2["test"] / df_tmp2["total"]
-
     if verbose >= 3:
+        _sp_sz_trainval_dna = (
+            df.loc[df["split"] == "unseen"]
+            .drop_duplicates("dna_barcode_strip")
+            .groupby("species", observed=True, dropna=False)
+            .size()
+        )
+        _sp_sz_test_dna = (
+            df.loc[df["split"] == "test_unseen"]
+            .drop_duplicates("dna_barcode_strip")
+            .groupby("species", observed=True, dropna=False)
+            .size()
+        )
+        df_tmp2 = pd.concat([_sp_sz_trainval_dna, _sp_sz_test_dna], axis=1, keys=["trainval", "test"])
+        df_tmp2.loc[df_tmp2["test"].isna(), "test"] = 0
+        df_tmp2["total"] = df_tmp2["trainval"] + df_tmp2["test"]
+        df_tmp2["test_pc"] = 100 * df_tmp2["test"] / df_tmp2["total"]
         plt.scatter(df_tmp2["total"], df_tmp2["test"])
         plt.show()
         plt.scatter(df_tmp2["total"], df_tmp2["test"])
@@ -1056,19 +1039,18 @@ def main(input_csv, output_csv, verbose=1):
         plt.xscale("log")
         plt.show()
 
-    n_samp_trainvaltest = sum(df["split"].str.contains("unseen"))
-    n_dna_trainvaltest = df.loc[df["split"].str.contains("unseen"), "dna_barcode"].nunique()
-
     if verbose >= 3:
+        n_samp_trainvaltest = sum(df["split"].str.contains("unseen"))
+        n_dna_trainvaltest = df.loc[df["split"].str.contains("unseen"), "dna_barcode"].nunique()
         for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
             print(
                 f"{partition:18s} {n_samp:7d} {100 * n_samp / len(df):5.2f}% {100 * n_samp / n_samp_trainvaltest:7.2f}%"
             )
         print()
 
-    n_samp_trainvaltest = df["split"].str.contains("unseen")
-    n_barcodes = df["dna_barcode"].nunique()
     if verbose >= 3:
+        n_samp_trainvaltest = df["split"].str.contains("unseen")
+        n_barcodes = df["dna_barcode"].nunique()
         for partition, n_samp in zip(
             *np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)
         ):
@@ -1128,11 +1110,10 @@ def main(input_csv, output_csv, verbose=1):
         print(sum(sel), "samples selected")
         print(df.loc[sel, "species"].nunique(), "species selected")
 
-    target_samp = val_pc_target / 100 * sum(df["split"] == "unseen")
-    target_dna = val_pc_target / 100 * df.loc[df["split"] == "unseen", "dna_barcode_strip"].nunique()
-    target_spec = df.loc[df["split"] == "unseen", "species"].nunique()
-
     if verbose >= 2:
+        target_samp = val_pc_target / 100 * sum(df["split"] == "unseen")
+        target_dna = val_pc_target / 100 * df.loc[df["split"] == "unseen", "dna_barcode_strip"].nunique()
+        target_spec = df.loc[df["split"] == "unseen", "species"].nunique()
         print()
         print("          Target Current")
         print("------------------------")
@@ -1144,10 +1125,9 @@ def main(input_csv, output_csv, verbose=1):
     sel = df["dna_barcode_strip"].isin(barcodes_selected)
     df.loc[sel, "split"] = "val_unseen"
 
-    n_samp_trainvaltest = sum(df["split"].str.contains("unseen"))
-    n_dna_trainvaltest = df.loc[df["split"].str.contains("unseen"), "dna_barcode"].nunique()
-
     if verbose >= 3:
+        n_samp_trainvaltest = sum(df["split"].str.contains("unseen"))
+        n_dna_trainvaltest = df.loc[df["split"].str.contains("unseen"), "dna_barcode"].nunique()
         print("unseen samples distribution")
         for partition, n_samp in zip(*np.unique(df["split"], return_counts=True)):
             if "unseen" not in partition:
@@ -1157,9 +1137,9 @@ def main(input_csv, output_csv, verbose=1):
             )
         print()
 
-    n_samp_trainvaltest = df["split"].str.contains("unseen")
-    n_barcodes = df["dna_barcode"].nunique()
     if verbose >= 3:
+        n_samp_trainvaltest = df["split"].str.contains("unseen")
+        n_barcodes = df["dna_barcode"].nunique()
         print("unseen barcodes distribution")
         for partition, n_samp in zip(
             *np.unique(df[["split", "dna_barcode"]].drop_duplicates()["split"], return_counts=True)
@@ -1172,11 +1152,6 @@ def main(input_csv, output_csv, verbose=1):
                 f" {100 * n_samp / n_dna_trainvaltest:7.2f}%"
             )
         print()
-
-    partition_candidates = df.loc[
-        df["species"].notna() & df["split"].isin(["unseen", "tbd"]),
-        ["processid", "genus", "species"],
-    ]
 
     if verbose >= 2:
         show_partition_stats(df)
