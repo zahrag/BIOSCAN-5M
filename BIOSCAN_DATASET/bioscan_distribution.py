@@ -1,5 +1,5 @@
 import math
-from bioscan_dataset import BioScan
+from bioscan_statistic import BioScan
 from tabulate import tabulate
 
 
