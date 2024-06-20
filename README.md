@@ -82,7 +82,7 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
 </div>
 
 #### Image packages
-* **BIOSCAN_5M_original**: The raw images of the dataset.
+* **BIOSCAN_5M_original_full**: The raw images of the dataset.
 * **BIOSCAN_5M_cropped**: Images after cropping with our cropping tool introduced in [BIOSCAN-1M](https://github.com/zahrag/BIOSCAN-1M).
 * **BIOSCAN_5M_original_256**: Original images resized to 256 on their shorter side. 
 * **BIOSCAN_5M_cropped_256**: Cropped images resized to 256 on their shorter side.
