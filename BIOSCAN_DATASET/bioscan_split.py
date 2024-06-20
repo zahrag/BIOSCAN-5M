@@ -100,6 +100,24 @@ df_dtypes = {
 
 
 def find_novel_species(df, verbose=0):
+    """
+    Identify records containing novel names in the dataset.
+
+    Records are considered novel based on the contents of their species and
+    genus labels.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Metadata DataFrame with species and genus columns.
+    verbose : int, default=0
+        Verbosity level.
+
+    Returns
+    -------
+    pd.Series
+        Boolean series indicating which records contain novel species.
+    """
     is_novel_species = df["species"].notna() & df["species"].str.contains(
         r"[mM]+[aA]+[lLiI]+[aA]+[iIlL]+[sSzZ]+[eE]+", regex=True
     )
@@ -167,6 +185,51 @@ def stratified_dna_image_partition(
     seed=None,
     verbose=0,
 ):
+    """
+    Partition samples for species into test sets based on DNA barcode counts.
+
+    Samples are moved into the test set at the barcode level, so all samples
+    with the same DNA barcode are either in the test set or not in the test set.
+
+    Parameters
+    ----------
+    g_test : pd.DataFrameGroupBy
+        Grouped DataFrame by species. Must have a ``"dna_barcode_strip"`` column.
+    target_fn : function
+        Function which maps from the number of samples for a species to the
+        target number of samples to include in the test set.
+        ``target_fn`` must take an integer argument and return an integer or float.
+    lower_fn : function
+        Function which maps from the number of samples for a species to the
+        lower bound of samples to include in the test set.
+        If we can not find ``lower_fn(n)`` samples to include in the test set,
+        then we will not include the species in the test set.
+        ``lower_fn`` must take an integer argument and return an integer or float.
+    upper_fn : function
+        Function which maps from the number of samples for a species to the
+        upper bound of samples to include in the test set.
+        We will stop addding samples if the barcode with the fewest samples
+        would take us above ``upper_fn(n)``.
+        ``upper_fn`` must take an integer argument and return an integer or float.
+    dna_upper_fn : function
+        Function which maps from the number of DNA barcodes for a species to
+        the upper bound of DNA barcodes to include in the test set.
+        ``dna_upper_fn`` must take an integer argument and return an integer or float.
+    soft_upper : float, default=1.1
+        A scale factor for the target number of samples to include in the test
+        set. Modifies the target to permit us to select barcodes that would
+        take us a little over the target.
+    center_rand : bool, default=False
+        If True, only select barcodes from the middle 50% of the barcode
+        options by number of samples per barcode.
+    top_rand : bool, default=False
+        If True, only select barcodes from the top 50% of the barcode
+        options by number of samples per barcode.
+    seed : int, default=None
+        Random seed for reproducibility.
+    verbose : int, default=0
+        Verbosity level.
+    """
     rng = np.random.default_rng(seed=seed)
     barcodes_selected = []
     if verbose >= 1:
