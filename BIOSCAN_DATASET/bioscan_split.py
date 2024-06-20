@@ -414,46 +414,6 @@ def main(fname_input, output_csv, verbose=1):
     df["is_novel_species"] = find_novel_species(df, verbose=verbose - 2)
     df["dna_barcode_strip"] = df["dna_barcode"].str.strip("N")
 
-    # ```
-    # placeholders = Maliaise0386 + ["sp.", "cf.", "nr.", "aff." , "n.sp.",  "sp. ex", "grp."]
-    #
-    # column: [partition/split]
-    #
-    # - pretrain    = everything without species labels + single_species[placeholders] + [other placeholders]
-    #
-    # - train       = (most samples of most species) + single_species[are proper names]
-    #
-    # - val         = small amount of all species in train (not single_species)
-    #
-    #                 (set of species = subset(train))
-    #
-    #                 stratfied 5%-10% of train data, same distrbn as train;
-    #
-    #                    exception species with fewer than 4 samples
-    #
-    # - test_seen   = small amount of all species in train [no placeholders]
-    #
-    #                 (set of species = subset(train) > num species in val)
-    #
-    #                 from species which have >8 samples, place half of num for species - 20
-    #
-    # - test_unseen = the species not in train [no placeholders]
-    #
-    #                 all samples from those species
-    #
-    #                 some species with up to 20 (say) samples, at least 2
-    #
-    # column: [role]
-    #
-    # - key / query / other=""=NA (/ more?)
-    #
-    #   do stratified 50/50 key/query where appropriate - apply to train, val, test_seen, test_unseen
-    #
-    # column: [species_status]
-    #
-    # - seen / unseen / placeholder / unknown
-    #
-    # ```
     df["split"] = "unk"
 
     # test_unseen partition ------------------------------------------------------------
@@ -708,40 +668,6 @@ def main(fname_input, output_csv, verbose=1):
         plt.scatter(df_tmp2["total"], df_tmp2["test_pc"])
         plt.xscale("log")
         plt.show()
-
-    # Without restricting the random selection:
-    # ```
-    # pretrain        4754367 92.30%
-    # test_seen         39119  0.76%
-    # test_unseen       53171  1.03%
-    # train              3757  0.07%
-    # unk              300466  5.83%
-    # pretrain        2325492 93.52%
-    # test_seen         22293  0.90%
-    # test_unseen       18009  0.72%
-    # train              3757  0.15%
-    # unk              116955  4.70%
-    # samples to place 300466
-    # species to place 8090
-    # ```
-    #
-    # Restricting to top 50%
-    # ```
-    # pretrain        4754367 92.30% 1384.73%
-    # test_seen         39353  0.76%   11.46%
-    # test_unseen       53171  1.03%   15.49%
-    # train              3757  0.07%    1.09%
-    # unk              300232  5.83%   87.44%
-    #
-    # pretrain        2325492 93.52% 1626.16%
-    # test_seen         18966  0.76%   13.26%
-    # test_unseen       18009  0.72%   12.59%
-    # train              3757  0.15%    2.63%
-    # unk              120282  4.84%   84.11%
-    #
-    # samples to place 300232
-    # species to place 8090
-    # ```
 
     n_samp_trainvaltest = sum(df["split"].isin(["train", "val", "test_seen", "unk"]))
     n_dna_trainvaltest = df.loc[df["split"].isin(["train", "val", "test_seen", "unk"]), "dna_barcode"].nunique()
