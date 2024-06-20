@@ -449,7 +449,7 @@ def show_partition_stats(df, show_empty=False):
     print("\n" + out)
 
 
-def main(fname_input, output_csv, verbose=1):
+def main(input_csv, output_csv, verbose=1):
     """
     Partition data into splits.
 
@@ -466,7 +466,7 @@ def main(fname_input, output_csv, verbose=1):
 
     Parameters
     ----------
-    fname_input : str
+    input_csv : str
         Input CSV file name.
     output_csv : str
         Output CSV file name.
@@ -475,8 +475,8 @@ def main(fname_input, output_csv, verbose=1):
     """
     # Load metadata
     if verbose >= 0:
-        print(f"Loading {fname_input}")
-    df = pd.read_csv(fname_input, dtype=df_dtypes)
+        print(f"Loading {input_csv}")
+    df = pd.read_csv(input_csv, dtype=df_dtypes)
     if verbose >= 0:
         print("Finished loading metadata.")
     if verbose >= 1:
@@ -1319,7 +1319,7 @@ def get_parser():
 
     parser = argparse.ArgumentParser(description="Partition the BIOSCAN-5M dataset.")
     parser.add_argument(
-        "csv_file",
+        "input_csv",
         type=str,
         help="Path to the CSV file containing the BIOSCAN dataset.",
     )
@@ -1353,7 +1353,7 @@ def cli():
     args = parser.parse_args()
     args.verbose -= args.quiet
     del args.quiet
-    main(args.csv_file, args.output_csv, verbose=args.verbose)
+    main(args.input_csv, args.output_csv, verbose=args.verbose)
 
 
 if __name__ == "__main__":
