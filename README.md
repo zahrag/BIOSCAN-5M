@@ -91,7 +91,7 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
 <table>
   <thead>
     <tr style="background-color: #f2f2f2;">
-      <th>BIOSCAN_5M_original</th>
+      <th>BIOSCAN_5M_original_full</th>
       <th>BIOSCAN_5M_cropped</th>
     </tr>
   </thead>
