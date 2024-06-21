@@ -128,9 +128,7 @@ class BIOSCAN5M(VisionDataset):
             raise RuntimeError("target_transform is specified but target_type is empty")
 
         if not self._check_exists():
-            raise EnvironmentError(
-                f"{type(self).__name__} dataset not found in {self.image_dir}."
-            )
+            raise EnvironmentError(f"{type(self).__name__} dataset not found in {self.image_dir}.")
 
         self.metadata = self._load_metadata()
 
@@ -212,9 +210,7 @@ class BIOSCAN5M(VisionDataset):
             elif self.reduce_repeated_barcodes == "base":
                 df = df.drop_duplicates(subset=["dna_barcode"])
             else:
-                raise ValueError(
-                    f"Unfamiliar reduce_repeated_barcodes value: {self.reduce_repeated_barcodes}"
-                )
+                raise ValueError(f"Unfamiliar reduce_repeated_barcodes value: {self.reduce_repeated_barcodes}")
             # Re-order the data (reverting the shuffle)
             df = df.sort_index()
         # Filter to just the split of interest
