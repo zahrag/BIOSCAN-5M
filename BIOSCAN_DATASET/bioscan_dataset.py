@@ -97,6 +97,10 @@ class BIOSCAN5M(VisionDataset):
         Which data modalities to use. One of, or a list of:
         ``"image"``, ``"dna"``.
 
+    image_package : str, default="cropped_256"
+        The package to load images from. One of:
+        ``"original_full"``, ``"cropped"``, ``"original_256"``, ``"cropped_256"``.
+
     reduce_repeated_barcodes : str or bool, default=False
         Whether to reduce the dataset to only one sample per barcodes.
 
@@ -123,6 +127,7 @@ class BIOSCAN5M(VisionDataset):
         root,
         split="train",
         modality=("image", "dna"),
+        image_package="cropped_256",
         reduce_repeated_barcodes=False,
         max_nucleotides=None,
         target_type="species",
@@ -135,7 +140,8 @@ class BIOSCAN5M(VisionDataset):
 
         self.metadata = None
         self.root = root
-        self.image_dir = os.path.join(self.root, "images", "cropped_256")
+        self.image_package = image_package
+        self.image_dir = os.path.join(self.root, "images", self.image_package)
         self.metadata_path = os.path.join(self.root, "metadata", "csv", "BIOSCAN_5M_Insect_Dataset_metadata.csv")
 
         self.split = split
