@@ -179,7 +179,7 @@ class BIOSCAN5M(VisionDataset):
                 X = PIL.Image.open(img_path)
                 if self.transform is not None:
                     X = self.transform(X)
-            elif modality == "dna":
+            elif modality in ["dna_barcode", "dna", "barcode"]:
                 X = sample["dna_barcode"]
                 if self.dna_transform is not None:
                     X = self.dna_transform(X)
