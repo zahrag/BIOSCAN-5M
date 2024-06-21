@@ -69,9 +69,9 @@ def get_image_path(row):
     str
         The path to the image file.
     """
-    image_path = row["split"] + "/"
+    image_path = row["split"] + os.path.sep
     if pd.notna(row["chunk"]) and row["chunk"]:
-        image_path += str(row["chunk"]) + "/"
+        image_path += str(row["chunk"]) + os.path.sep
     image_path += row["processid"] + ".jpg"
     return image_path
 
