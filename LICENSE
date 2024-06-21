@@ -19,3 +19,24 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+----
+
+## Submodule Licenses
+
+This repository includes several submodules. Below is a list of the submodules and their respective licenses:
+
+### Submodule: BarcodeBERT
+- **Repository:** [https://github.com/Kari-Genomics-Lab/BarcodeBERT](https://github.com/Kari-Genomics-Lab/BarcodeBERT)
+- **License:** MIT License
+- **License Link:** [BarcodeBERT LICENSE](https://github.com/Kari-Genomics-Lab/BarcodeBERT/blob/main/LICENSE)
+
+### Submodule: zs-ssl-clustering
+- **Repository:** [https://github.com/scottclowe/zs-ssl-clustering](https://github.com/scottclowe/zs-ssl-clustering)
+- **License:** MIT License
+- **License Link:** [zs-ssl-clustering LICENSE](https://github.com/scottclowe/zs-ssl-clustering/blob/master/LICENSE)
+
+### Submodule: bioscan-clip
+- **Repository:** [https://github.com/3dlg-hcvc/bioscan-clip](https://github.com/3dlg-hcvc/bioscan-clip)
+- **License:** MIT License
+- **License Link:** [bioscan-clip LICENSE](https://github.com/3dlg-hcvc/bioscan-clip/blob/main/LICENSE)
