@@ -15,9 +15,9 @@ import PIL
 from torchvision.datasets.vision import VisionDataset
 
 df_dtypes = {
-    "processid": "str",
-    "sampleid": "str",
-    "chunk_number": "Int64",
+    "processid": str,
+    "sampleid": str,
+    "taxon": "category",
     "phylum": "category",
     "class": "category",
     "order": "category",
@@ -27,19 +27,22 @@ df_dtypes = {
     "species": "category",
     "dna_bin": "category",
     "dna_barcode": str,
-    "split": "category",
     "country": "category",
     "province_state": "category",
     "coord-lat": float,
     "coord-lon": float,
-    "surface_area": float,
-    "bioscan1M_index": "Int64",
-    "label_was_inferred": "uint8",
+    "image_measurement_value": float,
+    "area_fraction": float,
+    "scale_factor": float,
+    "inferred_ranks": "uint8",
+    "split": str,
+    "index_bioscan_1M_insect": "Int64",
+    "chunk": str,
 }
 
 df_usecols = [
     "processid",
-    "chunk_number",
+    "chunk",
     "phylum",
     "class",
     "order",
@@ -51,6 +54,26 @@ df_usecols = [
     "dna_barcode",
     "split",
 ]
+
+
+def get_image_path(row):
+    """Get the image path for a row in the metadata DataFrame.
+
+    Parameters
+    ----------
+    row : pandas.Series
+        A row in the metadata DataFrame.
+
+    Returns
+    -------
+    str
+        The path to the image file.
+    """
+    image_path = row["split"] + "/"
+    if pd.notna(row["chunk"]) and row["chunk"]:
+        image_path += str(row["chunk"]) + "/"
+    image_path += row["processid"] + ".jpg"
+    return image_path
 
 
 class BIOSCAN5M(VisionDataset):
@@ -107,7 +130,8 @@ class BIOSCAN5M(VisionDataset):
 
         self.metadata = None
         self.root = root
-        self.image_dir = self.root
+        self.image_dir = os.path.join(self.root, "images", "cropped_256")
+        self.metadata_path = os.path.join(self.root, "metadata", "csv", "BIOSCAN_5M_Insect_Dataset_metadata.csv")
 
         self.split = split
         self.reduce_repeated_barcodes = reduce_repeated_barcodes
@@ -174,13 +198,9 @@ class BIOSCAN5M(VisionDataset):
         bool
             True if the dataset is already downloaded and extracted, False otherwise.
         """
-        check = os.path.exists(os.path.join(self.root, "BIOSCAN-5M_Dataset.csv"))
-        if "image" in self.modality:
-            # Only check the images exist if the images folder exists,
-            # as the user might only be interested in the DNA data
-            check &= os.path.exists(
-                os.path.join(self.image_dir, "images_by_split/eval/cropped_resized")
-            )
+        check = os.path.isfile(self.metadata_path)
+        if "images" in self.modality:
+            check &= os.path.isdir(self.image_dir)
         return check
 
     def _load_metadata(self) -> pd.DataFrame:
@@ -192,11 +212,7 @@ class BIOSCAN5M(VisionDataset):
         pandas.DataFrame
             The metadata DataFrame.
         """
-        df = pd.read_csv(
-            os.path.join(self.root, "BIOSCAN-5M_Dataset.csv"),
-            dtype=df_dtypes,
-            usecols=df_usecols,
-        )
+        df = pd.read_csv(self.metadata_path, dtype=df_dtypes, usecols=df_usecols)
         if self.max_nucleotides is not None:
             df["dna_barcode"] = df["dna_barcode"].str[: self.max_nucleotides]
         if self.reduce_repeated_barcodes:
@@ -230,22 +246,5 @@ class BIOSCAN5M(VisionDataset):
         for c in label_cols:
             df[c + "_index"] = df[c].cat.codes
         # Add path to image file
-        df["image_path"] = (
-            "images_by_split/eval/cropped_resized/"
-            + df["split"].astype(str)
-            + "/"
-            + df["processid"]
-            + ".jpg"
-        )
-        select = df["split"].isin(["pretrain", "train"])
-        df.loc[select, "image_path"] = (
-            "images_by_split/"
-            + df["split"].astype(str)
-            + "/cropped_resized/"
-            + "part"
-            + df.loc[select, "chunk_number"].astype(str)
-            + "/"
-            + df["processid"]
-            + ".jpg"
-        )
+        df["image_path"] = df.apply(get_image_path, axis=1)
         return df
