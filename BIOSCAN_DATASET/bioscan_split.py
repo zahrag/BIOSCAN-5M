@@ -21,6 +21,8 @@ from IPython.display import display
 tqdm.pandas()
 
 taxon_cols = ["phylum", "class", "order", "family", "subfamily", "genus", "species"]
+seen_partitions = ["seen", "train", "val", "test"]
+unseen_partitions = ["unseen", "key_unseen", "val_unseen", "test_unseen"]
 
 df_dtypes = {
     "processid": "str",
@@ -422,31 +424,50 @@ def test_split_fn_ub_barcodes(n):
 
 
 def show_partition_stats(df, show_empty=False):
-    out = r"partition          samples         barcodes         species    " + "\n"
-    out += "---------------------------------------------------------------\n"
+    out = r"partition          samples   all    set  barcodes   all    set  species  all    set " + "\n"
+    out += "------------------------------------------------------------------------------------\n"
+    n_samples_total = len(df)
     n_barcode_total = df["dna_barcode"].nunique()
     n_species_total = df["species"].nunique()
-    partitions = [
-        "pretrain",
-        "seen",
-        "train",
-        "val",
-        "test",
-        "unseen",
-        "key_unseen",
-        "val_unseen",
-        "test_unseen",
-    ]
+    sel = df["split"].isin(seen_partitions)
+    n_samples_seen = sum(sel)
+    n_barcode_seen = df.loc[sel, "dna_barcode"].nunique()
+    n_species_seen = df.loc[sel, "species"].nunique()
+    sel = df["split"].isin(unseen_partitions)
+    n_samples_unseen = sum(sel)
+    n_barcode_unseen = df.loc[sel, "dna_barcode"].nunique()
+    n_species_unseen = df.loc[sel, "species"].nunique()
+
+    partitions = ["pretrain"] + seen_partitions + unseen_partitions
     for partition in partitions + list(set(df["split"].unique()).difference(partitions)):
         sel = df["split"] == partition
         if not show_empty and sum(sel) == 0:
             continue
+        n_samples = sum(sel)
         n_barcode = df.loc[sel, "dna_barcode"].nunique()
         n_species = df.loc[sel, "species"].nunique()
         out += f"{partition:17s}"
-        out += f" {sum(sel):8d} {100 * sum(sel) / len(df):5.1f}%"
+        out += f" {n_samples:8d} {100 * n_samples / n_samples_total:5.1f}%"
+        if partition in seen_partitions:
+            out += f" {100 * n_samples / n_samples_seen:5.1f}%"
+        elif partition in unseen_partitions:
+            out += f" {100 * n_samples / n_samples_unseen:5.1f}%"
+        else:
+            out += "       "
         out += f" {n_barcode:8d} {100 * n_barcode / n_barcode_total:5.1f}%"
+        if partition in seen_partitions:
+            out += f" {100 * n_barcode / n_barcode_seen:5.1f}%"
+        elif partition in unseen_partitions:
+            out += f" {100 * n_barcode / n_barcode_unseen:5.1f}%"
+        else:
+            out += "       "
         out += f" {n_species:6d} {100 * n_species / n_species_total:5.1f}%"
+        if partition in seen_partitions:
+            out += f" {100 * n_species / n_species_seen:5.1f}%"
+        elif partition in unseen_partitions:
+            out += f" {100 * n_species / n_species_unseen:5.1f}%"
+        else:
+            out += "       "
         out += "\n"
     print("\n" + out)
 
