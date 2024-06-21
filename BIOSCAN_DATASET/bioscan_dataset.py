@@ -88,9 +88,14 @@ class BIOSCAN5M(VisionDataset):
 
     split : str, default="train"
         The dataset partition.
+        One of: ``"pretrain"``, ``"train"``, ``"val"``, ``"test"``,
+        ``"key_unseen"``, ``"val_unseen"``, ``"test_unseen"``,
+        ``"other_heldout"``, or ``"all"``.
+        Set to ``"all"`` to include all splits.
 
-    modality : str or Tuple[str], default=("image", "dna")
-        Which data modalities to use.
+    modality : str or Iterable[str], default=("image", "dna")
+        Which data modalities to use. One of, or a list of:
+        ``"image"``, ``"dna"``.
 
     reduce_repeated_barcodes : str or bool, default=False
         Whether to reduce the dataset to only one sample per barcodes.
@@ -98,8 +103,8 @@ class BIOSCAN5M(VisionDataset):
     max_nucleotides : int, default=None
         Maximum number of nucleotides to keep in the DNA barcode.
 
-    target_type : str, default="species"
-        Type of target to use. One of:
+    target_type : str or Iterable[str], default="species"
+        Type of target to use. One of, or a list of:
         ``"phylum"``, ``"class"``, ``"order"``, ``"family"``, ``"subfamily"``,
         ``"genus"``, ``"species"``, ``"dna_bin"``.
 
