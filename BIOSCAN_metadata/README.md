@@ -3,7 +3,7 @@
 BIOSCAN-5M metadata file.
 
 ###### <h3> Metadata file
-Accessing multiple types of the metadata file of the BIOSCAN-5M dataset is facilitated by the following directory structure used to organize the dataset images:
+Accessing multiple types of the metadata file of the BIOSCAN-5M dataset is facilitated by the following directory structure used to organize the dataset metadata:
 
 ```plaintext
 bioscan5m/metadata/[type]/BIOSCAN_5M_Insect_Dataset_metadata.[type_extension]
