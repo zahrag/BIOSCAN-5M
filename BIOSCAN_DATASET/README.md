@@ -46,6 +46,7 @@ python main.py --attr_dist <attribute_types>
 ``` 
 The attribute type can be <code>genetic</code>, <code>geographic</code>, and <code>size</code>.
 
+###### <h3> Taxonomic Class Distribution
 <div align="center">
   <img src="https://github.com/zahrag/BIOSCAN-5M/blob/main/BIOSCAN_images/repo_images/class_order_stats.png" 
        alt="An array of category distribution of the taxonomic level class." />
