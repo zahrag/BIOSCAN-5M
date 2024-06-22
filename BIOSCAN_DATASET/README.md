@@ -63,7 +63,7 @@ python main.py --level_name class Insecta --attr_stat <attribute_type>
 ``` 
 The attribute type can be <code>genetic</code>, <code>geographic</code>, and <code>size</code>.
 
-###### <h3> Challenges 
+###### <h3> Challenges and Limitations
 The BIOSCAN-5M dataset faces some challenges and limitations:
 - Sampling bias
   - It exposes a sampling bias as a result of the geographical locations where and the methods through which organisms were collected.
