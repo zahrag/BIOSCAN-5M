@@ -67,6 +67,6 @@ The high similarity between samples of different species highlights significant 
   <img src="https://github.com/zahrag/BIOSCAN-5M/blob/main/BIOSCAN_images/repo_images/species_f.png" 
        alt="Sample images of distinct species from the Order Diptera." />
   <p><b>Figure 2:</b> Sample images of distinct species from the Order Diptera, 
-                      which comprises about 50\% of our dataset. High similarity between samples of different species 
+                      which comprises about 50% of our dataset. High similarity between samples of different species 
 highlights significant classification challenges.</p>
 </div>
