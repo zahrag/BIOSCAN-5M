@@ -33,6 +33,11 @@ def config_base(parser):
                         default='BIOSCAN_metadata/BIOSCAN_5M_Insect_Dataset_metadata.csv',
                         help='Path to the metadata file of the dataset.')
 
+    parser.add_argument('--bbox',
+                        type=str,
+                        default='/BIOSCAN_5M_Insect_bbox.tsv',
+                        help='Path to the bounding box file.')
+
     return parser
 
 
@@ -52,9 +57,7 @@ def config_run_module(parser):
     parser.add_argument('--attr_dist',
                         type=str,
                         default=None,
-                        choices=['genetic', 'geographic', 'size',
-                                 'class', 'order', 'family', 'subfamily', 'genus', 'species',
-                                 'country', 'province_state', 'coord-lat', 'coord-lon'],
+                        choices=['genetic', 'geographic', 'size'],
                         help='Attribute to get distribution, if None skip distribution module.')
 
     parser.add_argument('--plot_type',
