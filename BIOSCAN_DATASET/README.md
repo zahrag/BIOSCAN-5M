@@ -18,6 +18,7 @@ python main.py --download --file_to_download <file_name>
 The list of files available for download from GoogleDrive are:
 
  - Metadata: BIOSCAN_5M_Insect_Dataset_metadata_MultiTypes.zip
+ - Bounding Box: BIOSCAN_5M_Insect_bbox.tsv
  - BIOSCAN_5M_original_full.{01:05}.zip
  - BIOSCAN_5M_original_256.zip
     - BIOSCAN_5M_original_256_pretrain.zip
