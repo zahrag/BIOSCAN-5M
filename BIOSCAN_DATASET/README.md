@@ -64,7 +64,14 @@ python main.py --level_name class Insecta --attr_stat <attribute_type>
 The attribute type can be <code>genetic</code>, <code>geographic</code>, and <code>size</code>.
 
 ###### <h3> Challenges 
-The high similarity between samples of different species highlights significant classification challenges. 
+The BIOSCAN-5M dataset faces some challenges and limitations:
+- Sampling bias
+  - It exposes a sampling bias as a result of the geographical locations where and the methods through which organisms were collected.
+- Accessing ground-truth labels
+  - The number of labelled records sharply declines as we delve deeper into taxonomic ranking groups, particularly when moving towards finer-grained taxonomic ranks beyond the family level.
+- Fine-grained classification
+  - The class imbalance ratio (IR) of each taxonomic group highlights a notable disparity in sample numbers between the majority class (the class with the most samples) and the minority class(es) (those with fewer samples)
+  - The high similarity between images of distinct categories.
 
 <div align="center">
   <img src="https://github.com/zahrag/BIOSCAN-5M/blob/main/BIOSCAN_images/repo_images/species_f.png" 
