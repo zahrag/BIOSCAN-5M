@@ -35,8 +35,8 @@ def get_size_bbx(configs):
 
     bbx = dataset_helper.read_csv(configs['bbox'])
 
-    w_bbx = bbx['b2'] - bbx['b0']
-    h_bbx = bbx['b3'] - bbx['b1']
+    w_bbx = bbx['x1'] - bbx['x0']
+    h_bbx = bbx['y1'] - bbx['y0']
 
     area_frac = _area_fraction(w_bbx, h_bbx, bbx['width_original'], bbx['height_original'])
     scale_fact = _scale_factor(w_bbx, h_bbx, resized_dim=256)
