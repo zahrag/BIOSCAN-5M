@@ -6,6 +6,7 @@ Here are the functions handling:
 - Data statistics 
 - Data distributions 
 - Data split
+- Data loader
 
 ###### <h3> Dataset Access
 
