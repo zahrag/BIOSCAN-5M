@@ -35,7 +35,7 @@ The list of files available for download from GoogleDrive are:
 To see the statistics of the BIOSCAN-5M dataset, run the following:
 
 ```bash
-python main.py --attr_stat <attribute_types>
+python main.py --attr_stat <attribute_type>
 ``` 
 The attribute type can be <code>genetic</code>, <code>geographic</code>, and <code>size</code>.
 
@@ -44,7 +44,7 @@ The attribute type can be <code>genetic</code>, <code>geographic</code>, and <co
 To see the category distribution of the BIOSCAN-5M dataset, run the following:
 
 ```bash
-python main.py --attr_dist <attribute_types>
+python main.py --attr_dist <attribute_type>
 ``` 
 The attribute type can be <code>genetic</code>, <code>geographic</code>, and <code>size</code>.
 
@@ -59,7 +59,7 @@ The attribute type can be <code>genetic</code>, <code>geographic</code>, and <co
 To see the statistics of the class Insect of the BIOSCAN-5M dataset, run the following:
 
 ```bash
-python main.py --level_name class Insecta --attr_stat <attribute_types>
+python main.py --level_name class Insecta --attr_stat <attribute_type>
 ``` 
 The attribute type can be <code>genetic</code>, <code>geographic</code>, and <code>size</code>.
 
