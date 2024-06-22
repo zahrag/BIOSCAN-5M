@@ -13,7 +13,7 @@ bioscan5m/images/[imgtype]/[split]/[chunk]/[{processid}.jpg]
 
 
 ###### <h3> BIOSCAN-5M Data Structure
-
+- `[processid]`: A unique identifier given by the collector.
 - `[imgtype]`: Type of the image, which can be one of the following:
   - `original_full`
   - `cropped`
