@@ -9,7 +9,7 @@ Accessing multiple types of the metadata file of the BIOSCAN-5M dataset is facil
 bioscan5m/metadata/[type]/BIOSCAN_5M_Insect_Dataset_metadata.[type_extension]
 ```
 
-- `[type]`: Type of the metadata file:
+- `[type]`: File type of the metadata file:
   - `CSV`
   - `JSON-LD`
 - `[type_extension]`:
