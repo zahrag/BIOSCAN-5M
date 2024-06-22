@@ -2,7 +2,7 @@
 
 BIOSCAN-5M Dataset images. 
 
-###### <h3> Data Packages
+###### <h3> Image Access
 
 Accessing the dataset images is facilitated by the following directory structure used to organize the dataset images:
 
