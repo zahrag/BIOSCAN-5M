@@ -44,4 +44,3 @@ bioscan5m/metadata/[type]/BIOSCAN_5M_Insect_Dataset_metadata.[type_extension]
 | 22| `index_bioscan_1M_insect`      | An index to locate organism in BIOSCAN-1M Insect metadata.                                        | Integer    |
 | 23| `chunk`                        | The packaging subdirectory name (or empty string) for this image.                                 | String     |
 
-\*Note for reviewers: For clarity, two fields were renamed between the main paper submission and supplementary data submission. `uri` → `dna_bin`; `nucraw` → `dna_barcode`. These changes will be updated in the main text for the camera-ready version.
