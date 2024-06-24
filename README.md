@@ -57,7 +57,7 @@ All dataset image packages and metadata files are accessible for download throug
 [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0) folder.
 
 ### Copyright and License 
-The images included in the BIOSCAN-5M dataset available through this repository are subject to copyright 
+The images, metadata included in the BIOSCAN-5M dataset available through this repository are subject to copyright 
 and licensing restrictions shown in the following:
 
  - Copyright Holder: CBG Photography Group
