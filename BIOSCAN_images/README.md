@@ -3,7 +3,8 @@
 BIOSCAN-5M Dataset images. 
 
 ###### <h3> Image Access
-
+All image packages of the BIOSCAN-5M dataset are available in the [BIOSCAN-5M](https://biodiversitygenomics.net/5M-insects/),
+within [BIOSCAN_5M_IMAGES](https://drive.google.com/drive/u/1/folders/1tZ5V_qWSPdDwD90oLz_Uqykp1AoBzLVM) folder.
 Accessing the dataset images is facilitated by the following directory structure used to organize the dataset images:
 
 ```plaintext
