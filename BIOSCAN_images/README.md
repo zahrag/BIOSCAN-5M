@@ -31,7 +31,7 @@ bioscan5m/images/[imgtype]/[split]/[chunk]/[{processid}.jpg]
 - `[chunk]`: Determined by using the first two or one characters of the MD5 checksum (in hexadecimal) of the `[processid]`. 
   - `pretrain` split: The files are organized into 256 directories using the first two letters of the MD5 checksum of the `[processid]`.
   - `train` and `other_heldout` splits: The files are organized into 16 directories using the first letter of the MD5 checksum.
-  - `val`, `test`, `val_unseen`, `test_unseen`, `key_unseen`, `other_heldout` splits: These do not use chunk directories since each split has less than 50k images.
+  - `val`, `test`, `val_unseen`, `test_unseen`, `key_unseen`, `other_heldout` splits: These files are organized into chunk directories since each split has less than 50k images.
 - `[processid]`: A unique identifier given by the collector.
 
 
