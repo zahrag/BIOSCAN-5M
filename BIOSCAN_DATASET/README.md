@@ -2,7 +2,7 @@
 
 Here are the functions handling:
 
-- Download dataset files
+- Data download 
 - Data statistics 
 - Data distributions 
 - Data split
