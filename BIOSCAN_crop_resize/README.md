@@ -3,7 +3,7 @@
 BIOSCAN-5M crop and resize tools.
 
 ###### <h3> Cropping images
-To utilize our crop, and/or resize tool please download the cropping BIOSCAN-5M checkpoint available in the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0),
+To utilize our crop, and/or resize tool please download the BIOSCAN-5M cropping checkpoint available in the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0),
 within [BIOSCAN_5M_CropTool/checkpoint](https://drive.google.com/drive/u/1/folders/1GiUHLOL-oUr2wBtb58LB0BGv2ymjj2jS) folder.
 Subsequently, please visit the [BIOSCAN-1M](https://github.com/zahrag/BIOSCAN-1M), and follow the instructions, 
 which facilitate cropping as well as resizing images. 
