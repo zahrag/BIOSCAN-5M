@@ -26,6 +26,10 @@ def get_size_bbx(configs):
     """
     This function computes the size data (area_fraction and scale_factor) from the bounding box information
     detected by our crop-tool.
+    x0: The x-coordinate of the top-left corner of the bounding box.
+    y0: The y-coordinate of the top-left corner of the bounding box.
+    x1: The x-coordinate of the bottom-right corner of the bounding box.
+    y1: The y-coordinate of the bottom-right corner of the bounding box.
     :param configs: Configurations.
     :return:
     """
