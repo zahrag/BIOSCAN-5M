@@ -52,11 +52,16 @@ def make_download(configs):
 
     parent_main = "1ft17GpcC_xDhx5lOBhYAEtox0sdZchjA"
 
-    parent_original = ""
-    original_full = ['']
+    parent_original_full = "1li1UCT483OXb7AO_-6SOecTvIfrlKhMz"
+    original_full_zip = ['BIOSCAN_5M_original_full.01.zip',
+                         'BIOSCAN_5M_original_full.02.zip',
+                         'BIOSCAN_5M_original_full.03.zip',
+                         'BIOSCAN_5M_original_full.04.zip',
+                         'BIOSCAN_5M_original_full.05.zip']
 
-    parent_original_cropped = ""
-    original_cropped = ['']
+    parent_cropped = "1M2riGzS3x6d2ARUHlWXPOdiFKH8rRXxN"
+    cropped_zip = ['BIOSCAN_5M_cropped.01.zip',
+                   'BIOSCAN_5M_cropped.02.zip']
 
     parent_metadata = "1TLVw0P4MT_5lPrgjMCMREiP8KW-V4nTb"
     metadata_zip = ['BIOSCAN_5M_Insect_Dataset_metadata_MultiTypes.zip']
@@ -73,10 +78,10 @@ def make_download(configs):
                        'BIOSCAN_5M_cropped_256_train.zip',
                        'BIOSCAN_5M_cropped_256_eval.zip']
 
-    original_256_hdf5 = ''
-    cropped_256_hdf5 = ''
+    parent_bbox = "1i6mSf5P6nmc228RUOfVwer6TVjZXUzeP"
+    bbox_tsv = ['BIOSCAN_5M_Insect_bbox.tsv']
 
-    files_list = [metadata_zip, original_256_zip, cropped_256_zip]
+    files_list = [metadata_zip, original_full_zip, cropped_zip, original_256_zip, cropped_256_zip, bbox_tsv]
     files_list = list(itertools.chain(*files_list))
 
     if file_selected not in files_list:
@@ -92,6 +97,15 @@ def make_download(configs):
 
     elif file_selected in metadata_zip:
         parent_folder_id = parent_metadata
+
+    elif file_selected in original_full_zip:
+        parent_folder_id = parent_original_full
+
+    elif file_selected in cropped_zip:
+        parent_folder_id = parent_cropped
+
+    elif file_selected in bbox_tsv:
+        parent_folder_id = parent_bbox
 
     # wget_download(parent_folder_id, file_id_mapping[file_selected], file_selected, download_path=download_path)
     gdown_download(file_id_mapping[file_selected], file_selected, download_path=download_path)
