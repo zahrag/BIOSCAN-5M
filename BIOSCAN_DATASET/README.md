@@ -9,12 +9,11 @@ Here are the functions handling:
 - Data loader
 
 ###### <h3> Dataset Access
-
-The BIOSCAN-5M dataset is available on [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0) folder.
-To download a file from GoogleDrive run the following:
+The BIOSCAN-5M dataset files are available on [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0) folder.
+To download a file from GoogleDrive, first download and locate the **bioscan5m_dataset_file_ID_mapping.txt**. Subsequently, run the following:
 
 ```bash
-python main.py --download --file_to_download <file_name>
+python main.py --download --file_to_download <file_name> --ID_mapping_path <path_to_{bioscan5m_dataset_file_ID_mapping.txt}>
 ``` 
 
 The list of files available for download from GoogleDrive are:
