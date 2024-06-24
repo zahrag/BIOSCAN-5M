@@ -39,6 +39,22 @@ python main.py --attr_stat <attribute_type>
 ``` 
 The attribute type can be <code>genetic</code>, <code>geographic</code>, and <code>size</code>.
 
+Sure, here's the table focusing only on the BIOSCAN-5M part, formatted for a GitHub README using markdown:
+
+### <h4> Statistics of BIOSCAN-5M dataset records by taxonomic ranks, DNA sequence, and BIN.
+| Attributes        | Imbalance Ratio (IR) | Categories  | Labelled        | Labelled (%)    |
+|-------------------|----------------------|-------------|-----------------|-----------------|
+| **phylum**        | 1                    | 1           | 5,150,850       | 100.0           |
+| **class**         | 719,831              | 10          | 5,146,837       | 99.9            |
+| **order**         | 3,675,317            | 55          | 5,134,987       | 99.7            |
+| **family**        | 938,928              | 934         | 4,932,774       | 95.8            |
+| **subfamily**     | 323,146              | 1,542       | 1,472,548       | 28.6            |
+| **genus**         | 200,268              | 7,605       | 1,226,765       | 23.8            |
+| **species**       | 7,694                | 22,622      | 473,094         | 9.2             |
+| **dna_bin**       | 35,458               | 324,411     | 5,137,441       | 99.7            |
+| **dna_barcode**   | 3,743                | 2,486,492   | 5,150,850       | 100.0           |
+
+
 
 ###### <h3> Dataset Distribution
 To see the category distribution of the BIOSCAN-5M dataset, run the following:
