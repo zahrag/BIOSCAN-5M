@@ -13,7 +13,7 @@ The BIOSCAN-5M dataset files are available on [GoogleDrive](https://drive.google
 To download a file from GoogleDrive, first download and locate the **bioscan5m_dataset_file_ID_mapping.txt**. Subsequently, run the following:
 
 ```bash
-python main.py --download --file_to_download <file_name> --ID_mapping_path <path_to_{bioscan5m_dataset_file_ID_mapping.txt}>
+python main.py --download --file_to_download <file_name> --ID_mapping_path <path/bioscan5m_dataset_file_ID_mapping.txt>
 ``` 
 
 The list of files available for download from GoogleDrive are:
