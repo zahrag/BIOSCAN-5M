@@ -39,8 +39,6 @@ python main.py --attr_stat <attribute_type>
 ``` 
 The attribute type can be <code>genetic</code>, <code>geographic</code>, and <code>size</code>.
 
-Sure, here's the table focusing only on the BIOSCAN-5M part, formatted for a GitHub README using markdown:
-
 ### <h4> Statistics of BIOSCAN-5M dataset records by taxonomic ranks, DNA sequence, and BIN.
 | Attributes        | Imbalance Ratio (IR) | Categories  | Labelled        | Labelled (%)    |
 |-------------------|----------------------|-------------|-----------------|-----------------|
