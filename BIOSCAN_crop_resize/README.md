@@ -24,7 +24,7 @@ We compare the performance of the DETR model used for cropping, trained with the
 
 
 ### Bounding box
-The bounding box information of our cropping tool is available in the the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0),
+The bounding box information of BIOSCAN-5M images obtained using our cropping tool is available through the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0),
 within [BIOSCAN_5M_CropTool/bounding_box](https://drive.google.com/drive/u/1/folders/1i6mSf5P6nmc228RUOfVwer6TVjZXUzeP) folder.
 
 
