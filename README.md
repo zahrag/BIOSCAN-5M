@@ -52,9 +52,11 @@ Each record of the BIOSCAN-5M dataset contains six primary attributes:
 
 
 ### Dataset Access
-
 All dataset image packages and metadata files are accessible for download through the
 [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0) folder.
+Additionally, the dataset is available on [Zenodo](https://zenodo.org/records/11973457),
+[Kaggle](https://www.kaggle.com/datasets/zahragharaee/bioscan-5m), and [HuggingFace](https://huggingface.co/datasets/Gharaee/BIOSCAN-5M).
+ 
 
 ### Copyright and License 
 The images and metadata included in the BIOSCAN-5M dataset available through this repository are subject to copyright 
