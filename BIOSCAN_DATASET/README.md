@@ -77,6 +77,17 @@ python main.py --level_name class Insecta --attr_stat <attribute_type>
 ``` 
 The attribute type can be <code>genetic</code>, <code>geographic</code>, and <code>size</code>.
 
+###### <h3> Non-insect organisms
+In addition to insects (98% of specimens), the BIOSCAN-5M dataset also contains arthropods from non-insect taxonomic classes.
+These are primarily arachnids and springtails (Collembola).
+
+<div align="center">
+  <img src="https://github.com/zahrag/BIOSCAN-5M/blob/main/BIOSCAN_images/repo_images/non_insect.png" 
+       alt="An array of example non-insect arthropod images from the BIOSCAN-5M dataset." />
+  <p><b>Figure 7:</b> Examples of the original images of non-insect organisms.
+</div>
+
+
 ###### <h3> Challenges and Limitations
 The BIOSCAN-5M dataset faces some challenges and limitations:
 - Sampling bias

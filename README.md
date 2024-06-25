@@ -182,15 +182,6 @@ Furthermore, utilizing our cropping tool, we calculated the following informatio
 </figure>
 
 
-### Non-insect organisms
-In addition to insects (98% of specimens), the BIOSCAN-5M dataset also contains arthropods from non-insect taxonomic classes.
-These are primarily arachnids and springtails (Collembola).
-
-<div align="center">
-  <img src="BIOSCAN_images/repo_images/non_insect.png" alt="An array of example non-insect arthropod images from the BIOSCAN-5M dataset." />
-  <p><b>Figure 7:</b> Examples of the original images of non-insect organisms.
-</div>
-
 Benchmark Experiments
 ---------------------
 
