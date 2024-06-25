@@ -77,7 +77,7 @@ python main.py --level_name class Insecta --attr_stat <attribute_type>
 ``` 
 The attribute type can be <code>genetic</code>, <code>geographic</code>, and <code>size</code>.
 
-###### <h3> Non-insect organisms
+###### <h4> Non-insect organisms
 In addition to insects (98% of specimens), the BIOSCAN-5M dataset also contains arthropods from non-insect taxonomic classes.
 These are primarily arachnids and springtails (Collembola).
 
@@ -106,3 +106,19 @@ The BIOSCAN-5M dataset faces some challenges and limitations:
 highlights significant classification challenges.</p>
 </div>
 
+
+###### <h3> Dataset Split
+You can access our proposed data splitting approach using the Python script `bioscan_split.py.
+`
+###### <h4> Statistics and Purpose of Our Data Partitions
+
+| Species Set | Split              | Purpose                        | No. of Samples | No. of Barcodes | No. of Species |
+|-------------|--------------------|--------------------------------|----------------|-----------------|----------------|
+| Unknown     | `pretrain`         | SSL, semi-sup. training        | 4,677,756      | 2,284,232       | ---            |
+| Seen        | `train`            | Supervision; retrieval keys    | 289,203        | 118,051         | 11,846         |
+|             | `val`              | Model dev; retrieval queries   | 14,757         | 6,588           | 3,378          |
+|             | `test`             | Final eval; retrieval queries  | 39,373         | 18,362          | 3,483          |
+| Unseen      | `key_unseen`       | Retrieval keys                 | 36,465         | 12,166          | 914            |
+|             | `val_unseen`       | Model dev; retrieval queries   | 8,819          | 2,442           | 903            |
+|             | `test_unseen`      | Final eval; retrieval queries  | 7,887          | 3,401           | 880            |
+| Heldout     | `other_heldout`    | Novelty detector training      | 76,590         | 41,250          | 9,862          |
