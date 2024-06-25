@@ -181,10 +181,6 @@ Furthermore, utilizing our cropping tool, we calculated the following informatio
 We trained a model on examples from this dataset in order to create a tool which can automatically generate bounding boxes around the insect.
 We used this to crop each image down to only the region of interest.
 
-<div align="center">
-  <img src="BIOSCAN_images/repo_images/area_frac.png" alt="Example bounding boxes extracted with the cropping tool." />
-  <p><b>Figure 6:</b> Examples of the original images with the bounding box detected by our cropping tool.
-</div>
 
 ### Non-insect organisms
 In addition to insects (98% of specimens), the BIOSCAN-5M dataset also contains arthropods from non-insect taxonomic classes.
