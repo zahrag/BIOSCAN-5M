@@ -83,6 +83,10 @@ We have provided various packages of the BIOSCAN-5M dataset, each tailored for s
   <p><b>Figure 2:</b> Examples of the original images of the BIOSCAN-5M dataset.
 </div>
 
+### Cropped images
+We trained a model on examples from this dataset in order to create a tool which can automatically generate bounding boxes around the insect.
+We used this to crop each image down to only the region of interest.
+
 #### Image packages
 * **BIOSCAN_5M_original_full**: The raw images of the dataset.
 * **BIOSCAN_5M_cropped**: Images after cropping with our cropping tool introduced in [BIOSCAN-1M](https://github.com/zahrag/BIOSCAN-1M).
@@ -176,10 +180,6 @@ Furthermore, utilizing our cropping tool, we calculated the following informatio
   <img src="BIOSCAN_images/repo_images/images_masks.png" alt="Example pixel masks of the organism." />
   <figcaption><b>Figure 5:</b> Examples of original images (top) and their corresponding masks (bottom) depicting pixels occupied by the organism.</figcaption>
 </figure>
-
-### Cropped images
-We trained a model on examples from this dataset in order to create a tool which can automatically generate bounding boxes around the insect.
-We used this to crop each image down to only the region of interest.
 
 
 ### Non-insect organisms
