@@ -5,7 +5,7 @@ BIOSCAN-5M metadata file.
 ###### <h3> Metadata file
 The metadata files of the BIOSCAN-5M dataset are available in the [GoogleDrive](https://drive.google.com/drive/u/1/folders/1Jc57eKkeiYrnUBc9WlIp-ZS_L1bVlT-0),
 within [BIOSCAN_5M_METADATA](https://drive.google.com/drive/u/1/folders/1TLVw0P4MT_5lPrgjMCMREiP8KW-V4nTb) folder.
-Accessing multiple types of the metadata file of the BIOSCAN-5M dataset is facilitated by the following directory structure used to organize the dataset metadata:
+Accessing multiple types of the metadata file; **BIOSCAN_5M_Insect_Dataset_metadata_MultiTypes.zip** is facilitated by the following directory structure used to organize the dataset metadata:
 
 ```plaintext
 bioscan5m/metadata/[type]/BIOSCAN_5M_Insect_Dataset_metadata.[type_extension]
