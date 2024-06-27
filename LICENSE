@@ -24,7 +24,7 @@ SOFTWARE.
 
 ## Submodule Licenses
 
-This repository includes several submodules. Below is a list of the submodules and their respective licenses:
+This repository links to three other repositories, each of which are governed by their own respective licenses:
 
 ### Submodule: BarcodeBERT
 - Repository: https://github.com/Kari-Genomics-Lab/BarcodeBERT
