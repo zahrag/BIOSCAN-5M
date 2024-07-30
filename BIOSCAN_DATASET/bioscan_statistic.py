@@ -47,7 +47,7 @@ class BioScanStats:
 
         return sorted_df
 
-    def set_taxa_statistics(self, configs):
+    def set_attr_statistics(self, configs):
 
         """
         This function calculates the statistics of an attribute.
@@ -212,4 +212,4 @@ def show_statistics(configs):
     dataset = BioScan()
     vis_stats = BioScanStats()
     vis_stats.get_dataset_statistics(configs, dataset)
-    vis_stats.set_taxa_statistics(configs)
+    vis_stats.set_attr_statistics(configs)
