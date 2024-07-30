@@ -53,6 +53,13 @@ The attribute type can be <code>genetic</code>, <code>geographic</code>, and <co
 | **dna_barcode**   | 3,743                | 2,486,492   | 5,150,850       | 100.0           |
 
 
+To see the statistics of a BIOSCAN-5M dataset attribute, run the following:
+
+```bash
+python main.py --attr <attribute>
+``` 
+
+The attribute can be one of the genetic (e.g., order), geographic (e.g., country) or size attributes (e.g., scale_factor).
 
 ###### <h3> Dataset Distribution
 To see the category distribution of the BIOSCAN-5M dataset, run the following:
