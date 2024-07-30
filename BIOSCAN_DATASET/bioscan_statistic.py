@@ -1,3 +1,6 @@
+from pyspark.sql import functions as F
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import monotonically_increasing_id, size, col, collect_list
 import math
 from tabulate import tabulate
 from bioscan_dataset import BioScan
@@ -5,7 +8,84 @@ import pandas as pd
 import os
 import numpy as np
 
+
 class BioScanStats:
+
+    def get_unknown_attr(self, df, attr):
+        null_count = df.filter(col(attr).isNull()).count()
+        return null_count
+
+    def get_unique_groups(self, df, attr, with_unknown=True):
+
+        if with_unknown:
+            unique_groups = df.select(F.countDistinct(F.when(col(attr).isNull(),
+                                                             "NULL").otherwise(col(attr)))).collect()[0][0]
+        else:
+            df_filtered = df.filter(col(attr).isNotNull())
+            unique_groups = df_filtered.select(F.countDistinct(col(attr))).collect()[0][0]
+
+        return unique_groups
+
+    def get_attr_stats(self, df, attr, n_decimals=4):
+
+        # Group the unique taxa by their corresponding indices
+        grouped_df = df.groupBy(attr).agg(collect_list("index").alias("indices"))
+
+        # Add total number of samples of each unique attribute
+        grouped_df_with_count = grouped_df.withColumn("num_indices", size(col("indices")))
+
+        # Get total dataset samples
+        total_samples = grouped_df_with_count.agg(F.sum("num_indices")).collect()[0][0]
+
+        # Calculate percentage and round to n decimals
+        grouped_df_with_percentage = grouped_df_with_count.withColumn(
+            "samples_percentage",
+            F.round((F.col("num_indices") / total_samples) * 100, n_decimals)
+        )
+        grouped_df_with_percentage = grouped_df_with_percentage.fillna({attr: 'Unknown'})
+        sorted_df = grouped_df_with_percentage.orderBy(F.col("num_indices").desc())
+
+        return sorted_df
+
+    def set_taxa_statistics(self, configs):
+
+        """
+        This function calculates the statistics of an attribute.
+        To get the statistics the attr argument in configuration must be set to genetic, geographic or size attributes.
+        This included getting the number of unknown/unlabelled samples and the statistics of unique groups per attribute.
+        :param configs: Configurations.
+        :return:
+        """
+
+        if not configs['attr']:
+            print("No taxonomic rank is specified.")
+            return
+
+        # Initialize a SparkSession
+        spark = SparkSession.builder \
+            .appName("Extract Sub-categories") \
+            .getOrCreate()
+
+        # Read the CSV file into a DataFrame
+        df = spark.read.csv(configs['metadata'], header=True, inferSchema=True)
+        df_with_index = df.withColumn("index", monotonically_increasing_id())
+        df.show()
+
+        # Count unknown/unlabelled samples
+        attr = configs['attr']
+        null_count = self.get_unknown_attr(df_with_index, attr)
+        print(f"Number of unknown samples of {attr}: ", null_count)
+
+        unique_groups_unknown = self.get_unique_groups(df_with_index, attr, with_unknown=True)
+        print(f"Total number of unique groups of {attr} including unknown samples: ", unique_groups_unknown)
+
+        unique_groups = self.get_unique_groups(df_with_index, attr, with_unknown=False)
+        print(f"Total number of unique groups of {attr} excluding unknown samples: ", unique_groups)
+
+        # Results
+        sorted_df = self.get_attr_stats(df_with_index, attr)
+        sorted_df.show(n=unique_groups)
+        spark.stop()
 
     def print_table(self, data_dict, title, print_table=False):
 
@@ -79,7 +159,7 @@ class BioScanStats:
         elif get_attr == 'size':
             list_attr = list({**dataset.size_list_dict}.keys())
         else:
-            raise ValueError('Statistic type is NOT available!')
+            raise ValueError('Attribute type is NOT available!')
 
         g_dict = self.get_stat_dict(dataset, list_attr, dict_type=f'{get_attr.capitalize()} Attributes')
 
@@ -98,6 +178,9 @@ class BioScanStats:
         :param dataset: Class BioScan Dataset.
         :return:
         """
+
+        if not configs['attr_stat']:
+            return
 
         print(f"\n\nGenerating {configs['attr_stat'].capitalize()}"
               f" statistics of {configs['level_name'][0].capitalize()} {configs['level_name'][1].capitalize()} ...")
@@ -119,15 +202,14 @@ class BioScanStats:
 
 
 def show_statistics(configs):
+
     """
     This function shows/saves dataset statistics.
     :param configs: Configurations.
     :return:
     """
 
-    if not configs['attr_stat']:
-        return
-
     dataset = BioScan()
     vis_stats = BioScanStats()
     vis_stats.get_dataset_statistics(configs, dataset)
+    vis_stats.set_taxa_statistics(configs)

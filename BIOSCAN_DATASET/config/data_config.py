@@ -24,9 +24,14 @@ def config_base(parser):
 
     parser.add_argument('--group_level',
                         type=str,
-                        default='order',
+                        default=None,
                         choices=['class', 'order', 'family', 'subfamily', 'genus', 'species', 'taxon'],
                         help='Taxonomic group ranking.')
+
+    parser.add_argument('--attr',
+                        type=str,
+                        default=None,
+                        help='A Dataset Attribute (e.g., order).')
 
     parser.add_argument('--metadata',
                         type=str,
