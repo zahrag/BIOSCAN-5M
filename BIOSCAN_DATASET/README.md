@@ -59,7 +59,7 @@ To see the statistics of a BIOSCAN-5M dataset attribute, run the following:
 python main.py --attr <attribute>
 ``` 
 
-The attribute can be one of the genetic (e.g., order), geographic (e.g., country) or size attributes (e.g., scale_factor).
+The attribute can be one of the genetic (e.g., order), geographic (e.g., country) or size (e.g., scale_factor) attributes.
 
 ###### <h3> Dataset Distribution
 To see the category distribution of the BIOSCAN-5M dataset, run the following:
