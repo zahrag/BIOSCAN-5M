@@ -1,0 +1,47 @@
+name: bioscan5m
+channels:
+  - pytorch
+  - pyg
+  - defaults
+dependencies:
+  - python=3.10
+  - pytorch=2.3.0
+  - pytorch-mutex=1.0=cpu
+  - pytorch-scatter=2.1.2
+  - pytorch-sparse=0.6.18
+  - tornado=6.4.1
+  - python-fastjsonschema=2.16.2
+  - tqdm=4.65.0
+  - pysocks=1.7.1
+  - ffmpeg=4.3
+  - pip:
+      - wget==3.2
+      - torch==2.0.1
+      - torch-geometric==2.5.3
+      - torchaudio==2.0.2
+      - torchmetrics==0.11.4
+      - torchvision==0.15.2
+      - scikit-learn==1.2.2
+      - python-dateutil==2.8.2
+      - python-json-logger==2.0.4
+      - python-levenshtein==0.25.1
+      - pytorch-lightning==2.0.2
+      - timm==0.6.13
+      - tensorboard==2.15.2
+      - tensorboard-data-server==0.7.0
+      - tensorboard-plugin-wit==1.8.1
+      - tensorflow==2.15.0.post1
+      - tensorflow-estimator==2.15.0
+      - tensorflow-io-gcs-filesystem==0.36.0
+      - pyshp==2.3.1
+      - pyspark==3.5.1
+      - pillow==10.3.0
+      - keras==2.15.0
+      - kiwisolver==1.4.4
+      - h5py==3.8.0
+      - gdown==4.7.1
+      - pandas==1.5.3
+      - ipython
+      - tabulate
+      - pillow
+      - pathlib
