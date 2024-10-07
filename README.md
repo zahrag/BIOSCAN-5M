@@ -76,6 +76,7 @@ conda env create -f bioscan5m.yaml
 ``` 
 Please note that to work with all modules connected to this repository, 
 you may need to install additional dependencies specific to each module (if any).
+Be sure to follow the instructions provided within each module's folder for further setup details.
 
 ### Metadata 
 The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biological information, geographic information as well as 
