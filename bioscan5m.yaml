@@ -46,3 +46,4 @@ dependencies:
       - pillow
       - pathlib
       - matplotlib
+      - seaborn
