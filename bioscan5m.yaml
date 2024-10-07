@@ -45,3 +45,4 @@ dependencies:
       - tabulate
       - pillow
       - pathlib
+      - matplotlib
