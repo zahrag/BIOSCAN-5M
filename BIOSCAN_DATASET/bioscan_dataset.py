@@ -41,8 +41,6 @@ class BioScan(Dataset):
         for bar in self.barcode_list_dict.keys():
             if bar in self.df_categories:
                 self.barcode_list_dict[bar] = self.df[bar].to_list()
-            if f'{bar}_inferred' in self.df_categories:
-                self.label_inferred[f'{bar}_inferred'] = self.df[f'{bar}_inferred'].to_list()
 
         # Organisms' Size
         self.size_list_dict = {'image_measurement_value': [], 'area_fraction': [], 'scale_factor':[]}
