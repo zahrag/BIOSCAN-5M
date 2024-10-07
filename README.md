@@ -69,6 +69,14 @@ and licensing restrictions shown in the following:
  - Copyright Contact: collectionsBIO@gmail.com
  - Copyright Year: 2021
 
+### Getting Started with BIOSCAN-5M
+To set up the BIOSCAN-5M project, use the provided `bioscan5m.yaml` file to install all required packages by running:
+```bash
+conda env create -f bioscan5m.yaml
+``` 
+Please note that to work with all modules connected to this repository, 
+you may need to install additional dependencies specific to each module (if any).
+
 ### Metadata 
 The dataset metadata file **BIOSCAN_5M_Insect_Dataset_metadata** contains biological information, geographic information as well as 
 size information of the organisms. We provide this metadata in both CSV and JSONLD file types.
