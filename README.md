@@ -352,8 +352,8 @@ The images and metadata included in the BIOSCAN-5M dataset available through thi
 and licensing restrictions shown in the following:
 
  - Copyright Holder: CBG Photography Group
- - Copyright Institution: Centre for Biodiversity Genomics (email:CBGImaging@gmail.com)
+ - Copyright Institution: Centre for Biodiversity Genomics (email: cbg.analytics@uoguelph.ca)
  - Photographer: CBG Robotic Imager
  - Copyright License: Creative Commons Attribution 3.0 Unported ([CC BY 3.0](https://creativecommons.org/licenses/by/3.0/))
- - Copyright Contact: collectionsBIO@gmail.com
+ - Copyright Contact: cbg.collections@uoguelph.ca
  - Copyright Year: 2021
