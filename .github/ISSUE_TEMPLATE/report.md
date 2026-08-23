@@ -5,7 +5,7 @@ title: "[Record ID]: [Report type]"
 labels: report
 ---
 
-> From this template you can report a problem or suggest updates to BIOSCAN-5M. Alternatively, you can submit a report from [BIOSCAN Browser](https://bioscan-browser.netlify.app/report), using an interactive form.
+> From this template you can report a problem or suggest updates to BIOSCAN-5M. Alternatively, you can submit a report from [BIOSCAN Browser](https://browser.bioscan-ml.org/report), using an interactive form.
 >
 > After submitting, you can follow the report progress in our [GitHub project](https://github.com/orgs/bioscan-ml/projects/2). If the report is approved, the update will be included with the next version of the dataset. Thank you for helping us improve BIOSCAN-5M!
 
